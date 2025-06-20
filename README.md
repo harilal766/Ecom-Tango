@@ -6,3 +6,7 @@ A centralised Django based tool to streamline tasks from multiple ecommerce sell
 2. `python -m venv env`
 3. `env/scripts/activate`
 4. `pip install -r requirements.txt`
+
+# Working
+Initially, Amazon seller central and Shopify are supported.
+To add stores of these services, user need to Register for their API, 
