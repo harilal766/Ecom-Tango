@@ -18,21 +18,6 @@ Before installing Ecom-Tango, ensure you have the following:
 3. **Activate the Virtual Environment** : ```env/scripts/activate```
 4. **Install Dependencies**: : ```pip install -r requirements.txt```
 
-
-## Adding Ecommerce Stores
-
-Ecom-Tango allows you to connect and manage stores from supported platforms. Follow these steps to add a store:mdmd
-# Working
-- Initially, only Amazon seller central and Shopify are supported.
-- To add stores of these services, user need to Register for their API.
-- Ater getting the required credentials of it, it should be added to the site.
-- To do this the option is selected and on the given form, 
-the name of the store, platform and api credentials are given. 
-- Submitting the form should add the store to the dashboard of the site and user should be able to 
-perform the operations related to that store.
-- To make this happen, the `models.py` module on the app made for each platform should have a class to store its credentials.
-- These class should have attributes for logged user, api credentials, storename etc..
-
 5. **Set Up the Database**:
 
    - Ensure PostgreSQL is installed and running (or use SQLite for development).
@@ -64,10 +49,20 @@ perform the operations related to that store.
 
    Access the application at `http://localhost:8000`.
 
+## Adding Ecommerce Stores
+Ecom-Tango allows you to connect and manage stores from supported platforms. Follow these steps to add a store:mdmd
+# Working
+- Initially, only Amazon seller central and Shopify are supported.
+- To add stores of these services, user need to Register for their API.
+- Ater getting the required credentials of it, it should be added to the site.
+- To do this the option is selected and on the given form, 
+the name of the store, platform and api credentials are given. 
+- Submitting the form should add the store to the dashboard of the site and user should be able to 
+perform the operations related to that store.
+- To make this happen, the `models.py` module on the app made for each platform should have a class to store its credentials.
+- These class should have attributes for logged user, api credentials, storename etc..
 
-
-### mdStep 1: Obtain API Credentials
-
+### Step 1: Obtain API Credentials
 - **Amazon Seller Central**:
   - Register for Amazon Selling Partner API (SP-API) at Amazon Developer Portal.
   - Obtain SP-API credentials (e.g., `Client ID`, `Client Secret`, `Refresh Token`).
