@@ -1,4 +1,4 @@
 env/
 __pycache__/
-.sqlite3
-.json
+db.sqlite3
+creds.json
