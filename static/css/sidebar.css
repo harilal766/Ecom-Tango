@@ -1,4 +1,46 @@
+
+ul {
+    list-style-type: none;
+    margin: 0; padding: 0;
+}
+
+
 .sidebar {
-    background-color: gray;
+    background-color: black;
+    width: 18%;
+    padding: 5px;
+    box-sizing: content-box;
+    color: white;
+    min-height: 100vh;
+}
+
+.sidebar a{
+    font-weight: 550;
+    color: white;
+}
+
+.site-name {
+    font-weight: bold;
+}
+
+.nav-list {
+    margin: 0px 0px 10px 10px;
+}
+
+.nav-list h6{
+    padding: 0px; margin: 0px 0px 10px 0px;
+    font-size: 12px;
+    color:lightgray;
+    font-weight: bold;
+}
+
+.nav-list li{
+    margin: 0px 0px 5px 15px;
+    text-align: left;
+}
+
+
+.nav-list a:hover{
+    color: gold;
 }
 
