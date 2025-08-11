@@ -2,17 +2,18 @@
 {% block base %}
     <div class="form">
         <h1>Add Store</h1>
-        <form class>
+        <form id="store-form">
             <div class="leftright">
                 <h4>Select a Platform</h4>
-                <select>
+                <select id="selector">
+                    <option>Select a Platform</option>
                     {% for platform in platforms %}
                     <option>{{platform}}</option>
                     {% endfor %}
                 </select>
             </div>
 
-            
+
             
         </form>
     </div>
