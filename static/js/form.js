@@ -1,15 +1,17 @@
 function storeForms(selection){
+    const commonCredentials = ["Name of the store"]
     const formDict = {
-        "Amazon" : ["Client Id", "Client Secret", "Refresh Token"],
-        "Shopify" : ["Storename", "Access Token"]
+        "Amazon" : commonCredentials.concat(["Client Id", "Client Secret", "Refresh Token"]),
+        "Shopify" : commonCredentials.concat(["Storename", "Access Token"])
     }
     try{
         console.log(formDict.key);
         
         let formDiv = document.getElementById('store-form');
         let credDiv = document.getElementById('credentials');
+        let submissionDiv = document.getElementById("submission");
 
-        credDiv.innerHTML = "";
+        credDiv.innerHTML = ""; submissionDiv.innerHTML = "";
 
         /* add the input tags to the credential div*/
         let selectedCreds = formDict[selection];
@@ -23,7 +25,7 @@ function storeForms(selection){
             credDiv.appendChild(document.createElement("br"));
         });
 
-        let submissionDiv = document.getElementById("submission");
+        
         let submitButton = document.createElement("button");
         submitButton.innerHTML = `Add store`;
         submitButton.className = "btn btn-primary";
