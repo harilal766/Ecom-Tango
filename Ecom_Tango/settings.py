@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 from pathlib import Path
 import os
+import sqlitecloud, json
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -75,10 +77,19 @@ WSGI_APPLICATION = 'Ecom_Tango.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
+with open("creds.json", "r") as creds:
+    creds = json.load(creds)
+    connection_string = creds["db_connection"]
+
+
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'NAME': 'db.sqlite3',
+        'CLIENT' : {
+            'host' : connection_string
+        }        
     }
 }
 

@@ -1,4 +1,3 @@
 {
-    "db_lin" : "",
-    "db_win" : ""
+    "db_connection" : "sqlitecloud://co5dzgouhz.g4.sqlite.cloud:8860/db.sqlite3?apikey=NEJvMUvWh1FAseshs9QBLOY72PHiS9vBrDtes6sSKFo"
 }
