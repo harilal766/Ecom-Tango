@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block base %}
+    <div class="form">
+        <h1>Add Store</h1>
+        <form class>
+            <div class="leftright">
+                <h4>Select a Platform</h4>
+                <select>
+                    {% for platform in platforms %}
+                    <option>{{platform}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            
+            
+        </form>
+    </div>
+{% endblock %}

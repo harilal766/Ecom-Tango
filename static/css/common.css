@@ -3,8 +3,8 @@
 .leftright {
     margin: 0; padding: 0;
     display: flex;
+    gap: 5px;
 }
-
 
 /* Link stylings */
 a {
@@ -12,8 +12,11 @@ a {
     text-decoration: none;
 }
 
-
-
 .nav {
     background-color: rgb(207, 247, 245);
+    display: flex;
+    gap: 10px;
+    padding: 5px;
+    width: 100vh;
 }
+

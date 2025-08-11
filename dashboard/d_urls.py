@@ -17,8 +17,11 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
-from .views import home
+from .views import *
+
+app_name='dashboard'
 
 urlpatterns = [
     path('',home,name='home'),
+    path('add_store',add_store,name='add_store')
 ]
