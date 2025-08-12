@@ -17,10 +17,11 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
+from authorization.views import *
+
+app_name='authorization'
+
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('',include('dashboard.d_urls')),
-    path('auth/',include('authorization.urls')),
-    #path('amazon/',include('amazon.urls')),
-    #path('shopify/',include('shopify.urls')),
+    path('login',login,name='login'),
+    path('signup',signup,name='signup')
 ]
