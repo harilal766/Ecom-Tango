@@ -1,6 +1,17 @@
-{% extends 'base.html' %}
-{% block home %}
-<div>
-  <h1>Home</h1>
-</div>
-{% endblock %}
+{% load static %}
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Home</title>
+  {% include 'bootstrap.html' %}
+</head>
+<body>
+  <div id="auth-div">
+    <form>
+      <input type="password" class="form-control" placeholder="Enter your Password">
+    </form>
+    <h2>Don't have an account?, <a href="">Sign-up</a></h2>
+  </div>
+</body>
+</html>
