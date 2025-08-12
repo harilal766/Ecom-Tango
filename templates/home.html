@@ -4,12 +4,25 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Home</title>
-  {% include 'bootstrap.html' %}
+  {% include 'connections.html' %}
 </head>
 <body>
-  <div id="auth-div">
-    <form>
-      <input type="password" class="form-control" placeholder="Enter your Password">
+  <div id="auth-div" class="form">
+    <form method="POST" enctype="multipart/form-data" action="{% url 'authorization:signup' %}">
+      {% csrf_token %}
+      <div class="form-group">
+        <label for="exampleInputEmail1">Email address</label>
+        <input type="text" class="form-control" name="username" placeholder="Enter username">
+        <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+      </div>
+
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" class="form-control" id="password" name="password" placeholder="Enter Password">
+      </div>
+
+      <button type="submit" class="btn btn-primary">Sign in</button>
+
     </form>
     <h2>Don't have an account?, <a href="">Sign-up</a></h2>
   </div>

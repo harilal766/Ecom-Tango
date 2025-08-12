@@ -2,7 +2,7 @@
 {% block base %}
     <div class="form">
         <h1>Add Store</h1>
-        <form id="store-form" method="POST" enctype="multipart/from-data" action="{% url 'dashboard:add_store' %}">
+        <form id="store-form" method="POST" enctype="multipart/form-data" action="{% url 'dashboard:add_store' %}">
             {% csrf_token %}
             <div class="leftright">
                 <h4>Select a Platform</h4>

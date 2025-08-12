@@ -17,7 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
-from authorization.views import *
+from authorization.auth_views import *
 
 app_name='authorization'
 

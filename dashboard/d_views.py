@@ -6,7 +6,7 @@ from datetime import datetime
 
 # Create your views here.
 def home(request):
-    return render(request,'home.html')
+    return render(request,'dashboard.html')
 
 def view_store(request):
     return render(request,"dashboard.html")
