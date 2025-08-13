@@ -20,7 +20,7 @@ from django.urls import path, include
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('',include('dashboard.d_urls')),
-    path('auth/',include('authorization.urls')),
-    #path('amazon/',include('amazon.urls')),
+    path('auth/',include('authorization.auth_urls')),
+    #path('amazon/',include('amazon.a_urls')),
     #path('shopify/',include('shopify.urls')),
 ]
