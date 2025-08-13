@@ -21,12 +21,11 @@ def signin(request):
     except Exception as e:
         print(e)
         
-        
-@login_required
+
 def signout(request):
     try:
         logout(request)
-        return render(request,"home.html")
+        return redirect('dashboard:home') 
     except Exception as e:
         print(e)
     

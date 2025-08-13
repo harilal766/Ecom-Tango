@@ -1,9 +1,11 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 # Create your models here.
 class StoreProfile(models.Model):
+    user = models.ForeignKey(User,on_delete=models.CASCADE)
+    platform = models.CharField(max_length=30)
     storename = models.CharField(max_length=200)
-    platform = models.CharField(max_length=100)
     created_date = models.CharField(max_length=200)
     
     def __str__(self):
@@ -19,4 +21,12 @@ class StoreProfile(models.Model):
                 return False
         except Exception as e:
             print(e)
+            
+
+class BaseCredential(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    store = models.ForeignKey(StoreProfile,on_delete=models.CASCADE)
+    
+    def __str__(self):
+        return self.store.storename
     

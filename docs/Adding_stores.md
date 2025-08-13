@@ -21,7 +21,6 @@ perform the operations related to that store.
   - Generate an API key and secret. Ensure the app has permissions for required operations (e.g., read/write products, orders) by selecting required scopes.
 
 ### Step 2: Add a Store to Ecom-Tango
-
 1. Log in to the Ecom-Tango dashboard at `http://localhost:8000`.
 2. Navigate to the **Add Store** section.
 3. Select the platform (Amazon or Shopify) from the dropdown menu.

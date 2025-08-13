@@ -13,18 +13,10 @@ Before installing Ecom-Tango, ensure you have the following:
 - **API Credentials**: Access to Amazon Seller Central SP-API and/or Shopify API tokens
 
 
-
-
-
-
-
 - [Installtion](docs/Installation.md)
 - [Adding Stores](docs/Adding_stores.md)
 - [Troubleshoot](docs/Troubleshoot.md)
 - [Additional Operations](docs/additional.md)
-
-
-
 
 ## Additional Resources
 
@@ -33,3 +25,5 @@ Before installing Ecom-Tango, ensure you have the following:
 - Django Documentation : https://docs.djangoproject.com/en/5.2/
 
 For further assistance, open an issue on the GitHub repository.
+
+
