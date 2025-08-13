@@ -6,9 +6,21 @@ from datetime import datetime
 
 # Create your views here.
 def home(request):
-    return render(request,'dashboard.html')
+    context = {
+        "user" : None
+    }
+    try:
+        if request.user.username == "":
+            return render(request,'home.html',context=context)
+        else:
+            context["user"] = request.user.username.capitalize()
+            return redirect('dashboard:dashboard')
+    except Exception as e:
+        return render(request,"error.html", context={"error" : str(e)})
+        
+    
 
-def view_store(request):
+def view_store(request):        
     return render(request,"dashboard.html")
 
 def add_store(request):

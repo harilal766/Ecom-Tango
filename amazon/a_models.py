@@ -4,7 +4,6 @@ from django.contrib.auth.models import User
 
 # Create your models here.
 
-
 class SpapiCredential(BaseCredential):
     client_id = models.CharField(max_length=200)
     client_secret = models.CharField(max_length=200)

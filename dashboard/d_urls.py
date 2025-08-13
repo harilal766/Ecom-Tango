@@ -23,5 +23,6 @@ app_name='dashboard'
 
 urlpatterns = [
     path('',home,name='home'),
+    path('dashboard',view_store,name='dashboard'),
     path('add_store',add_store,name='add_store')
 ]
