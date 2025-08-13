@@ -1,10 +1,11 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
-from django.contrib.auth import authenticate, login as auth_login
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 
 
 # Create your views here.
-def login(request):
+def signin(request):
     try:
         if request.method == "POST":
             username = request.POST.get("username")
@@ -14,8 +15,17 @@ def login(request):
                 request, username = username, password = password
             )
             if authenticated_user is not None:
-                auth_login(request, authenticated_user)
+                login(request, authenticated_user)
                 return redirect('dashboard:home')            
+        return render(request,"home.html")
+    except Exception as e:
+        print(e)
+        
+        
+@login_required
+def signout(request):
+    try:
+        logout(request)
         return render(request,"home.html")
     except Exception as e:
         print(e)
