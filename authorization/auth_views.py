@@ -17,7 +17,7 @@ def signin(request):
             if authenticated_user is not None:
                 login(request, authenticated_user)
                 return redirect('dashboard:home')     
-        return render(request,"dashboard.html")
+        return render(request,"home.html")
     except Exception as e:
         return render(request,"error.html",{"error" : e})
         

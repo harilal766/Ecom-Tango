@@ -7,7 +7,11 @@ from datetime import datetime
 # Create your views here.
 def home(request):
     try:
-        return render(request,'dashboard.html')
+        if request.user.is_authenticated:
+            first_store = StoreProfile.objects.filter(user=request.user)[0]
+            return view_store(request,store_slug=first_store.slug)
+        else:
+            return render(request,'home.html')
     except Exception as e:
         return render(request,"error.html", context={"error" : str(e)})
         

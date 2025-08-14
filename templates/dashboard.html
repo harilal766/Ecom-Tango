@@ -3,7 +3,7 @@
     <h1>Dashboard</h1>
     <div class="added-stores">
         {% for store in stores %}
-            <a href="">
+            <a href="{% url 'dashboard:dashboard' store_slug=store.slug %}">
                 <button class="btn btn-secondary">{{store}}</button>
             </a>
         {% endfor %}
