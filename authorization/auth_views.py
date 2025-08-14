@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from dashboard.d_views import view_store
+from dashboard.d_views import dashboard
 
 # Create your views here.
 def signin(request):

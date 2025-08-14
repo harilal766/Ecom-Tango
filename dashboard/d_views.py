@@ -8,28 +8,21 @@ from datetime import datetime
 def home(request):
     try:
         if request.user.is_authenticated:
-            stores = StoreProfile.objects.filter(user=request.user)
-            first_store_slug = stores[0].slug if len(stores) > 0 else None
-            return view_store(request,store_slug=first_store_slug)
+            return dashboard(request)
         else:
             return render(request,'home.html')
     except Exception as e:
         return render(request,"error.html", context={"error" : str(e)})
         
-def view_store(request,store_slug):
+def dashboard(request):
     context = {
         "user" : None,
         "stores" : None,
         "selected_store" : None
     }
     try:
-        if request.user.username == "":
-            return render(request,'home.html',context=context)
-        else:
-            context["user"] = request.user.username.capitalize()
-            context["stores"] = StoreProfile.objects.all()
-            if store_slug:
-                context["selected_store"] = StoreProfile.objects.get(slug = store_slug)
+        context["user"] = request.user.username.capitalize()
+        context["stores"] = StoreProfile.objects.all()
         return render(request,"dashboard.html",context=context)
     except Exception as e:
         return render(request,"error.html",{"error" : e})
@@ -77,6 +70,18 @@ def add_store(request):
     except Exception as e:
         context['error'] = str(e)
         return render(request,"error.html", context=context, status=500)
+    
+def view_store(request,store_slug):
+    context = {"detail" : None}
+    try:
+        if request.headers.get("HX-Request") == 'true':
+            store = StoreProfile.objects.filter(user=request.user,slug=store_slug)
+            context["detail"] = store
+            return render(request,'store_detail.html',context=context)
+        else:
+            return render(request,'store_detail.html',context=context)
+    except Exception as e:
+        return render(request,"error.html",{"error":e})
     
 def get_reports(request,store_slug):
     try:
