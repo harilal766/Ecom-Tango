@@ -77,3 +77,9 @@ def add_store(request):
     except Exception as e:
         context['error'] = str(e)
         return render(request,"error.html", context=context, status=500)
+    
+def get_reports(request,store_slug):
+    try:
+        return render(request,"")
+    except Exception as e:
+        return render(request,"error.html",{"error":e})
