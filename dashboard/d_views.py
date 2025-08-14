@@ -7,12 +7,11 @@ from datetime import datetime
 # Create your views here.
 def home(request):
     try:
-        return render(request,'home.html')
+        return render(request,'dashboard.html')
     except Exception as e:
         return render(request,"error.html", context={"error" : str(e)})
         
-    
-def view_store(request,store_slug=None):
+def view_store(request,store_slug):
     context = {
         "user" : None,
         "stores" : None,
@@ -30,7 +29,6 @@ def view_store(request,store_slug=None):
     except Exception as e:
         return render(request,"error.html",{"error" : e})
     
-
 def add_store(request):
     context = {
         "platforms" : ("Amazon", "Shopify"),
