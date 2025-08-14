@@ -6,22 +6,30 @@ from datetime import datetime
 
 # Create your views here.
 def home(request):
+    try:
+        return render(request,'home.html')
+    except Exception as e:
+        return render(request,"error.html", context={"error" : str(e)})
+        
+    
+def view_store(request,store_slug=None):
     context = {
-        "user" : None
+        "user" : None,
+        "stores" : None,
+        "selected_store" : None
     }
     try:
         if request.user.username == "":
             return render(request,'home.html',context=context)
         else:
             context["user"] = request.user.username.capitalize()
-            return redirect('dashboard:dashboard')
+            context["stores"] = StoreProfile.objects.all()
+            if store_slug:
+                context["selected_store"] = StoreProfile.objects.get(slug = store_slug)
+        return render(request,"dashboard.html",context=context)
     except Exception as e:
-        return render(request,"error.html", context={"error" : str(e)})
-        
+        return render(request,"error.html",{"error" : e})
     
-
-def view_store(request):        
-    return render(request,"dashboard.html")
 
 def add_store(request):
     context = {
@@ -39,6 +47,7 @@ def add_store(request):
             if not store_instance.is_already_created(storename=storename):
                 storeprofile = StoreProfile.objects.create(
                     user = request.user, storename = storename,
+                    platform = platform,
                     created_date = datetime.now()
                 )
                 storeprofile.save()

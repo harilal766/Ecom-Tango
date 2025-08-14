@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-
+from dashboard.d_views import view_store
 
 # Create your views here.
 def signin(request):
@@ -16,10 +16,10 @@ def signin(request):
             )
             if authenticated_user is not None:
                 login(request, authenticated_user)
-                return redirect('dashboard:home')            
+                return redirect('dashboard:dashboard')     
         return render(request,"home.html")
     except Exception as e:
-        print(e)
+        return render(request,"error.html",{"error" : e})
         
 
 def signout(request):

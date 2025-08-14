@@ -15,7 +15,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path, re_path
 
 from .d_views import *
 
@@ -23,6 +23,6 @@ app_name='dashboard'
 
 urlpatterns = [
     path('',home,name='home'),
-    path('dashboard',view_store,name='dashboard'),
+    re_path(r'^dashboard(?:/(?P<store_slug>[-\w]+))?$',view_store,name='dashboard'),
     path('add_store',add_store,name='add_store')
 ]
