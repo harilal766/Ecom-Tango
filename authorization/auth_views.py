@@ -21,7 +21,7 @@ def signin(request):
     except Exception as e:
         return render(request,"error.html",{"error" : e})
         
-
+@login_required
 def signout(request):
     try:
         logout(request)

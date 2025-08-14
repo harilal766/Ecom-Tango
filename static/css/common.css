@@ -11,7 +11,6 @@ a {
     font-weight: bold;
     text-decoration: none;
 }
-
 .nav {
     background-color: rgb(207, 247, 245);
     display: flex;
@@ -20,5 +19,10 @@ a {
     width: 100vh;
 }
 
+.added-stores{
+    display: flex;
+    align-items: center;
+    justify-items: center;
+}
 
 

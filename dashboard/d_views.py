@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from amazon.a_models import *
-from shopify.models import *
+from shopify.sh_models import *
 from dashboard.d_models import StoreProfile
 from datetime import datetime
 
@@ -8,8 +8,9 @@ from datetime import datetime
 def home(request):
     try:
         if request.user.is_authenticated:
-            first_store = StoreProfile.objects.filter(user=request.user)[0]
-            return view_store(request,store_slug=first_store.slug)
+            stores = StoreProfile.objects.filter(user=request.user)
+            first_store_slug = stores[0].slug if len(stores) > 0 else None
+            return view_store(request,store_slug=first_store_slug)
         else:
             return render(request,'home.html')
     except Exception as e:
@@ -38,8 +39,7 @@ def add_store(request):
         "platforms" : ("Amazon", "Shopify"),
         "error" : None
     }
-    storeprofile = None
-    new_amazon_store = None
+    new_store = None
     try:
         if request.method == "POST":
             platform = request.POST.get("platform")
@@ -63,11 +63,16 @@ def add_store(request):
                         refresh_token = request.POST.get("Refresh Token")
                     )
                     new_amazon_store.save()
+                    new_store = new_amazon_store
                 elif platform == "Shopify":
-                    access_token = request.POST.get("Access Token")
-                    store_id = request.POST.get("Storename")
-                    
-                return redirect('dashboard:home')
+                    new_shopify_store = ShopifyApiCredential.objects.create(
+                        user = request.user, store = storeprofile,
+                        storename = request.POST.get("Storename"),
+                        access_token = request.POST.get("Access Token")
+                    )
+                    new_shopify_store.save()
+                    new_store = new_shopify_store
+                return home(request)
         return render(request,"add_store.html", context=context)
     except Exception as e:
         context['error'] = str(e)
