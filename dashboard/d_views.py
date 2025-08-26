@@ -23,6 +23,8 @@ def dashboard(request):
     try:
         context["user"] = request.user.username.capitalize()
         context["stores"] = StoreProfile.objects.all()
+        #print(context["stores"][0].slug)
+        #return view_store(request=request,store_slug=context["stores"][0].slug)
         return render(request,"dashboard.html",context=context)
     except Exception as e:
         return render(request,"error.html",{"error" : e})
@@ -72,17 +74,30 @@ def add_store(request):
         return render(request,"error.html", context=context, status=500)
     
 def view_store(request,store_slug):
-    context = {"detail" : None}
+    context = {"detail" : None, "order_types" : None}
+    platform_specific_data = {
+        "Amazon" : {
+            "order_types" : ("Pending","Unshipped", "Shipped")
+        },
+        "Shopify" : {
+            "order_types" : ("unfulfilled","fulfilled")
+        }
+    }
     try:
         if request.headers.get("HX-Request") == 'true':
-            store = StoreProfile.objects.filter(user=request.user,slug=store_slug)
+            store = StoreProfile.objects.get(user=request.user,slug=store_slug)
             context["detail"] = store
-            return render(request,'store_detail.html',context=context)
+            
+            context["order_types"] = platform_specific_data[store.platform]["order_types"]
         else:
-            return render(request,'store_detail.html',context=context)
+            pass
+        print(f"Platform : {store.platform}, types : {context['order_types']}")
+        return render(request,'store_detail.html',context=context)
     except Exception as e:
         return render(request,"error.html",{"error":e})
     
+    
+
 def get_reports(request,store_slug):
     try:
         return render(request,"")

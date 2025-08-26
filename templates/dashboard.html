@@ -3,15 +3,13 @@
     <h1>Dashboard</h1>
     <div class="added-stores">
         {% if stores %}
-        {% for store in stores %}
-        <button hx-get="{% url 'dashboard:view_store' store_slug=store.slug %}" hx-target="#response" hx-swap="innerHTML" class="btn btn-secondary">{{store}}</button>
-
-        <div id="response"></div>
-        {% endfor %}
-        {% else %}
-        <h2>Add a store </h2>
+            {% for store in stores %}
+                <button hx-get="{% url 'dashboard:view_store' store_slug=store.slug %}" hx-target="#store-detail" hx-swap="innerHTML" class="btn btn-secondary">{{store}}</button>
+            {% endfor %}
+            {% else %}
+            <h2>Add a store </h2>
         {% endif %}
     </div>
 
-    
+    <div class="store-detail" id="store-detail"></div>
 {% endblock %}
