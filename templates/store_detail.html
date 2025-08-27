@@ -1,12 +1,19 @@
 <div class="store-detail">
     <!-- Request for order type -->
+    
     {% if order_types %}
-    <h2>Orders</h2>
-    <h5>Types</h5>    
-    <select>
-        {% for type in order_types %}
-        <option>{{type}}</option>
-        {% endfor %}
-    </select>
+    <div class="order">
+        <h2>Orders</h2>
+        <h5>Types</h5>    
+        <select>
+            {% for type in order_types %}
+            <option>{{type}}</option>
+            {% endfor %}
+        </select>
+    </div>
     {% endif %}
+
+    <div class="report">
+        <h2>Reports</h2>
+    </div>
 </div>

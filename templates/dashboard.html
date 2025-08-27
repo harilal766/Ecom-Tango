@@ -6,10 +6,12 @@
             {% for store in stores %}
                 <button hx-get="{% url 'dashboard:view_store' store_slug=store.slug %}" hx-target="#store-detail" hx-swap="innerHTML" class="btn btn-secondary">{{store}}</button>
             {% endfor %}
+
+            <!-- Code for detail view of first store on first dashboard loading-->
+
             {% else %}
             <h2>Add a store </h2>
         {% endif %}
     </div>
-
     <div class="store-detail" id="store-detail"></div>
 {% endblock %}
