@@ -25,5 +25,7 @@ urlpatterns = [
     path('add_store',Store.as_view(),name='add_store'),
     path('view_store/<slug:store_slug>/',Store.as_view(),name='view_store'),
     # Report 
-    path('create_report/<slug:store_slug>/',Report.as_view(),name='create_report')
+    path('create_report/<slug:store_slug>/',Report.as_view(),name='create_report'),
+    # Order
+    path('orders/<slug:store_slug>',Order.as_view(),name='orders')
 ]

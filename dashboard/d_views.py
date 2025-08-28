@@ -124,14 +124,13 @@ class Report(View):
                     credentials = SpapiCredential.objects.get(user=request.user,store=selected_store)
                     #credentials = get_spapi_credentials(request=request, store_slug=store_slug)
                     selected_report_type = permitted_amazon_report_types[selected_report_type]
-                    
-                    """
+
                     report_client = ReportsV2(
-                        credentials=dict(
-                            refresh_token = credentials.refresh_token,
-                            lwa_app_id = credentials.client_id,
-                            lwa_client_secret = credentials.client_secret
-                        ),
+                        credentials = {
+                            "refresh_token" : credentials.refresh_token,
+                            "lwa_app_id" : credentials.client_id,
+                            "lwa_client_secret" : credentials.client_secret
+                        },
                         marketplace=Marketplaces.IN
                     )
                     
@@ -139,10 +138,33 @@ class Report(View):
                         report_type = selected_report_type,
                         dataStartTime = iso_8601_converter(from_date)
                     )
-                    """
                     
                 else:
                     pass
-                return HttpResponse(credentials.client_id)
+                return HttpResponse(report_id)
+        except Exception as e:
+            print(e)
+            return HttpResponse(e)
+        
+from sp_api.api import Orders
+from datetime import datetime, timedelta
+
+class Order(View):
+    def post(self,request,store_slug):
+        try:
+            if request.method == "POST":
+                selected_store = StoreProfile.objects.get(slug=store_slug)
+                credentials = SpapiCredential.objects.get(user = request.user,store = selected_store)
+                order_client = Orders(
+                    credentials=dict(
+                        refresh_token = credentials.refresh_token,
+                        lwa_app_id = credentials.client_id,
+                        lwa_client_secret = credentials.client_secret
+                    ),
+                    marketplace=Marketplaces.IN
+                )
+                
+                orders = order_client.get_orders()
+                return HttpResponse(orders)
         except Exception as e:
             return HttpResponse(e)

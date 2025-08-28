@@ -16,12 +16,18 @@
         <!-- Request for order type -->
         {% if order_types %}
         <div class="order">
-            <h2>Orders</h2>   
-            <select>
-                {% for type in order_types %}
-                <option>{{type}}</option>
-                {% endfor %}
-            </select>
+            <h2>Orders</h2>  
+            <form method="POST" enctype="multipart/form-data" action="{% url 'dashboard:orders' store_slug=selected_store.slug %}">
+                {% csrf_token %}
+                <select name="order-type">
+                    {% for type in order_types %}
+                    <option>{{type}}</option>
+                    {% endfor %}
+                </select>
+                {% include 'date_range.html' %}
+                <button type='submit' class="btn btn-primary">Get orders</button>
+            </form> 
+            
         </div>
         {% endif %}
 
@@ -35,12 +41,7 @@
                     <option>{{type}}</option>
                     {% endfor %}
                 </select>
-
-                <div class="date-range" class="mb-3">
-                    <input type="date" name="from" class="form-control">
-                    <input type="date" name="to" class="form-control">
-                </div>
-
+                {% include 'date_range.html' %}
                 <button type='submit' class="btn btn-primary">Generate Report</button>
             </form>
         </div>

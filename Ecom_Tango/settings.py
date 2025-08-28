@@ -82,10 +82,7 @@ from utils import get_remote_db
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': 'db.sqlite3',
-        'CLIENT' : {
-            'host' : get_remote_db(json_file="creds.json")
-        }        
+        'NAME': 'db.sqlite3',     
     }
 }
 

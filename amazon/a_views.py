@@ -10,14 +10,14 @@ permitted_amazon_report_types = {
     "Return Report" : ReportType.GET_FLAT_FILE_RETURNS_DATA_BY_RETURN_DATE
 }
 
-
-def get_spapi_credentials(request,store_slug):
-    try:
-        amazon_store = StoreProfile.objects.get(user= request.user, slug = store_slug)
-        credential_instance = SpapiCredential.objects.get(request.user,store=amazon_store)
-        return credential_instance
-    except Exception as e:
-        print(e)
+class Spapi_Report:
+    def get_spapi_credentials(self,store_slug):
+        try:
+            amazon_store = StoreProfile.objects.get(slug = store_slug)
+            credential_instance = SpapiCredential.objects.get(store=amazon_store)
+            return credential_instance
+        except Exception as e:
+            print(e)
 
 
 # Create your views here.
