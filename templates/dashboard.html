@@ -5,18 +5,18 @@
     <div class="added-stores">
         {% for store in stores %}
         <a href="{% url 'dashboard:view_store' store_slug=store.slug %}">
-            <button class="btn btn-secondary">{{store}}</button>
+            <span type="text" class="storename">{{store}}</span>
         </a>
         {% endfor %}
     </div>
 
     <!-- Code for detail view of first store on first dashboard loading-->
+    <h5>Selected : {{selected_store.slug}}</h5>
     <div class="store-detail">
         <!-- Request for order type -->
         {% if order_types %}
         <div class="order">
-            <h2>Orders</h2>
-            <h5>Types</h5>    
+            <h2>Orders</h2>   
             <select>
                 {% for type in order_types %}
                 <option>{{type}}</option>
@@ -27,12 +27,22 @@
 
         {% if report_types %}
         <div class="report">
-            <h2>Reports</h2>
-            <select>
-            {% for type in report_types %}
-                <option>{{type}}</option>
-            {% endfor %}
-            </select>
+            <form method="POST" enctype='multipart/form-data' action="{% url 'dashboard:create_report' store_slug=selected_store.slug %}">
+                {% csrf_token %}
+                <h2>Reports</h2>
+                <select name="report-type">
+                    {% for type in report_types %}
+                    <option>{{type}}</option>
+                    {% endfor %}
+                </select>
+
+                <div class="date-range" class="mb-3">
+                    <input type="date" name="from" class="form-control">
+                    <input type="date" name="to" class="form-control">
+                </div>
+
+                <button type='submit' class="btn btn-primary">Generate Report</button>
+            </form>
         </div>
         {% endif %}
     </div>

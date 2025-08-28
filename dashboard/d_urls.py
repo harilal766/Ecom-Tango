@@ -21,6 +21,9 @@ app_name='dashboard'
 
 urlpatterns = [
     path('',home,name='home'),
+    # Store
     path('add_store',Store.as_view(),name='add_store'),
-    path('view_store/<slug:store_slug>',Store.as_view(),name='view_store')
+    path('view_store/<slug:store_slug>/',Store.as_view(),name='view_store'),
+    # Report 
+    path('create_report/<slug:store_slug>/',Report.as_view(),name='create_report')
 ]

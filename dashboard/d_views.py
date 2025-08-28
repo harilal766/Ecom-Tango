@@ -1,9 +1,31 @@
 from django.shortcuts import render, redirect
 from amazon.a_models import *
+from amazon.a_views import *
 from shopify.sh_models import *
 from dashboard.d_models import StoreProfile
 from datetime import datetime
 from django.views import View
+from django.http import HttpResponse
+
+from utils import iso_8601_converter
+
+class Dashboard:
+    def __init__(self):
+        self.supported_platforms = ("Amazon", "Shopify")
+        self.platform_specific_datas = {
+            "Amazon" : {
+                "order_types" : ("Pending","Unshipped", "Shipped"),
+                "report_types" : permitted_amazon_report_types
+            },
+            "Shopify" : {
+                "order_types" : ("unfulfilled","fulfilled"),
+                "report_types" : ("Order","Return")
+            }
+        }
+
+
+
+
 
 # Create your views here.
 def home(request):
@@ -15,38 +37,30 @@ def home(request):
         else:
             return render(request,'home.html')
     except Exception as e:
-        return render(request,"error.html", context={"error" : str(e)})
+        return HttpResponse(e)
 
-class Store(View):
+class Store(Dashboard, View):
     def get(self,request,store_slug):
         context = {
             "user" : request.user.username.capitalize(),
             "stores" : StoreProfile.objects.filter(user=request.user),
+            "selected_store" : None,
             "order_types" : None, "report_types" : None
         }
-        platform_specific_data = {
-            "Amazon" : {
-                "order_types" : ("Pending","Unshipped", "Shipped"),
-                "report_types" : ("Order","Settlement")
-            },
-            "Shopify" : {
-                "order_types" : ("unfulfilled","fulfilled"),
-                "report_types" : ("Order","Return")
-            }
-        }
+
         try:
             selected_store = StoreProfile.objects.get(user=request.user,slug=store_slug)
-            context["order_types"] = platform_specific_data[selected_store.platform]["order_types"]
-            context["report_types"] = platform_specific_data[selected_store.platform]["report_types"]
+            context["selected_store"] = selected_store
+            context["order_types"] = self.platform_specific_datas[selected_store.platform]["order_types"]
+            context["report_types"] = self.platform_specific_datas[selected_store.platform]["report_types"]
             
-            print(f"Platform : {selected_store.platform}, types : {context['order_types']}")
             return render(request,'dashboard.html',context = context)
         except Exception as e:
-            return render(request,"error.html",{"error":e})
+            return HttpResponse(e)
 
     def post(self,request):
         context = {
-            "platforms" : ("Amazon", "Shopify"),
+            "platforms" : self.supported_platforms,
             "error" : None
         }
         new_store = None
@@ -88,10 +102,41 @@ class Store(View):
             context['error'] = str(e)
             return render(request,"error.html", context=context, status=500)
     
-        
-    
-def get_report(request,store_slug):
-    try:
-        return render(request,"")
-    except Exception as e:
-        return render(request,"error.html",{"error":e})
+
+from sp_api.api import ReportsV2
+from sp_api.base import Marketplaces
+class Report(View):
+    def post(self,request,store_slug):
+        report_id = None
+        try:
+            if request.method == "POST":
+                selected_store = StoreProfile.objects.get(user=request.user,slug=store_slug)
+                
+                selected_report_type = request.POST.get("report-type")
+                from_date = request.POST.get("from"); to_date = request.POST.get("to")
+                
+                if selected_store.platform == "Amazon":
+                    credentials = SpapiCredential.objects.get(user=request.user,slug= store_slug)
+                    selected_report_type = permitted_amazon_report_types[selected_report_type]
+                    
+                    
+                    report_client = ReportsV2(
+                        credentials=dict(
+                            refresh_token = credentials.refresh_token,
+                            lwa_app_id = credentials.client_id,
+                            lwa_client_secret = credentials.client_secret
+                        ),
+                        marketplace=Marketplaces.IN
+                    )
+                    
+                    report_id = report_client.create_report(
+                        report_type = selected_report_type,
+                        dataStartTime = iso_8601_converter(from_date)
+                    )
+                    
+                else:
+                    pass
+                
+                return HttpResponse(report_id)
+        except Exception as e:
+            return HttpResponse(e)

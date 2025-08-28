@@ -9,3 +9,13 @@ def get_remote_db(json_file):
         print(e)
     else:
         return connection_string
+    
+    
+from datetime import datetime
+
+def iso_8601_converter(date_string):
+    try:
+        timestamp = datetime.strptime(date_string,"%Y-%m-%d")
+        return timestamp.isoformat()
+    except Exception as e:
+        print(e)
