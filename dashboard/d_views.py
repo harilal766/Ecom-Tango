@@ -5,39 +5,45 @@ from dashboard.d_models import StoreProfile
 from datetime import datetime
 from django.views import View
 
-
 # Create your views here.
 def home(request):
     try:
         if request.user.is_authenticated:
-            return dashboard(request)
+            first_store = StoreProfile.objects.filter(user = request.user)[0]
+            store_instance = Store()
+            return store_instance.get(request=request, store_slug=first_store.slug)
         else:
             return render(request,'home.html')
     except Exception as e:
         return render(request,"error.html", context={"error" : str(e)})
-        
-def dashboard(request):
-    context = {
-        "user" : None,
-        "stores" : None,
-        "selected_store" : None,
-        "store_detail" : None
-    }
-    try:
-        context["user"] = request.user.username.capitalize()
-        context["stores"] = StoreProfile.objects.filter(user=request.user)
-        first_store = context["stores"][0]
-        print(first_store)
-        return render(request,"dashboard.html",context=context)
-    except Exception as e:
-        return render(request,"error.html",{"error" : e})
-    
 
 class Store(View):
-    context = {
-        "store_detail" : None, "order_types" : None
-    }
-    
+    def get(self,request,store_slug):
+        context = {
+            "user" : request.user.username.capitalize(),
+            "stores" : StoreProfile.objects.filter(user=request.user),
+            "order_types" : None, "report_types" : None
+        }
+        platform_specific_data = {
+            "Amazon" : {
+                "order_types" : ("Pending","Unshipped", "Shipped"),
+                "report_types" : ("Order","Settlement")
+            },
+            "Shopify" : {
+                "order_types" : ("unfulfilled","fulfilled"),
+                "report_types" : ("Order","Return")
+            }
+        }
+        try:
+            selected_store = StoreProfile.objects.get(user=request.user,slug=store_slug)
+            context["order_types"] = platform_specific_data[selected_store.platform]["order_types"]
+            context["report_types"] = platform_specific_data[selected_store.platform]["report_types"]
+            
+            print(f"Platform : {selected_store.platform}, types : {context['order_types']}")
+            return render(request,'dashboard.html',context = context)
+        except Exception as e:
+            return render(request,"error.html",{"error":e})
+
     def post(self,request):
         context = {
             "platforms" : ("Amazon", "Shopify"),
@@ -82,28 +88,6 @@ class Store(View):
             context['error'] = str(e)
             return render(request,"error.html", context=context, status=500)
     
-    def get(self,request,store_slug):
-        platform_specific_data = {
-            "Amazon" : {
-                "order_types" : ("Pending","Unshipped", "Shipped")
-            },
-            "Shopify" : {
-                "order_types" : ("unfulfilled","fulfilled")
-            }
-        }
-        try:
-            if request.headers.get("HX-Request") == 'true':
-                store = StoreProfile.objects.get(user=request.user,slug=store_slug)
-                self.context["store_detail"] = store
-                
-                self.context["order_types"] = platform_specific_data[store.platform]["order_types"]
-            else:
-                pass
-            print(f"Platform : {store.platform}, types : {self.context['order_types']}")
-            return render(request,'store_detail.html',context=self.context)
-        except Exception as e:
-            return render(request,"error.html",{"error":e})
-        
         
     
 def get_report(request,store_slug):
