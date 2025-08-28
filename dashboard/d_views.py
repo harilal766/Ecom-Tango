@@ -1,11 +1,16 @@
 from django.shortcuts import render, redirect
+
+# Amazon
 from amazon.a_models import *
 from amazon.a_views import *
+# Shopify
 from shopify.sh_models import *
+# Dashboard
 from dashboard.d_models import StoreProfile
 from datetime import datetime
 from django.views import View
 from django.http import HttpResponse
+
 
 from utils import iso_8601_converter
 
@@ -116,10 +121,11 @@ class Report(View):
                 from_date = request.POST.get("from"); to_date = request.POST.get("to")
                 
                 if selected_store.platform == "Amazon":
-                    credentials = SpapiCredential.objects.get(user=request.user,slug= store_slug)
+                    credentials = SpapiCredential.objects.get(user=request.user,store=selected_store)
+                    #credentials = get_spapi_credentials(request=request, store_slug=store_slug)
                     selected_report_type = permitted_amazon_report_types[selected_report_type]
                     
-                    
+                    """
                     report_client = ReportsV2(
                         credentials=dict(
                             refresh_token = credentials.refresh_token,
@@ -133,10 +139,10 @@ class Report(View):
                         report_type = selected_report_type,
                         dataStartTime = iso_8601_converter(from_date)
                     )
+                    """
                     
                 else:
                     pass
-                
-                return HttpResponse(report_id)
+                return HttpResponse(credentials.client_id)
         except Exception as e:
             return HttpResponse(e)

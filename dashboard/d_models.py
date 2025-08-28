@@ -35,5 +35,5 @@ class BaseCredential(models.Model):
     store = models.ForeignKey(StoreProfile,on_delete=models.CASCADE)
     
     def __str__(self):
-        return f"{self.store.storename} - {self.store.platform}"
+        return f"{self.store.storename}, {self.store.platform}"
     
