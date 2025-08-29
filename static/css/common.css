@@ -31,8 +31,15 @@ a {
 .order,.report {
     border: 1px solid black;
     border-radius: 3px;
+    padding: 10px;
 }
+
 .store-detail{
+    display: flex;
+    gap: 5px;
+}
+
+.date-range{
     display: flex;
     gap: 5px;
 }

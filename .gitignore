@@ -1,4 +1,5 @@
 env/
 __pycache__/
 db.sqlite3
+test_data.json
 creds.json

@@ -2,10 +2,10 @@ from django.test import TestCase
 from django.contrib.auth.models import User
 import json
 
-with open("creds.json", "r") as creds_file:
+with open("test_data.json", "r") as creds_file:
     creds_json = json.load(creds_file)
     
-    user_creds = creds_json["test_user"]
+    user_creds = creds_json["user"]
 
 
 # Create your tests here.

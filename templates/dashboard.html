@@ -17,7 +17,7 @@
         {% if order_types %}
         <div class="order">
             <h2>Orders</h2>  
-            <form method="POST" enctype="multipart/form-data" action="{% url 'dashboard:orders' store_slug=selected_store.slug %}">
+            <form method="POST" class="form" enctype="multipart/form-data" action="{% url 'dashboard:orders' store_slug=selected_store.slug %}">
                 {% csrf_token %}
                 <select name="order-type">
                     {% for type in order_types %}
@@ -33,7 +33,7 @@
 
         {% if report_types %}
         <div class="report">
-            <form method="POST" enctype='multipart/form-data' action="{% url 'dashboard:create_report' store_slug=selected_store.slug %}">
+            <form method="POST" class="form" enctype='multipart/form-data' action="{% url 'dashboard:create_report' store_slug=selected_store.slug %}">
                 {% csrf_token %}
                 <h2>Reports</h2>
                 <select name="report-type">

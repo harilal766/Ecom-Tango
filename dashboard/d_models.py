@@ -18,7 +18,6 @@ class StoreProfile(models.Model):
             self.slug=slugify(self.storename)
         super(StoreProfile,self).save(*args,**kwargs)
 
-    
     def is_already_created(self,storename):
         try:
             added_stores = StoreProfile.objects.all()
@@ -35,5 +34,20 @@ class BaseCredential(models.Model):
     store = models.ForeignKey(StoreProfile,on_delete=models.CASCADE)
     
     def __str__(self):
-        return f"{self.store.storename}, {self.store.platform}"
+        return f"{self.store.storename} - {self.store.platform}"
+    
+    @classmethod
+    def get_credentials(cls,user, store_slug):
+        credentials = None
+        try:
+            selected_store = StoreProfile.objects.get(
+                user = user, slug=store_slug
+            )
+            credentials = cls.objects.get(
+                user=user, store = selected_store
+            )
+        except Exception as e:
+            print(e)
+        finally:
+            return credentials
     

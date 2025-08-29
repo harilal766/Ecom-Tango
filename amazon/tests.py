@@ -4,10 +4,7 @@ from .a_models import SpapiCredential
 
 # Create your tests here.
 
-class TestSpapi_Report(TestCase):
-    report_instance = Spapi_Report()
-    def test_get_spapi_credentials(self):
-        amazon_store = SpapiCredential.objects.all()
-
-        self.assertEqual(amazon_store.count(), 0)
-        
+class Test_SpapiCredential(TestCase):
+    def setUp(self):
+        #SpapiCredential.objects.create()
+        pass

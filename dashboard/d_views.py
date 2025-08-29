@@ -107,12 +107,9 @@ class Store(Dashboard, View):
             context['error'] = str(e)
             return render(request,"error.html", context=context, status=500)
     
-
-from sp_api.api import ReportsV2
-from sp_api.base import Marketplaces
-class Report(View):
+class StoreReport(View):
     def post(self,request,store_slug):
-        report_id = None
+        report_id = None; credentials = None
         try:
             if request.method == "POST":
                 selected_store = StoreProfile.objects.get(user=request.user,slug=store_slug)
@@ -121,27 +118,14 @@ class Report(View):
                 from_date = request.POST.get("from"); to_date = request.POST.get("to")
                 
                 if selected_store.platform == "Amazon":
-                    credentials = SpapiCredential.objects.get(user=request.user,store=selected_store)
-                    #credentials = get_spapi_credentials(request=request, store_slug=store_slug)
+                    credentials = SpapiCredential.get_credentials(
+                        user=request.user, store_slug=store_slug
+                    )
                     selected_report_type = permitted_amazon_report_types[selected_report_type]
 
-                    report_client = ReportsV2(
-                        credentials = {
-                            "refresh_token" : credentials.refresh_token,
-                            "lwa_app_id" : credentials.client_id,
-                            "lwa_client_secret" : credentials.client_secret
-                        },
-                        marketplace=Marketplaces.IN
-                    )
-                    
-                    report_id = report_client.create_report(
-                        report_type = selected_report_type,
-                        dataStartTime = iso_8601_converter(from_date)
-                    )
-                    
                 else:
                     pass
-                return HttpResponse(report_id)
+                return HttpResponse(credentials)
         except Exception as e:
             print(e)
             return HttpResponse(e)
