@@ -6,9 +6,9 @@ class TestStoreProfile(TestUser):
     def setUp(self):
         super(TestStoreProfile, self).setUp()
         self.store = StoreProfile.objects.create(
-            {"user" : self.test_user,**json_testdata["store"]}
+            **{"user" : self.test_user,**json_testdata["store"]}
         )
-        self.assertTrue(self.store.exists())
+        self.assertIsNotNone(self.store)
         
     def test_platform(self):
         self.assertIn(

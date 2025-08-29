@@ -15,7 +15,6 @@ with open("test_data.json", "r") as creds_file:
 class TestUser(TestCase):
     def setUp(self):
         self.test_user = User.objects.create_user(**json_testdata["user"])
-        print(self.test_user)
         self.assertIsNotNone(self.test_user)
         
     @skip("")
