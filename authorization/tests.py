@@ -4,14 +4,12 @@ import json
 
 with open("test_data.json", "r") as creds_file:
     creds_json = json.load(creds_file)
-    
     user_creds = creds_json["user"]
-
 
 # Create your tests here.
 class TestUser(TestCase):
-    def setup(self):
-        self.user_instance = User.objects.get(
+    def setUp(self):
+        self.user_instance = User.objects.create(
             username = user_creds["username"], password=user_creds["password"]
         )
         
