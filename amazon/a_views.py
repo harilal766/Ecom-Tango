@@ -18,6 +18,14 @@ class SpapiBase:
             user=user, store_slug=selected_store.slug
         )
         
+class SpapiOrder(SpapiBase):
+    def orders(self):
+        try:
+            pass
+        except Exception as e:
+            print(e)
+        
+        
 class SpapiReport(SpapiBase):
     def get_report_id(self):
         try:
