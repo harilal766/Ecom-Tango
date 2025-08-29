@@ -10,16 +10,21 @@ logger.level = logging.DEBUG
 with open("test_data.json", "r") as creds_file:
     test_data_json = json.load(creds_file)
     
-    test_user_creds = test_data_json["user"]
-    test_username = test_user_creds["username"]
-    test_password = test_user_creds["password"]
+    testuser_creds = test_data_json["user"]
 
 # Create your tests here.
 class TestUser(TestCase):
     def setUpUser(self):
-        self.test_user = User.objects.create(**test_user_creds)
+        self.test_user = User.objects.create_user(**testuser_creds)
+        self.assertTrue(self.test_user.exists())
         
-    @skip("unknown issue")
-    def test_get_user(self):
-        test_user = User.objects.get(username=test_username)
-        self.assertEqual(test_user.username, test_username)
+    @skip("")
+    def test_signin(self):
+        self.client.login(**testuser_creds)
+        response = self.client.get("login")
+        self.assertEqual(response.status_code, 200)
+    
+    @skip("")
+    def test_signout(self):
+        pass
+    
