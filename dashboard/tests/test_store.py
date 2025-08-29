@@ -1,11 +1,16 @@
-from django.test import TestCase
 from ..d_models import StoreProfile
-from authorization.tests.test_user import TestUser, test_data_json
+from authorization.tests.test_user import TestUser, json_testdata
 # Create your tests here.
 
 class TestStoreProfile(TestUser):
-    def setUpStore(self):
-        self.test_store = StoreProfile.objects.create(
-            {"user" : self.test_user,**test_data_json["store"]}
+    def setUp(self):
+        super(TestStoreProfile, self).setUp()
+        self.store = StoreProfile.objects.create(
+            {"user" : self.test_user,**json_testdata["store"]}
         )
-        self.assertTrue(self.test_store.exists())
+        self.assertTrue(self.store.exists())
+        
+    def test_platform(self):
+        self.assertIn(
+            self.store.platform, ["Amazon","Shopify"]
+        )

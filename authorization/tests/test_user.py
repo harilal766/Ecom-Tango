@@ -3,25 +3,27 @@ from django.contrib.auth.models import User
 from unittest import skip
 import json, logging
 
+from django.test import Client
+
 logger = logging.getLogger()
 logger.level = logging.DEBUG
 
-
 with open("test_data.json", "r") as creds_file:
-    test_data_json = json.load(creds_file)
-    
-    testuser_creds = test_data_json["user"]
+    json_testdata = json.load(creds_file)
 
 # Create your tests here.
 class TestUser(TestCase):
-    def setUpUser(self):
-        self.test_user = User.objects.create_user(**testuser_creds)
-        self.assertTrue(self.test_user.exists())
+    def setUp(self):
+        self.test_user = User.objects.create_user(**json_testdata["user"])
+        print(self.test_user)
+        self.assertIsNotNone(self.test_user)
         
     @skip("")
     def test_signin(self):
-        self.client.login(**testuser_creds)
-        response = self.client.get("login")
+        client = Client()
+        response = client.get(
+            "login", json_testdata["user"]
+        )
         self.assertEqual(response.status_code, 200)
     
     @skip("")
