@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block base %}
+    <div class="form">
+        <h1>Add Store</h1>
+        <form id="store-form" method="POST" enctype="multipart/form-data" action="{% url 'dashboard:add_store' %}">
+            {% csrf_token %}
+            <div class="leftright">
+                <h4>Select a Platform</h4>
+                <select class="form-select" id="selector" name="platform">
+                    <option>Select a Platform</option>
+                    {% for platform in platforms %}
+                    <option value="{{platform}}">{{platform}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <br>
+            <div id="credentials">
+
+            </div>
+
+            <div id="submission">
+
+            </div>
+        </form>
+    </div>
+{% endblock %}

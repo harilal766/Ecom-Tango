@@ -1,0 +1,25 @@
+{% load static %}
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ecom Tango</title>
+
+    {% include 'connections.html' %}
+
+
+
+</head>
+<body>
+    <!-- For other pages -->
+    <div class="leftright">
+        {% include 'sidebar.html' %}
+        <div class="content">
+            {% include 'navbar.html' %}
+            {% block base %}
+            {% endblock %} 
+        </div>
+    </div>
+</body>
+</html>

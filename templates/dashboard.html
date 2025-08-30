@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% block base %}
+    <h1>Dashboard</h1>
+    {% if stores %}
+    <div class="added-stores">
+        {% for store in stores %}
+        <a href="{% url 'dashboard:view_store' store_slug=store.slug %}">
+            <span type="text" class="storename">{{store}}</span>
+        </a>
+        {% endfor %}
+    </div>
+
+    <!-- Code for detail view of first store on first dashboard loading-->
+    <h5>Selected : {{selected_store.slug}}</h5>
+    <div class="store-detail">
+        <!-- Request for order type -->
+        {% if order_types %}
+        <div class="order">
+            <h2>Orders</h2>  
+            <form method="POST" class="form" enctype="multipart/form-data" action="{% url 'dashboard:orders' store_slug=selected_store.slug %}">
+                {% csrf_token %}
+                <select name="order-type">
+                    {% for type in order_types %}
+                    <option>{{type}}</option>
+                    {% endfor %}
+                </select>
+                {% include 'date_range.html' %}
+                <button type='submit' class="btn btn-primary">Get orders</button>
+            </form> 
+            
+        </div>
+        {% endif %}
+
+        {% if report_types %}
+        <div class="report">
+            <form method="POST" class="form" enctype='multipart/form-data' action="{% url 'dashboard:create_report' store_slug=selected_store.slug %}">
+                {% csrf_token %}
+                <h2>Reports</h2>
+                <select name="report-type">
+                    {% for type in report_types %}
+                    <option>{{type}}</option>
+                    {% endfor %}
+                </select>
+                {% include 'date_range.html' %}
+                <button type='submit' class="btn btn-primary">Generate Report</button>
+            </form>
+        </div>
+        {% endif %}
+    </div>
+
+    {% else %} <!-- No added stores -->
+        <h2>Add a store </h2>
+    {% endif %}
+{% endblock %}

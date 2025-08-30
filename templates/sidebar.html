@@ -1,0 +1,28 @@
+<div class="sidebar left">
+    <div class="title">
+        <h3 class="site-name">
+            <a href="{% url 'dashboard:home' %}">Ecom-Tango</a>
+        </h3>    
+    </div>
+    
+    <div class="nav-list">
+        <h5>Auth</h5>
+        <ul>
+            <li><a href="{% url 'authorization:logout'%}">Logout</a></li>
+        </ul>
+    </div>
+
+    <div class="nav-list">
+        <h5>Stores</h5>
+    </div>
+
+    <div class="nav-list">
+        <h5>Utilities</h5>
+        <ul>
+            <li><a href="{% url 'dashboard:add_store' %}">Add Store</a></li>
+        </ul>
+        
+    </div>
+
+
+</div>

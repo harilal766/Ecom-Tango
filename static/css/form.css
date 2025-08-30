@@ -1,0 +1,16 @@
+
+.form{
+    width: 400px;
+    padding: 5px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.form-select{
+    width: 120px;
+}
+
+#credentials{
+    width: 600px;
+}
