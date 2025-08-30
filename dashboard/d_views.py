@@ -1,8 +1,8 @@
 from django.shortcuts import render, redirect
 
 # Amazon
-from amazon.a_models import *
-from amazon.a_views import *
+from amazon.amzn_models import *
+from amazon.amzn_views import *
 # Shopify
 from shopify.sh_models import *
 # Dashboard
@@ -107,9 +107,12 @@ class Store(Dashboard, View):
             context['error'] = str(e)
             return render(request,"error.html", context=context, status=500)
     
+    
+from amazon.amzn_views import SpapiReportClient
 class StoreReport(View):
     def post(self,request,store_slug):
         report_id = None; credentials = None
+        report_client = None
         try:
             if request.method == "POST":
                 selected_store = StoreProfile.objects.get(user=request.user,slug=store_slug)
@@ -122,10 +125,21 @@ class StoreReport(View):
                         user=request.user, store_slug=store_slug
                     )
                     selected_report_type = permitted_amazon_report_types[selected_report_type]
-
+                    report_client = ReportsV2(
+                        credentials= {
+                        "refresh_token" : credentials.refresh_token,
+                        "lwa_app_id" : credentials.client_id,
+                        "lwa_client_secret" : credentials.client_secret    
+                        },
+                        marketplace=Marketplaces.IN
+                    )
+                    report_id = report_client.create_report(
+                        reportType = ReportType.GET_FLAT_FILE_ALL_ORDERS_DATA_BY_ORDER_DATE_GENERAL,
+                        dataStartTime = iso_8601_timestamp(7)
+                    )
                 else:
                     pass
-                return HttpResponse(credentials)
+                return HttpResponse(report_id.payload.get("reportId"))
         except Exception as e:
             print(e)
             return HttpResponse(e)
