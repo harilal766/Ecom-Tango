@@ -77,7 +77,6 @@ WSGI_APPLICATION = 'Ecom_Tango.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-from utils import get_remote_db
 
 DATABASES = {
     'default': {

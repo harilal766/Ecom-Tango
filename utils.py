@@ -1,16 +1,7 @@
-import sqlitecloud, json
+import json
+from datetime import datetime, timedelta
 
-def get_remote_db(json_file):
-    try:
-        with open(json_file, "r") as creds:
-            creds = json.load(creds)
-            connection_string = creds["db_connection"]
-    except Exception as e:
-        print(e)
-    else:
-        return connection_string
-    
-    
+
 from datetime import datetime
 
 def iso_8601_converter(date_string):
@@ -19,3 +10,8 @@ def iso_8601_converter(date_string):
         return timestamp.isoformat()
     except Exception as e:
         print(e)
+        
+def iso_8601_timestamp(days):
+    return (
+        datetime.now()- timedelta(days=days)
+    ).isoformat()
