@@ -1,7 +1,7 @@
 from django.shortcuts import render
 
 from dashboard.d_models import StoreProfile
-from .amzn_models import SpapiCredential
+from .models import SpapiCredential
 
 from sp_api.api import ReportsV2
 from sp_api.base.reportTypes import ReportType

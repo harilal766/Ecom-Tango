@@ -1,8 +1,8 @@
 from django.shortcuts import render, redirect
 
 # Amazon
-from amazon.amzn_models import *
-from amazon.amzn_views import *
+from amazon.models import *
+from amazon.views import *
 # Shopify
 from shopify.sh_models import *
 # Dashboard
@@ -104,7 +104,7 @@ class Store(Dashboard, View):
             return render(request,"error.html", context=context, status=500)
     
     
-from amazon.amzn_views import SpapiReportClient
+from amazon.views import SpapiReportClient
 class StoreReport(View):
     def post(self,request,store_slug):
         report_id = None; credentials = None
