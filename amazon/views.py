@@ -18,36 +18,35 @@ permitted_amazon_report_types = {
 
 # Create your views here.
 class SpapiBase:
-    def __init__(
-        self,user, selected_store,starting_timestamp, ending_timestamp
-    ):
-        self.credentials = SpapiCredential.get_credentials(
-            user=user, store_slug=selected_store.slug
-        )
-        self.starting_timestamp = starting_timestamp,
-        self.ending_timestamp = ending_timestamp
-        
+    def __init__(self,credentials):
+        self.credentials = credentials
+
 class SpapiOrderClient(SpapiBase):
     def orders(self):
         try:
             pass
         except Exception as e:
             print(e)
-        
-        
+            
+            
 class SpapiReportClient(SpapiBase):
-    def __init__(self,report_type):
-        super().__init__()
+    def __init__(self,credentials, report_type, starting_date:str, ending_date:str):
+        super().__init__(credentials=credentials)
         self.client = ReportsV2(
             credentials= self.credentials,
             marketplace=Marketplaces.IN
         )
         self.report_type = report_type
-        self.dataStartTime = iso_8601_timestamp(0)
+        self.from_date = iso_8601_converter(date_string=starting_date)
+        self.to_date = iso_8601_converter(date_string=ending_date)
     
-    def get_report_id(self):
+    def get_report_id(self,report_type):
         try:
-            pass
+            report_details = self.client.create_report(
+                ReportType = report_type,
+                dataStartTime = self.from_date
+            )
+            return report_details
         except Exception as e:
             print(e)
             

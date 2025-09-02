@@ -107,8 +107,7 @@ class Store(Dashboard, View):
 from amazon.views import SpapiReportClient
 class StoreReport(View):
     def post(self,request,store_slug):
-        report_id = None; credentials = None
-        report_client = None
+        report_inst = None; report_df = None
         try:
             if request.method == "POST":
                 selected_store = StoreProfile.objects.get(user=request.user,slug=store_slug)
@@ -117,31 +116,17 @@ class StoreReport(View):
                 from_date = request.POST.get("from"); to_date = request.POST.get("to")
                 
                 if selected_store.platform == "Amazon":
-                    credentials = SpapiCredential.get_credentials(
-                        user=request.user, store_slug=store_slug
+                    spapi_cred_inst = SpapiCredential.objects.get(user = request.user, store = selected_store)
+                    report_inst = SpapiReportClient(
+                        credentials=spapi_cred_inst.get_credentials(),
+                        starting_date = from_date, ending_date = to_date
                     )
                     selected_report_type = permitted_amazon_report_types[selected_report_type]
-                    report_client = ReportsV2(
-                        credentials= {
-                        "refresh_token" : credentials.refresh_token,
-                        "lwa_app_id" : credentials.client_id,
-                        "lwa_client_secret" : credentials.client_secret    
-                        },
-                        marketplace=Marketplaces.IN
-                    )
-                    """
-                    report_id = report_client.create_report(
-                        reportType = ReportType.GET_FLAT_FILE_ALL_ORDERS_DATA_BY_ORDER_DATE_GENERAL,
-                        dataStartTime = iso_8601_timestamp(7)
-                    )
-                    report_id = report_id.payload.get("reportId")
-                    """
-                    report_id = '53523020333'
-                    report_doc_id = report_client.get_report(reportId=report_id)
-                    print(report_doc_id.payload["processingStatus"])
-                else:
+                    report_df = 0
+                elif selected_store.platform == "Shopify":
                     pass
-                return HttpResponse(report_id)
+                
+                return HttpResponse(report_df)
         except Exception as e:
             print(e)
             return HttpResponse(e)
