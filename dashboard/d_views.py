@@ -11,7 +11,6 @@ from datetime import datetime
 from django.views import View
 from django.http import HttpResponse
 
-
 from utils import iso_8601_converter
 
 class Dashboard:
@@ -27,9 +26,6 @@ class Dashboard:
                 "report_types" : ("Order","Return")
             }
         }
-
-
-
 
 
 # Create your views here.
@@ -133,13 +129,19 @@ class StoreReport(View):
                         },
                         marketplace=Marketplaces.IN
                     )
+                    """
                     report_id = report_client.create_report(
                         reportType = ReportType.GET_FLAT_FILE_ALL_ORDERS_DATA_BY_ORDER_DATE_GENERAL,
                         dataStartTime = iso_8601_timestamp(7)
                     )
+                    report_id = report_id.payload.get("reportId")
+                    """
+                    report_id = '53523020333'
+                    report_doc_id = report_client.get_report(reportId=report_id)
+                    print(report_doc_id.payload["processingStatus"])
                 else:
                     pass
-                return HttpResponse(report_id.payload.get("reportId"))
+                return HttpResponse(report_id)
         except Exception as e:
             print(e)
             return HttpResponse(e)

@@ -50,3 +50,9 @@ class SpapiReportClient(SpapiBase):
             pass
         except Exception as e:
             print(e)
+            
+    def get_report_df(self):
+        try:
+            pass
+        except Exception as e:
+            print(e)

@@ -3,7 +3,7 @@ from django.test import TestCase
 from authorization.tests.test_user import json_testdata, TestUser
 from amazon.amzn_models import SpapiCredential
 
-from dashboard.tests.test_store import TestStoreProfile
+from dashboard.tests.test_models import TestStoreProfile
 from sp_api.api import Orders, ReportsV2
 from sp_api.base.marketplaces import Marketplaces
 from sp_api.base.reportTypes import ReportType
