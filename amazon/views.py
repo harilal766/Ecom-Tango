@@ -38,11 +38,11 @@ class SpapiReportClient(SpapiBase):
     def __init__(self,credentials:dict,Api_Model):
         super().__init__(credentials=credentials,Api_Model=Api_Model)
     
-    def get_report_id(self,report_type):
+    def get_report_id(self,report_type,starting_date):
         try:
             report_details = self.client.create_report(
                 ReportType = report_type,
-                dataStartTime = self.starting_date
+                dataStartTime = starting_date
             )
             return report_details
         except Exception as e:

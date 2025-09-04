@@ -12,6 +12,7 @@ from django.views import View
 from django.http import HttpResponse
 
 from utils import iso_8601_converter
+import time
 
 class Dashboard:
     def __init__(self):
@@ -117,15 +118,30 @@ class StoreReport(View):
                 
                 if selected_store.platform == "Amazon":
                     spapi_inst = SpapiCredential.objects.get(user = request.user, store = selected_store)
-                    report_inst = SpapiReportClient(
+                    
+                    report_client = ReportsV2(
                         credentials=spapi_inst.get_credentials(),
-                        starting_date = from_date,ending_date=to_date
+                        marketplace=Marketplaces.IN
                     )
-                    selected_report_type = permitted_amazon_report_types[selected_report_type]
-                    report_df = report_inst.get_report_id(
-                        report_type=selected_report_type
-                    )
-                    print(report_df)
+                    report_id = report_client.create_report(
+                        reportType = permitted_amazon_report_types[selected_report_type],
+                        dataStartTime = iso_8601_converter(from_date),
+                        dataEndTime = iso_8601_converter(to_date)
+                    ).payload.get("reportId")
+                    while True:
+                        report_details = report_client.get_report(reportId=report_id)
+                        report_status = report_details.payload.get("processingStatus")
+                        time.sleep(10)
+                        
+                        print(report_status)
+                        
+                        if report_status == "DONE":
+                            report_df = report_details.payload.get('reportDocumentId')
+                            break
+                        elif report_status == 'CANCELLED':
+                            report_df = "cancel"
+                            break
+
                 elif selected_store.platform == "Shopify":
                     pass
                 
