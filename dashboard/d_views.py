@@ -9,10 +9,12 @@ from shopify.sh_models import *
 from dashboard.d_models import StoreProfile
 from datetime import datetime
 from django.views import View
-from django.http import HttpResponse
+from django.http import HttpResponse, FileResponse
 
 from utils import iso_8601_converter
-import time
+import time,requests
+import pandas as pd
+from io import StringIO, BytesIO
 
 class Dashboard:
     def __init__(self):
@@ -136,7 +138,17 @@ class StoreReport(View):
                         print(report_status)
                         
                         if report_status == "DONE":
-                            report_df = report_details.payload.get('reportDocumentId')
+                            doc_id = report_details.payload.get('reportDocumentId')
+                            report_df = doc_id
+                            report_url = report_client.get_report_document(
+                                reportDocumentId=doc_id
+                            ).payload.get('url')
+                            
+                            report_df = pd.read_csv(
+                                StringIO(requests.get(report_url).text),
+                                sep = '\t'
+                            )
+                            print(report_df)
                             break
                         elif report_status == 'CANCELLED':
                             report_df = "cancel"
@@ -145,7 +157,16 @@ class StoreReport(View):
                 elif selected_store.platform == "Shopify":
                     pass
                 
-                return HttpResponse(report_df)
+                
+                # save df as csv file
+                buffer = StringIO()
+                report_df.to_csv(buffer, index=False)
+                buffer.seek(0)
+                response = HttpResponse(
+                    buffer, content_type = 'text/csv' 
+                )
+                response['Content-Disposition'] = f'attachment; filename = {"data.csv"}'
+                return response
         except Exception as e:
             print(e)
             return HttpResponse(e)
