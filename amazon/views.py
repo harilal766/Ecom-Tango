@@ -12,7 +12,8 @@ from utils import iso_8601_converter, iso_8601_timestamp
 
 permitted_amazon_report_types = {
     "Order Report" : ReportType.GET_FLAT_FILE_ALL_ORDERS_DATA_BY_ORDER_DATE_GENERAL,
-    "Return Report" : ReportType.GET_FLAT_FILE_RETURNS_DATA_BY_RETURN_DATE
+    "Return Report" : ReportType.GET_FLAT_FILE_RETURNS_DATA_BY_RETURN_DATE,
+    "Settlement Report" : ReportType.GET_V2_SETTLEMENT_REPORT_DATA_FLAT_FILE
 }
 
 permitted_amazon_order_types = [
@@ -31,8 +32,8 @@ class SpapiBase:
         )
 
 class SpapiOrderClient(SpapiBase):
-    def __init__(self,credentials:dict,Api_Model):
-        super().__init__(credentials=credentials,Api_Model=Api_Model)
+    def __init__(self,credentials:dict):
+        super().__init__(credentials=credentials,Api_Model=Orders)
 
 class SpapiReportClient(SpapiBase):
     def __init__(self,credentials:dict,Api_Model):

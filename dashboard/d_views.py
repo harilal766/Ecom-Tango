@@ -14,6 +14,7 @@ from django.http import HttpResponse, FileResponse
 from utils import iso_8601_converter
 import time,requests
 import pandas as pd
+import openpyxl
 from io import StringIO, BytesIO
 
 class Dashboard:
@@ -159,13 +160,14 @@ class StoreReport(View):
                 
                 
                 # save df as csv file
-                buffer = StringIO()
-                report_df.to_csv(buffer, index=False)
+                buffer = BytesIO()
+                report_df.to_excel(buffer,sheet_name='Report', index=False, engine = 'openpyxl')
                 buffer.seek(0)
                 response = HttpResponse(
-                    buffer, content_type = 'text/csv' 
+                    buffer, 
+                    content_type = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
                 )
-                response['Content-Disposition'] = f'attachment; filename = {selected_report_type} : {from_date} - {to_date}.csv'
+                response['Content-Disposition'] = f'attachment; filename = {selected_report_type} : {from_date} - {to_date}.xlsx'
                 return response
         except Exception as e:
             print(e)
