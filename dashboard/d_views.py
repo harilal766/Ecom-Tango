@@ -148,7 +148,7 @@ class StoreReport(View):
                                 StringIO(requests.get(report_url).text),
                                 sep = '\t'
                             )
-                            print(report_df)
+
                             break
                         elif report_status == 'CANCELLED':
                             report_df = "cancel"
@@ -165,7 +165,7 @@ class StoreReport(View):
                 response = HttpResponse(
                     buffer, content_type = 'text/csv' 
                 )
-                response['Content-Disposition'] = f'attachment; filename = {"data.csv"}'
+                response['Content-Disposition'] = f'attachment; filename = {selected_report_type} : {from_date} - {to_date}.csv'
                 return response
         except Exception as e:
             print(e)
