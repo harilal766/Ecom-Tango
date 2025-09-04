@@ -13,17 +13,17 @@ from utils import iso_8601_timestamp
 class TestSpapiCredential(TestStoreProfile):
     def setUp(self):
         super(TestSpapiCredential,self).setUp()
-        self.spapi_cred_inst = SpapiCredential.objects.create(
+        self.spapi_inst = SpapiCredential.objects.create(
             **{
                 "user" : self.test_user, "store" : self.store,
                **json_testdata["amazon"]
             }
         )
-        self.assertIsNotNone(self.spapi_cred_inst)
-        self.assertIsNotNone(self.spapi_cred_inst.get_credentials())
+        self.assertIsNotNone(self.spapi_inst)
+        self.assertIsNotNone(self.spapi_inst.get_credentials())
         
     def test_are_credentials_verified(self):
         self.assertEqual(
-            self.spapi_cred_inst.are_credentials_verified(),
+            self.spapi_inst.are_credentials_verified(),
             True
         )

@@ -116,13 +116,16 @@ class StoreReport(View):
                 from_date = request.POST.get("from"); to_date = request.POST.get("to")
                 
                 if selected_store.platform == "Amazon":
-                    spapi_cred_inst = SpapiCredential.objects.get(user = request.user, store = selected_store)
+                    spapi_inst = SpapiCredential.objects.get(user = request.user, store = selected_store)
                     report_inst = SpapiReportClient(
-                        credentials=spapi_cred_inst.get_credentials(),
-                        starting_date = from_date, ending_date = to_date
+                        credentials=spapi_inst.get_credentials(),
+                        starting_date = from_date,ending_date=to_date
                     )
                     selected_report_type = permitted_amazon_report_types[selected_report_type]
-                    report_df = 0
+                    report_df = report_inst.get_report_id(
+                        report_type=selected_report_type
+                    )
+                    print(report_df)
                 elif selected_store.platform == "Shopify":
                     pass
                 
