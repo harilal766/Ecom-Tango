@@ -1,10 +1,7 @@
 import json
 from datetime import datetime, timedelta
 
-
-from datetime import datetime
-
-def iso_8601_converter(date_string):
+def iso_8601_converter(date_string:str):
     try:
         timestamp = datetime.strptime(date_string,"%Y-%m-%d")
         return timestamp.isoformat()

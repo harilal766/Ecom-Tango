@@ -1,18 +1,20 @@
 from django.shortcuts import render, redirect
 
 # Amazon
-from amazon.amzn_models import *
-from amazon.amzn_views import *
+from amazon.models import *
+from amazon.views import *
 # Shopify
 from shopify.sh_models import *
 # Dashboard
 from dashboard.d_models import StoreProfile
 from datetime import datetime
 from django.views import View
-from django.http import HttpResponse
-
+from django.http import HttpResponse, FileResponse
 
 from utils import iso_8601_converter
+import time,requests
+import pandas as pd
+from io import StringIO, BytesIO
 
 class Dashboard:
     def __init__(self):
@@ -27,9 +29,6 @@ class Dashboard:
                 "report_types" : ("Order","Return")
             }
         }
-
-
-
 
 
 # Create your views here.
@@ -108,11 +107,10 @@ class Store(Dashboard, View):
             return render(request,"error.html", context=context, status=500)
     
     
-from amazon.amzn_views import SpapiReportClient
+from amazon.views import SpapiReportClient
 class StoreReport(View):
     def post(self,request,store_slug):
-        report_id = None; credentials = None
-        report_client = None
+        report_inst = None; report_df = None
         try:
             if request.method == "POST":
                 selected_store = StoreProfile.objects.get(user=request.user,slug=store_slug)
@@ -121,25 +119,54 @@ class StoreReport(View):
                 from_date = request.POST.get("from"); to_date = request.POST.get("to")
                 
                 if selected_store.platform == "Amazon":
-                    credentials = SpapiCredential.get_credentials(
-                        user=request.user, store_slug=store_slug
-                    )
-                    selected_report_type = permitted_amazon_report_types[selected_report_type]
+                    spapi_inst = SpapiCredential.objects.get(user = request.user, store = selected_store)
+                    
                     report_client = ReportsV2(
-                        credentials= {
-                        "refresh_token" : credentials.refresh_token,
-                        "lwa_app_id" : credentials.client_id,
-                        "lwa_client_secret" : credentials.client_secret    
-                        },
+                        credentials=spapi_inst.get_credentials(),
                         marketplace=Marketplaces.IN
                     )
                     report_id = report_client.create_report(
-                        reportType = ReportType.GET_FLAT_FILE_ALL_ORDERS_DATA_BY_ORDER_DATE_GENERAL,
-                        dataStartTime = iso_8601_timestamp(7)
-                    )
-                else:
+                        reportType = permitted_amazon_report_types[selected_report_type],
+                        dataStartTime = iso_8601_converter(from_date),
+                        dataEndTime = iso_8601_converter(to_date)
+                    ).payload.get("reportId")
+                    while True:
+                        report_details = report_client.get_report(reportId=report_id)
+                        report_status = report_details.payload.get("processingStatus")
+                        time.sleep(10)
+                        
+                        print(report_status)
+                        
+                        if report_status == "DONE":
+                            doc_id = report_details.payload.get('reportDocumentId')
+                            report_df = doc_id
+                            report_url = report_client.get_report_document(
+                                reportDocumentId=doc_id
+                            ).payload.get('url')
+                            
+                            report_df = pd.read_csv(
+                                StringIO(requests.get(report_url).text),
+                                sep = '\t'
+                            )
+
+                            break
+                        elif report_status == 'CANCELLED':
+                            report_df = "cancel"
+                            break
+
+                elif selected_store.platform == "Shopify":
                     pass
-                return HttpResponse(report_id.payload.get("reportId"))
+                
+                
+                # save df as csv file
+                buffer = StringIO()
+                report_df.to_csv(buffer, index=False)
+                buffer.seek(0)
+                response = HttpResponse(
+                    buffer, content_type = 'text/csv' 
+                )
+                response['Content-Disposition'] = f'attachment; filename = {selected_report_type} : {from_date} - {to_date}.csv'
+                return response
         except Exception as e:
             print(e)
             return HttpResponse(e)
