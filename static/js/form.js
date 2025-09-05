@@ -52,12 +52,18 @@ const reportForm = document.getElementById("reportForm");
 const formTitle = document.getElementById("formTitle");
 const submitButton = document.getElementById("submitButton");
 
-selectedReportType.addEventListener("change",()=>{
+function arrangeDateRange(){
     if (selectedReportType.value !== "Settlement Report"){
-    reportForm.insertBefore(dateRangeHtml,submitButton);
+        reportForm.insertBefore(dateRangeHtml,submitButton);
     }
     else if (selectedReportType.value === "Settlement Report"){
         reportForm.removeChild(dateRangeHtml);
     }
+}
+selectedReportType.addEventListener("change",()=>{
+    arrangeDateRange();
+});
+document.addEventListener("DOMContentLoaded",()=>{
+    arrangeDateRange();
 });
 
