@@ -8,7 +8,10 @@ from sp_api.base.reportTypes import ReportType
 from sp_api.base.marketplaces import Marketplaces
 
 from utils import iso_8601_converter, iso_8601_timestamp
+import pandas as pd 
+import time, requests
 
+from io import StringIO, BytesIO
 
 permitted_amazon_report_types = {
     "Order Report" : ReportType.GET_FLAT_FILE_ALL_ORDERS_DATA_BY_ORDER_DATE_GENERAL,
@@ -42,19 +45,46 @@ class SpapiReportClient(SpapiBase):
             marketplace=Marketplaces.IN
         )
     
-    def create_report_id(self,reportType,dataStartTime):
+    def create_report_id(self,reportType,dataStartTime,dataEndTime):
         id = None
         try:
             report_details = self.api_model.create_report(
                 reportType = reportType,
-                dataStartTime = dataStartTime
+                dataStartTime = dataStartTime,
+                dataEndTime = dataEndTime 
             )
-            return report_details
+            if report_details:
+                id = report_details.payload.get("reportId")
         except Exception as e:
             print(e)
+        else:
+            return id
             
-    def get_report_df(self):
+    def get_report_df(self,reportId):
+        df = None
         try:
-            pass
+            while True:
+                report_details = self.api_model.get_report(reportId=reportId)
+                report_status = report_details.payload.get("processingStatus")
+                time.sleep(10)
+                        
+                print(report_status)
+                        
+                if report_status == "DONE":
+                    doc_id = report_details.payload.get('reportDocumentId')
+                    report_url = self.api_model.get_report_document(
+                        reportDocumentId=doc_id
+                    ).payload.get('url')
+                            
+                    df = pd.read_csv(
+                        StringIO(requests.get(report_url).text),
+                        sep = '\t'
+                    )
+
+                    break
+                elif report_status == 'CANCELLED':
+                    df = "cancel"
+                    break
         except Exception as e:
             print(e)
+        return df 

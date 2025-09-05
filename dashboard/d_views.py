@@ -122,39 +122,19 @@ class StoreReport(View):
                 
                 if selected_store.platform == "Amazon":
                     spapi_inst = SpapiCredential.objects.get(user = request.user, store = selected_store)
+                    report_client = SpapiReportClient(credentials=spapi_inst.get_credentials())
                     
-                    report_client = ReportsV2(
-                        credentials=spapi_inst.get_credentials(),
-                        marketplace=Marketplaces.IN
-                    )
-                    report_id = report_client.create_report(
+                    
+                    report_id = report_client.create_report_id(
                         reportType = permitted_amazon_report_types[selected_report_type],
                         dataStartTime = iso_8601_converter(from_date),
                         dataEndTime = iso_8601_converter(to_date)
-                    ).payload.get("reportId")
-                    while True:
-                        report_details = report_client.get_report(reportId=report_id)
-                        report_status = report_details.payload.get("processingStatus")
-                        time.sleep(10)
-                        
-                        print(report_status)
-                        
-                        if report_status == "DONE":
-                            doc_id = report_details.payload.get('reportDocumentId')
-                            report_df = doc_id
-                            report_url = report_client.get_report_document(
-                                reportDocumentId=doc_id
-                            ).payload.get('url')
-                            
-                            report_df = pd.read_csv(
-                                StringIO(requests.get(report_url).text),
-                                sep = '\t'
-                            )
-
-                            break
-                        elif report_status == 'CANCELLED':
-                            report_df = "cancel"
-                            break
+                    )
+                    
+                    report_df = report_client.get_report_df(
+                        reportId=report_id
+                    )
+                    
 
                 elif selected_store.platform == "Shopify":
                     pass

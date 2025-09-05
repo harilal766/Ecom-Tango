@@ -30,4 +30,3 @@ class Test_SpapiReportClient(Test_SpapiBase):
             dataStartTime=iso_8601_timestamp(5)
         )
         print(id)
-        print(permitted_amazon_report_types["Order Report"])
