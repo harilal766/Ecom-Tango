@@ -43,6 +43,7 @@ class SpapiReportClient(SpapiBase):
         )
     
     def create_report_id(self,report_type,starting_date):
+        id = None
         try:
             report_details = self.api_model.create_report(
                 ReportType = report_type,
