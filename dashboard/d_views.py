@@ -118,6 +118,7 @@ class StoreReport(View):
                 
                 selected_report_type = request.POST.get("report-type")
                 from_date = request.POST.get("from"); to_date = request.POST.get("to")
+                print(from_date)
                 
                 if selected_store.platform == "Amazon":
                     spapi_inst = SpapiCredential.objects.get(user = request.user, store = selected_store)

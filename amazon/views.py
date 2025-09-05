@@ -13,7 +13,7 @@ from utils import iso_8601_converter, iso_8601_timestamp
 permitted_amazon_report_types = {
     "Order Report" : ReportType.GET_FLAT_FILE_ALL_ORDERS_DATA_BY_ORDER_DATE_GENERAL,
     "Return Report" : ReportType.GET_FLAT_FILE_RETURNS_DATA_BY_RETURN_DATE,
-    "Settlement Report" : ReportType.GET_V2_SETTLEMENT_REPORT_DATA_FLAT_FILE
+    "Settlement Report" : ReportType.GET_V2_SETTLEMENT_REPORT_DATA_FLAT_FILE_V2
 }
 
 permitted_amazon_order_types = [
@@ -23,25 +23,28 @@ permitted_amazon_order_types = [
 
 # Create your views here.
 class SpapiBase:
-    def __init__(self,credentials:dict,Api_Model):
+    def __init__(self,credentials:dict):
         self.credentials = credentials
-        self.api_model = Api_Model
-        self.client = Api_Model(
-            credentials = self.credentials,
-            marketplace = Marketplaces.IN
-        )
 
 class SpapiOrderClient(SpapiBase):
     def __init__(self,credentials:dict):
-        super().__init__(credentials=credentials,Api_Model=Orders)
+        super().__init__(credentials=credentials)
+        self.api_model = Orders(
+            credentials=self.credentials,
+            marketplace=Marketplaces.IN
+        )
 
 class SpapiReportClient(SpapiBase):
-    def __init__(self,credentials:dict,Api_Model):
-        super().__init__(credentials=credentials,Api_Model=Api_Model)
+    def __init__(self,credentials:dict):
+        super().__init__(credentials=credentials)
+        self.api_model = ReportsV2(
+            credentials=self.credentials,
+            marketplace=Marketplaces.IN
+        )
     
-    def get_report_id(self,report_type,starting_date):
+    def create_report_id(self,report_type,starting_date):
         try:
-            report_details = self.client.create_report(
+            report_details = self.api_model.create_report(
                 ReportType = report_type,
                 dataStartTime = starting_date
             )
