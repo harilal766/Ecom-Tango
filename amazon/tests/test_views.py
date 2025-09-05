@@ -22,11 +22,12 @@ class Test_SpapiOrderClient(Test_SpapiBase):
 class Test_SpapiReportClient(Test_SpapiBase):
     def setUp(self):
         super(Test_SpapiReportClient,self).setUp()
-        self.test_api_model = SpapiReportClient(credentials=self.test_credentials).api_model
+        self.test_api_model = SpapiReportClient(credentials=self.test_credentials)
     
     def test_create_report_id(self):
-        id = self.test_api_model.create_report(
-            reportType = ReportType.GET_FLAT_FILE_ALL_ORDERS_DATA_BY_ORDER_DATE_GENERAL,
-            dataStartTime= iso_8601_timestamp(5)
+        id = self.test_api_model.create_report_id(
+            reportType=permitted_amazon_report_types["Order Report"],
+            dataStartTime=iso_8601_timestamp(5)
         )
         print(id)
+        print(permitted_amazon_report_types["Order Report"])

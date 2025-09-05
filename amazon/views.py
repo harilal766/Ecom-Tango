@@ -42,12 +42,12 @@ class SpapiReportClient(SpapiBase):
             marketplace=Marketplaces.IN
         )
     
-    def create_report_id(self,report_type,starting_date):
+    def create_report_id(self,reportType,dataStartTime):
         id = None
         try:
             report_details = self.api_model.create_report(
-                ReportType = report_type,
-                dataStartTime = starting_date
+                reportType = reportType,
+                dataStartTime = dataStartTime
             )
             return report_details
         except Exception as e:
