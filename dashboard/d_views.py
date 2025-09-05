@@ -111,7 +111,7 @@ class Store(Dashboard, View):
 from amazon.views import SpapiReportClient
 class StoreReport(View):
     def post(self,request,store_slug):
-        report_inst = None; report_df = None
+        report_client = None; report_df = None
         try:
             if request.method == "POST":
                 selected_store = StoreProfile.objects.get(user=request.user,slug=store_slug)
@@ -123,33 +123,39 @@ class StoreReport(View):
                 if selected_store.platform == "Amazon":
                     spapi_inst = SpapiCredential.objects.get(user = request.user, store = selected_store)
                     report_client = SpapiReportClient(credentials=spapi_inst.get_credentials())
-                    
-                    
-                    report_id = report_client.create_report_id(
-                        reportType = permitted_amazon_report_types[selected_report_type],
-                        dataStartTime = iso_8601_converter(from_date),
-                        dataEndTime = iso_8601_converter(to_date)
-                    )
-                    
-                    report_df = report_client.get_report_df(
-                        reportId=report_id
-                    )
-                    
+                    if not "settlement" in selected_report_type.lower():
+                        report_id = report_client.create_report_id(
+                            reportType = permitted_amazon_report_types[selected_report_type],
+                            dataStartTime = iso_8601_converter(from_date),
+                            dataEndTime = iso_8601_converter(to_date)
+                        )
+                        report_df = report_client.get_report_df(
+                            reportId=report_id
+                        )
+                    else:
+                        # Switching to api model
+                        report_client = report_client.api_model
+                        
+                        available_reports = report_client.get_reports(
+                            reportTypes = permitted_amazon_report_types[selected_report_type]
+                        )
+                        print(available_reports.payload.get("reports"))                        
 
                 elif selected_store.platform == "Shopify":
                     pass
                 
                 
                 # save df as csv file
-                buffer = BytesIO()
-                report_df.to_excel(buffer,sheet_name='Report', index=False, engine = 'openpyxl')
-                buffer.seek(0)
-                response = HttpResponse(
-                    buffer, 
-                    content_type = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-                )
-                response['Content-Disposition'] = f'attachment; filename = {selected_report_type} : {from_date} - {to_date}.xlsx'
-                return response
+                if True:
+                    buffer = BytesIO()
+                    report_df.to_excel(buffer,sheet_name='Report', index=False, engine = 'openpyxl')
+                    buffer.seek(0)
+                    response = HttpResponse(
+                        buffer, 
+                        content_type = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+                    )
+                    response['Content-Disposition'] = f'attachment; filename = {selected_report_type} : {from_date} - {to_date}.xlsx'
+                    return response
         except Exception as e:
             print(e)
             return HttpResponse(e)

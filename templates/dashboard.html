@@ -33,16 +33,16 @@
 
         {% if report_types %}
         <div class="report">
-            <form method="POST" class="form" enctype='multipart/form-data' action="{% url 'dashboard:create_report' store_slug=selected_store.slug %}">
+            <form method="POST" id="reportForm" class="form" enctype='multipart/form-data' action="{% url 'dashboard:create_report' store_slug=selected_store.slug %}">
                 {% csrf_token %}
-                <h2>Reports</h2>
-                <select name="report-type">
+                <h2 id="formTitle">Reports</h2>
+                <select name="report-type" id="reportType">
                     {% for type in report_types %}
                     <option>{{type}}</option>
                     {% endfor %}
                 </select>
-                {% include 'date_range.html' %}
-                <button type='submit' class="btn btn-primary">Generate Report</button>
+                
+                <button id= "submitButton" type='submit' class="btn btn-primary">Generate Report</button>
             </form>
         </div>
         {% endif %}
