@@ -50,11 +50,19 @@ class Store(Dashboard, View):
             "user" : request.user.username.capitalize(),
             "stores" : StoreProfile.objects.filter(user=request.user),
             "selected_store" : None,
-            "order_types" : None, "report_types" : None
+            "order_types" : None, "report_types" : None,
+            "settlements" : None
         }
 
         try:
             selected_store = StoreProfile.objects.get(user=request.user,slug=store_slug)
+            if selected_store.platform == "Amazon":
+                spapi_inst = SpapiCredential.objects.get(user = request.user, store = selected_store)
+                report_client = SpapiReportClient(credentials=spapi_inst.get_credentials()).api_model
+                context["settlements"] = report_client.get_reports(
+                    reportTypes = ReportType.GET_V2_SETTLEMENT_REPORT_DATA_FLAT_FILE_V2
+                ).payload.get("reports")
+                
             context["selected_store"] = selected_store
             context["order_types"] = self.platform_specific_datas[selected_store.platform]["order_types"]
             context["report_types"] = self.platform_specific_datas[selected_store.platform]["report_types"]
@@ -110,6 +118,28 @@ class Store(Dashboard, View):
     
 from amazon.views import SpapiReportClient
 class StoreReport(View):
+    def get(self,request,store_slug,report_id):
+        report_df = None
+        try:
+            selected_store = StoreProfile.objects.get(user=request.user,slug=store_slug)
+            if selected_store.platform == "Amazon" :
+                spapi_inst = SpapiCredential.objects.get(user = request.user, store = selected_store)
+                report_client = SpapiReportClient(credentials=spapi_inst.get_credentials())
+                report_df = report_client.get_report_df(reportId=report_id)
+        except Exception as e:
+            print(e)
+        else:
+            if report_df:
+                buffer = BytesIO()
+                report_df.to_excel(buffer,sheet_name='Report', index=False, engine = 'openpyxl')
+                buffer.seek(0)
+                response = HttpResponse(
+                    buffer,
+                    content_type = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+                )
+                response['Content-Disposition'] = f'attachment; filename = settlement : .xlsx'
+                return response
+    
     def post(self,request,store_slug):
         report_client = None; report_df = None
         try:
@@ -146,6 +176,10 @@ class StoreReport(View):
                 
                 
                 # save df as csv file
+                # The `if True:` statement in the code snippet is not serving any functional purpose
+                # and appears to be a placeholder or a comment. It does not have any conditional logic
+                # based on the value of `True`, so it will always evaluate to `True` and execute the
+                # block of code following it.
                 if True:
                     buffer = BytesIO()
                     report_df.to_excel(buffer,sheet_name='Report', index=False, engine = 'openpyxl')

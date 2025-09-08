@@ -60,31 +60,33 @@ class SpapiReportClient(SpapiBase):
         else:
             return id
             
-    def get_report_df(self,reportId):
+    def get_report_df(self,reportId = None,reportDocumentId = None):
         df = None
         try:
-            while True:
-                report_details = self.api_model.get_report(reportId=reportId)
-                report_status = report_details.payload.get("processingStatus")
-                time.sleep(10)
-                        
-                print(report_status)
-                        
-                if report_status == "DONE":
-                    doc_id = report_details.payload.get('reportDocumentId')
-                    report_url = self.api_model.get_report_document(
-                        reportDocumentId=doc_id
-                    ).payload.get('url')
+            if reportId  and reportDocumentId == None:
+                while True:
+                    report_details = self.api_model.get_report(reportId=reportId)
+                    report_status = report_details.payload.get("processingStatus")
+                    time.sleep(10)
                             
-                    df = pd.read_csv(
-                        StringIO(requests.get(report_url).text),
-                        sep = '\t'
-                    )
+                    print(report_status)
+                            
+                    if report_status == "DONE":
+                        doc_id = report_details.payload.get('reportDocumentId')
+                        report_url = self.api_model.get_report_document(
+                            reportDocumentId=doc_id
+                        ).payload.get('url')
+                                
+                        df = pd.read_csv(
+                            StringIO(requests.get(report_url).text),
+                            sep = '\t'
+                        )
 
-                    break
-                elif report_status == 'CANCELLED':
-                    df = "cancel"
-                    break
+                        break
+                    elif report_status == 'CANCELLED':
+                        df = "cancel"
+                        break
         except Exception as e:
             print(e)
-        return df 
+        else:
+            return df 

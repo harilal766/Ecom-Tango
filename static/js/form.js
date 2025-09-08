@@ -60,10 +60,3 @@ function arrangeDateRange(){
         reportForm.removeChild(dateRangeHtml);
     }
 }
-selectedReportType.addEventListener("change",()=>{
-    arrangeDateRange();
-});
-document.addEventListener("DOMContentLoaded",()=>{
-    arrangeDateRange();
-});
-

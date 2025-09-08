@@ -13,6 +13,8 @@
     <!-- Code for detail view of first store on first dashboard loading-->
     <h5>Selected : {{selected_store.slug}}</h5>
     <div class="store-detail">
+        
+
         <!-- Request for order type -->
         {% if order_types %}
         <div class="order">
@@ -27,7 +29,6 @@
                 {% include 'date_range.html' %}
                 <button type='submit' class="btn btn-primary">Get orders</button>
             </form> 
-            
         </div>
         {% endif %}
 
@@ -41,12 +42,26 @@
                     <option>{{type}}</option>
                     {% endfor %}
                 </select>
-                
+                {% include 'date_range.html' %}
                 <button id= "submitButton" type='submit' class="btn btn-primary">Generate Report</button>
             </form>
         </div>
         {% endif %}
     </div>
+
+    {% if settlements %}
+        <div class="settlements">
+            {% for settlement in settlements %}
+            <div class="settlement">
+                <h5>Id : {{settlement.reportId}}</h5>
+                <h5>Id : {{settlement.reportDocumentId}}</h5>
+                <a href="">
+                    <button class="btn btn-primary">Download</button>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
 
     {% else %} <!-- No added stores -->
         <h2>Add a store </h2>
