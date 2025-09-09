@@ -140,7 +140,7 @@ class StoreReport(View):
                 response['Content-Disposition'] = f'attachment; filename = settlement : .xlsx'
                 return response
     
-    def post(self,request,store_slug):
+    def post(self,request,store_slug,ship_date=None):
         report_client = None; report_df = None
         try:
             if request.method == "POST":
@@ -168,23 +168,28 @@ class StoreReport(View):
                     first_col = report_df.columns.to_list()[0]
                     row_count = len(report_df[first_col].to_list())
                     
-                    order_df = order_client.get_order_df(CreatedAfter=from_date,CreatedBefore=to_date)
-                    order_ids =  order_df["AmazonOrderId"].to_list()
-                    
-                    order_ids =  order_df["AmazonOrderId"].to_list()
-                    ship_dates = []
-                    for id in order_ids:
-                        row = order_df.loc[order_df['AmazonOrderId'] == id]
-                        ship_dates.append(row["LatestShipDate"].to_string(index=False))
-                    print(ship_dates)
-                    
-                    report_df.insert(2,"LatestShipDate",[None]*row_count)
-                    report_df.insert(3,"PaymentMethod",[None]*row_count)
-                    
+                    if selected_report_type == "Order Report":
+                        orders = order_client.api_model.get_orders(
+                            CreatedAfter = from_date,
+                            CreatedBefore = to_date,
+                        )
+                        orders = orders.payload.get("Orders")
+                        
+                        ids  = []
+                        
+                        for order in orders:
+                            if order["LatestShipDate"] == '2025-09-09T18:29:59Z':
+                                ids.append(order["AmazonOrderId"])
+                            else:
+                                print("Issue found")
+                        print(report_df)
+                        report_df = report_df[
+                            report_df["amazon-order-id"].isin(ids)
+                        ]
+                        print(report_df)
+                        
                 elif selected_store.platform == "Shopify":
                     pass
-                
-                
                 # save df as csv file
                 # The `if True:` statement in the code snippet is not serving any functional purpose
                 # and appears to be a placeholder or a comment. It does not have any conditional logic

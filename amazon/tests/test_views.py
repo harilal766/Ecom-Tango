@@ -19,17 +19,19 @@ class Test_SpapiOrderClient(Test_SpapiBase):
         super(Test_SpapiOrderClient,self).setUp()
         self.test_api_model = SpapiOrderClient(credentials=self.test_credentials)
         
+    def test_get_order_ids(self):
+        orders = self.test_api_model.get_order_ids(CreatedAfter=iso_8601_timestamp(4))
+        print(orders)
+        
     def test_get_order_df(self):
         order_df = self.test_api_model.get_order_df(
-            CreatedAfter=iso_8601_timestamp(4)
+            CreatedAfter=iso_8601_timestamp(4),
+            LatestShipDate = '2025-09-08T18:29:59Z',
         )
         
-        order_ids =  order_df["AmazonOrderId"].to_list()
-        ship_dates = []
-        for id in order_ids:
-            row = order_df.loc[order_df['AmazonOrderId'] == id]
-            ship_dates.append(row["LatestShipDate"].to_string(index=False))
-        print(ship_dates)
+        self.assertIsNotNone(order_df)
+        
+        
         
 class Test_SpapiReportClient(Test_SpapiBase):
     def setUp(self):

@@ -13,11 +13,8 @@
     <!-- Code for detail view of first store on first dashboard loading-->
     <h5>Selected : {{selected_store.slug}}</h5>
     <div class="store-detail">
-        
-
         <!-- Request for order type -->
         {% if order_types %}
-        
         <div class="order">
             <h2>Orders</h2>  
             <form method="POST" class="form" enctype="multipart/form-data" action="{% url 'dashboard:orders' store_slug=selected_store.slug %}">

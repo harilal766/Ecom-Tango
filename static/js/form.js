@@ -44,19 +44,18 @@ platformSelector.addEventListener('change',(event)=>{
     storeForms(selection = event.target.value);
 });
 
-const selectedReportType = document.getElementById("reportType");
+const ReportType = document.getElementById("reportType");
 const dateRangeHtml = document.getElementById("dateRange");
+const shipDateHtml = document.getElementById("shipDates")
+
 
 /* To make sure only a particular form will be affected */
 const reportForm = document.getElementById("reportForm");
 const formTitle = document.getElementById("formTitle");
 const submitButton = document.getElementById("submitButton");
 
-function arrangeDateRange(){
-    if (selectedReportType.value !== "Settlement Report"){
-        reportForm.insertBefore(dateRangeHtml,submitButton);
+ReportType.addEventListener("change",()=>{
+    if (ReportType.value == "Order Report"){
+        reportForm.insertBefore(shipDateHtml,submitButton);
     }
-    else if (selectedReportType.value === "Settlement Report"){
-        reportForm.removeChild(dateRangeHtml);
-    }
-}
+});

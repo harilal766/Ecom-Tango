@@ -15,8 +15,8 @@ from io import StringIO, BytesIO
 
 permitted_amazon_report_types = {
     "Order Report" : ReportType.GET_FLAT_FILE_ALL_ORDERS_DATA_BY_ORDER_DATE_GENERAL,
-    "Return Report" : ReportType.GET_FLAT_FILE_RETURNS_DATA_BY_RETURN_DATE,
-    "Settlement Report" : ReportType.GET_V2_SETTLEMENT_REPORT_DATA_FLAT_FILE_V2
+    "Return Report" : ReportType.GET_FLAT_FILE_RETURNS_DATA_BY_RETURN_DATE
+    #"Settlement Report" : ReportType.GET_V2_SETTLEMENT_REPORT_DATA_FLAT_FILE_V2
 }
 
 permitted_amazon_order_types = [
@@ -36,13 +36,18 @@ class SpapiOrderClient(SpapiBase):
             credentials=self.credentials,
             marketplace=Marketplaces.IN
         )
+        
+    def get_order_ids(self,**kwargs):
+        try:
+            orders = self.api_model.get_orders(**kwargs)
+            return orders
+        except Exception as e:
+            print(e)
     
-    def get_order_df(self,CreatedAfter, CreatedBefore = None,):
+    def get_order_df(self,**kwargs):
         df = None
         try:
-            orders = self.api_model.get_orders(CreatedBefore = CreatedBefore,
-                CreatedAfter = CreatedAfter
-            )
+            orders = self.api_model.get_orders(**kwargs)
             orders = orders.payload.get("Orders")
             df = pd.DataFrame(orders)
         except Exception as e:
