@@ -20,8 +20,14 @@ class Test_SpapiOrderClient(Test_SpapiBase):
         self.test_api_model = SpapiOrderClient(credentials=self.test_credentials)
         
     def test_get_order_ids(self):
-        orders = self.test_api_model.get_order_ids(CreatedAfter=iso_8601_timestamp(4))
+        orders = self.test_api_model.get_order_ids(
+            CreatedAfter=iso_8601_timestamp(4),
+            LatestShipDate = '2025-09-08T18:29:59Z',
+            PaymentMethod = "COD"
+        )
+        print(len(orders))
         print(orders)
+        self.assertGreater(len(orders),0)
         
     def test_get_order_df(self):
         order_df = self.test_api_model.get_order_df(

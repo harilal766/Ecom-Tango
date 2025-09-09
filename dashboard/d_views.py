@@ -169,22 +169,15 @@ class StoreReport(View):
                     row_count = len(report_df[first_col].to_list())
                     
                     if selected_report_type == "Order Report":
-                        orders = order_client.api_model.get_orders(
+                        order_ids  = order_client.get_order_ids(
                             CreatedAfter = from_date,
                             CreatedBefore = to_date,
+                            LatestShipDate = '2025-09-08T18:29:59Z',
+                            PaymentMethod = "COD"
                         )
-                        orders = orders.payload.get("Orders")
                         
-                        ids  = []
-                        
-                        for order in orders:
-                            if order["LatestShipDate"] == '2025-09-09T18:29:59Z':
-                                ids.append(order["AmazonOrderId"])
-                            else:
-                                print("Issue found")
-                        print(report_df)
                         report_df = report_df[
-                            report_df["amazon-order-id"].isin(ids)
+                            report_df["amazon-order-id"].isin(order_ids)
                         ]
                         print(report_df)
                         

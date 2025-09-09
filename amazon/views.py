@@ -38,11 +38,18 @@ class SpapiOrderClient(SpapiBase):
         )
         
     def get_order_ids(self,**kwargs):
+        ids = []
         try:
             orders = self.api_model.get_orders(**kwargs)
-            return orders
+            orders = orders.payload.get("Orders")
+            for order in orders:
+                id = order["AmazonOrderId"]
+                if not id in ids:
+                    ids.append(id)
         except Exception as e:
             print(e)
+        else:
+            return ids
     
     def get_order_df(self,**kwargs):
         df = None
