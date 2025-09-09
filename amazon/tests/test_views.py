@@ -54,3 +54,6 @@ class Test_SpapiReportClient(Test_SpapiBase):
                 )
                 
                 self.assertEqual(id.isdigit(), True)
+                
+                df = self.test_api_model.get_report_df(reportId=id)
+                print(df)

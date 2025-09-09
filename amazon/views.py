@@ -93,7 +93,7 @@ class SpapiReportClient(SpapiBase):
                 while True:
                     report_details = self.api_model.get_report(reportId=reportId)
                     report_status = report_details.payload.get("processingStatus")
-                    time.sleep(10)
+                    time.sleep(5)
                             
                     print(report_status)
                             
@@ -112,6 +112,8 @@ class SpapiReportClient(SpapiBase):
                     elif report_status == 'CANCELLED':
                         df = "cancel"
                         break
+                    else:
+                        print(report_details)
         except Exception as e:
             print(e)
         else:
