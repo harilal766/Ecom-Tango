@@ -153,24 +153,34 @@ class StoreReport(View):
                 if selected_store.platform == "Amazon":
                     spapi_inst = SpapiCredential.objects.get(user = request.user, store = selected_store)
                     report_client = SpapiReportClient(credentials=spapi_inst.get_credentials())
-                    if not "settlement" in selected_report_type.lower():
-                        report_id = report_client.create_report_id(
-                            reportType = permitted_amazon_report_types[selected_report_type],
-                            dataStartTime = iso_8601_converter(from_date),
-                            dataEndTime = iso_8601_converter(to_date)
-                        )
-                        report_df = report_client.get_report_df(
-                            reportId=report_id
-                        )
-                    else:
-                        # Switching to api model
-                        report_client = report_client.api_model
-                        
-                        available_reports = report_client.get_reports(
-                            reportTypes = permitted_amazon_report_types[selected_report_type]
-                        )
-                        print(available_reports.payload.get("reports"))                        
-
+                    
+                    order_client = SpapiOrderClient(credentials=spapi_inst.get_credentials())
+                    
+                    report_id = report_client.create_report_id(
+                        reportType = permitted_amazon_report_types[selected_report_type],
+                        dataStartTime = iso_8601_converter(from_date),
+                        dataEndTime = iso_8601_converter(to_date)
+                    )
+                    report_df = report_client.get_report_df(
+                        reportId=report_id
+                    )
+                    
+                    first_col = report_df.columns.to_list()[0]
+                    row_count = len(report_df[first_col].to_list())
+                    
+                    order_df = order_client.get_order_df(CreatedAfter=from_date,CreatedBefore=to_date)
+                    order_ids =  order_df["AmazonOrderId"].to_list()
+                    
+                    order_ids =  order_df["AmazonOrderId"].to_list()
+                    ship_dates = []
+                    for id in order_ids:
+                        row = order_df.loc[order_df['AmazonOrderId'] == id]
+                        ship_dates.append(row["LatestShipDate"].to_string(index=False))
+                    print(ship_dates)
+                    
+                    report_df.insert(2,"LatestShipDate",[None]*row_count)
+                    report_df.insert(3,"PaymentMethod",[None]*row_count)
+                    
                 elif selected_store.platform == "Shopify":
                     pass
                 

@@ -36,6 +36,19 @@ class SpapiOrderClient(SpapiBase):
             credentials=self.credentials,
             marketplace=Marketplaces.IN
         )
+    
+    def get_order_df(self,CreatedAfter, CreatedBefore = None,):
+        df = None
+        try:
+            orders = self.api_model.get_orders(CreatedBefore = CreatedBefore,
+                CreatedAfter = CreatedAfter
+            )
+            orders = orders.payload.get("Orders")
+            df = pd.DataFrame(orders)
+        except Exception as e:
+            print(e)
+        else:
+            return df 
 
 class SpapiReportClient(SpapiBase):
     def __init__(self,credentials:dict):
