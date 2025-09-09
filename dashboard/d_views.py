@@ -165,8 +165,7 @@ class StoreReport(View):
                         reportId=report_id
                     )
                     
-                    first_col = report_df.columns.to_list()[0]
-                    row_count = len(report_df[first_col].to_list())
+                    print(report_df)
                     
                     if selected_report_type == "Order Report":
                         order_ids  = order_client.get_order_ids(
@@ -175,6 +174,9 @@ class StoreReport(View):
                             LatestShipDate = '2025-09-08T18:29:59Z',
                             PaymentMethod = "COD"
                         )
+                        
+                        print(order_ids)
+                        print(len(order_ids))
                         
                         report_df = report_df[
                             report_df["amazon-order-id"].isin(order_ids)
