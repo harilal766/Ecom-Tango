@@ -15,7 +15,7 @@ from io import StringIO, BytesIO
 
 permitted_amazon_report_types = {
     "Order Report" : ReportType.GET_FLAT_FILE_ALL_ORDERS_DATA_BY_ORDER_DATE_GENERAL,
-    "Fulfilled" : ReportType.GET_AMAZON_FULFILLED_SHIPMENTS_DATA_GENERAL,
+    #"Fulfilled" : ReportType.GET_FLAT_FILE_ACTIONABLE_ORDER_DATA_SHIPPING,
     "Return Report" : ReportType.GET_FLAT_FILE_RETURNS_DATA_BY_RETURN_DATE
     #"Settlement Report" : ReportType.GET_V2_SETTLEMENT_REPORT_DATA_FLAT_FILE_V2
 }
@@ -38,19 +38,37 @@ class SpapiOrderClient(SpapiBase):
             marketplace=Marketplaces.IN
         )
         
-    def get_order_ids(self,**kwargs):
+    def get_order_ids(self,LatestShipDate,PaymentMethod,**kwargs,):
         ids = []
         try:
             orders = self.api_model.get_orders(**kwargs)
             orders = orders.payload.get("Orders")
             for order in orders:
                 id = order["AmazonOrderId"]
-                if not id in ids:
-                    ids.append(id)
+                ship_date = order["LatestShipDate"]
+                method = order.get('PaymentMethodDetails',None)
+                if ship_date == LatestShipDate and method == [PaymentMethod]:
+                    if not id in ids:
+                        ids.append(id)
         except Exception as e:
             print(e)
         else:
             return ids
+        
+    def get_shipping_dates(self):
+        date_list = []
+        try:
+            orders = self.api_model.get_orders(CreatedAfter = iso_8601_timestamp(10))
+            orders = orders.payload.get("Orders")
+            for order in orders:
+                date = order["LatestShipDate"]
+                if not date in date_list:
+                    date_list.append(date)
+        except Exception as e:
+            print(e)
+        else:
+            return date_list
+            
     
     def get_order_df(self,**kwargs):
         df = None
@@ -94,8 +112,6 @@ class SpapiReportClient(SpapiBase):
                     report_details = self.api_model.get_report(reportId=reportId)
                     report_status = report_details.payload.get("processingStatus")
                     time.sleep(5)
-                            
-                    print(report_status)
                             
                     if report_status == "DONE":
                         doc_id = report_details.payload.get('reportDocumentId')

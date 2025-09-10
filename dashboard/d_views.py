@@ -51,7 +51,8 @@ class Store(Dashboard, View):
             "stores" : StoreProfile.objects.filter(user=request.user),
             "selected_store" : None,
             "order_types" : None, "report_types" : None,
-            "settlements" : None
+            "settlements" : None,
+            "shipping_dates" : None
         }
 
         try:
@@ -59,13 +60,18 @@ class Store(Dashboard, View):
             if selected_store.platform == "Amazon":
                 spapi_inst = SpapiCredential.objects.get(user = request.user, store = selected_store)
                 report_client = SpapiReportClient(credentials=spapi_inst.get_credentials()).api_model
+                order_client = SpapiOrderClient(credentials=spapi_inst.get_credentials)
+                
                 context["settlements"] = report_client.get_reports(
                     reportTypes = ReportType.GET_V2_SETTLEMENT_REPORT_DATA_FLAT_FILE_V2
                 ).payload.get("reports")
                 
+                context["shipping_dates"] = order_client.get_shipping_dates()
+                
             context["selected_store"] = selected_store
             context["order_types"] = self.platform_specific_datas[selected_store.platform]["order_types"]
             context["report_types"] = self.platform_specific_datas[selected_store.platform]["report_types"]
+            
             
             return render(request,'dashboard.html',context = context)
         except Exception as e:
@@ -141,14 +147,14 @@ class StoreReport(View):
                 return response
     
     def post(self,request,store_slug,ship_date=None):
-        report_client = None; report_df = None
+        report_client = None; report_df = None; pivot = True
         try:
             if request.method == "POST":
                 selected_store = StoreProfile.objects.get(user=request.user,slug=store_slug)
                 
                 selected_report_type = request.POST.get("report-type")
                 from_date = request.POST.get("from"); to_date = request.POST.get("to")
-                print(from_date)
+                print(f"Requests : {request.POST}")
                 
                 if selected_store.platform == "Amazon":
                     spapi_inst = SpapiCredential.objects.get(user = request.user, store = selected_store)
@@ -165,14 +171,13 @@ class StoreReport(View):
                         reportId=report_id
                     )
                     
-                    print(report_df)
                     
                     if selected_report_type == "Order Report":
                         order_ids  = order_client.get_order_ids(
                             CreatedAfter = from_date,
                             CreatedBefore = to_date,
                             LatestShipDate = '2025-09-08T18:29:59Z',
-                            PaymentMethod = "COD"
+                            PaymentMethod = "CashOnDelivery"
                         )
                         
                         print(order_ids)
