@@ -48,7 +48,7 @@ class Test_SpapiReportClient(Test_SpapiBase):
         super(Test_SpapiReportClient,self).setUp()
         self.test_api_model = SpapiReportClient(credentials=self.test_credentials)
     
-    def test_create_report(self):
+    def test_report(self):
         # Working report types
         for type in permitted_amazon_report_types:
             if not "settlement" in type.lower(): 
@@ -64,6 +64,8 @@ class Test_SpapiReportClient(Test_SpapiBase):
         for type, value in amazon_reports_trial.items():
             for description, type in value.items():
                 id = self.test_api_model.create_report_id(
-                    reportType=type
+                    reportType=type,
+                    dataStartTime=iso_8601_timestamp(4),
+                    dataEndTime=iso_8601_timestamp(0)
                 )
-                print(id)
+                self.assertEqual(id.isdigit(), True)
