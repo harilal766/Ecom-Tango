@@ -1,5 +1,5 @@
 from amazon.tests.test_models import *
-from amazon.views import SpapiBase, SpapiOrderClient, SpapiReportClient, permitted_amazon_report_types
+from amazon.views import SpapiBase, SpapiOrderClient, SpapiReportClient, permitted_amazon_report_types,amazon_reports_trial
 from pprint import pprint
 from utils import iso_8601_timestamp, iso_8601_converter
 
@@ -49,6 +49,7 @@ class Test_SpapiReportClient(Test_SpapiBase):
         self.test_api_model = SpapiReportClient(credentials=self.test_credentials)
     
     def test_create_report(self):
+        # Working report types
         for type in permitted_amazon_report_types:
             if not "settlement" in type.lower(): 
                 id = self.test_api_model.create_report_id(
@@ -59,3 +60,10 @@ class Test_SpapiReportClient(Test_SpapiBase):
                 self.assertEqual(id.isdigit(), True)
                 #df = self.test_api_model.get_report_df(reportId=id)
                 
+        # Report types under test
+        for type, value in amazon_reports_trial.items():
+            for description, type in value.items():
+                id = self.test_api_model.create_report_id(
+                    reportType=type
+                )
+                print(id)

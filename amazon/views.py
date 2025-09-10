@@ -13,16 +13,24 @@ import time, requests
 
 from io import StringIO, BytesIO
 
+amazon_reports_trial = {
+    "Order" : {
+        "based on purchase date" : ReportType.GET_FLAT_FILE_ALL_ORDERS_DATA_BY_ORDER_DATE_GENERAL
+    },
+    "Return" : {
+        "based on return requested date" : ReportType.GET_FLAT_FILE_RETURNS_DATA_BY_RETURN_DATE
+    } 
+}
+
 permitted_amazon_report_types = {
     "Order Report" : ReportType.GET_FLAT_FILE_ALL_ORDERS_DATA_BY_ORDER_DATE_GENERAL,
-    #"Fulfilled" : ReportType.GET_FLAT_FILE_ACTIONABLE_ORDER_DATA_SHIPPING,
     "Return Report" : ReportType.GET_FLAT_FILE_RETURNS_DATA_BY_RETURN_DATE
-    #"Settlement Report" : ReportType.GET_V2_SETTLEMENT_REPORT_DATA_FLAT_FILE_V2
 }
 
 permitted_amazon_order_types = [
     "Unshipped", "Shipped"
 ]
+
 
 
 # Create your views here.

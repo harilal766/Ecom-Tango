@@ -30,8 +30,6 @@ class Dashboard:
                 "report_types" : ("Order","Return")
             }
         }
-
-
 # Create your views here.
 def home(request):
     try:
@@ -54,13 +52,12 @@ class Store(Dashboard, View):
             "settlements" : None,
             "shipping_dates" : None
         }
-
         try:
             selected_store = StoreProfile.objects.get(user=request.user,slug=store_slug)
             if selected_store.platform == "Amazon":
                 spapi_inst = SpapiCredential.objects.get(user = request.user, store = selected_store)
                 report_client = SpapiReportClient(credentials=spapi_inst.get_credentials()).api_model
-                order_client = SpapiOrderClient(credentials=spapi_inst.get_credentials)
+                order_client = SpapiOrderClient(credentials=spapi_inst.get_credentials())
                 
                 context["settlements"] = report_client.get_reports(
                     reportTypes = ReportType.GET_V2_SETTLEMENT_REPORT_DATA_FLAT_FILE_V2
@@ -154,7 +151,7 @@ class StoreReport(View):
                 
                 selected_report_type = request.POST.get("report-type")
                 from_date = request.POST.get("from"); to_date = request.POST.get("to")
-                print(f"Requests : {request.POST}")
+                print(f"Request datas : {request.POST}")
                 
                 if selected_store.platform == "Amazon":
                     spapi_inst = SpapiCredential.objects.get(user = request.user, store = selected_store)
@@ -173,21 +170,18 @@ class StoreReport(View):
                     
                     
                     if selected_report_type == "Order Report":
+                        shipping_date = request.POST.get("shipping_date")
+                        method = request.POST.get("payment_method")
                         order_ids  = order_client.get_order_ids(
                             CreatedAfter = from_date,
                             CreatedBefore = to_date,
-                            LatestShipDate = '2025-09-08T18:29:59Z',
-                            PaymentMethod = "CashOnDelivery"
+                            LatestShipDate = shipping_date,
+                            PaymentMethod = method
                         )
-                        
-                        print(order_ids)
-                        print(len(order_ids))
                         
                         report_df = report_df[
                             report_df["amazon-order-id"].isin(order_ids)
                         ]
-                        print(report_df)
-                        
                 elif selected_store.platform == "Shopify":
                     pass
                 # save df as csv file

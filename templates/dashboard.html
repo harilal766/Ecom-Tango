@@ -41,6 +41,19 @@
                     {% endfor %}
                 </select>
 
+                <select name = "payment_method">
+                    <option>CashOnDelivery</option>
+                    <option>Standard</option>
+                </select>
+
+                {% if shipping_dates %}
+                <select name = "shipping_date">
+                    {% for date in shipping_dates %}
+                    <option>{{date}}</option>
+                    {% endfor %}
+                </select>
+                {% endif %}
+
                 {% include 'date_range.html' %}
                 <button id= "submitButton" type='submit' class="btn btn-primary">Generate Report</button>
             </form>
