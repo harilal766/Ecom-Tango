@@ -150,6 +150,8 @@ class StoreReport(View):
                 selected_store = StoreProfile.objects.get(user=request.user,slug=store_slug)
                 
                 selected_report_type = request.POST.get("report-type")
+                pivot_table = request.POST.get("pivot_table")
+                
                 from_date = request.POST.get("from"); to_date = request.POST.get("to")
                 print(f"Request datas : {request.POST}")
                 

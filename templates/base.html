@@ -15,10 +15,12 @@
     <!-- For other pages -->
     <div class="leftright">
         {% include 'sidebar.html' %}
-        <div class="content">
-            {% include 'navbar.html' %}
-            {% block base %}
-            {% endblock %} 
+        <div>
+            <div class="content">
+                {% include 'navbar.html' %}
+                {% block base %}
+                {% endblock %} 
+            </div>
         </div>
     </div>
 </body>

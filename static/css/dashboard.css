@@ -1,0 +1,53 @@
+/* Theme configuration */
+:root {
+    --bg: rgb(240, 233, 213);
+}
+
+.nav {
+    background-color: rgb(207, 247, 245);
+    display: flex;
+    gap: 10px;
+    padding: 5px;
+    width: 100vh;
+}
+
+
+.content{
+    background-color: var(--bg);
+}
+
+/* To arrange divs on left and right */
+.leftright {
+    margin: 0; padding: 10px;
+    display: flex;
+}
+
+/* Link stylings */
+a {
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.added-stores{
+    display: flex;
+    align-items: center; justify-items: center;
+    gap : 5px;
+}
+
+/* Store detail */
+.store-detail{
+    display: flex;
+    gap: 10px;
+}
+
+.order,.report {
+    border: 1px solid black;
+    border-radius: 3px;
+    padding: 10px;
+}
+
+.date-range{
+    display: flex;
+    gap: 5px;
+}
+
