@@ -13,11 +13,11 @@
 </head>
 <body>
     <!-- For other pages -->
-    <div class="leftright">
+    <div class="dashboard">
         {% include 'sidebar.html' %}
-        <div>
+        <div class="right">
+            {% include 'navbar.html' %}
             <div class="content">
-                {% include 'navbar.html' %}
                 {% block base %}
                 {% endblock %} 
             </div>

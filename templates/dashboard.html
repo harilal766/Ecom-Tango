@@ -15,7 +15,7 @@
     <div class="store-detail">
         <!-- Request for order type -->
         {% if order_types %}
-        <div class="order">
+        <div class="dashboard-module">
             <h2>Orders</h2>  
             <form method="POST" class="form" enctype="multipart/form-data" action="{% url 'dashboard:orders' store_slug=selected_store.slug %}">
                 {% csrf_token %}
@@ -31,34 +31,39 @@
         {% endif %}
 
         {% if report_types %}
-        <div class="report">
+        <div class="dashboard-module">
             <form method="POST" id="reportForm" class="form" enctype='multipart/form-data' action="{% url 'dashboard:create_report' store_slug=selected_store.slug %}">
                 {% csrf_token %}
                 <h2 id="formTitle">Reports</h2>
-                <select name="report-type" id="reportType" class="form-select" aria-label="Default select example">
-                    {% for type in report_types %}
-                    <option>{{type}}</option>
-                    {% endfor %}
-                </select>
 
-                <select name = "payment_method" class="form-select" aria-label="Default select example">
-                    <option>CashOnDelivery</option>
-                    <option>Standard</option>
-                </select>
+                <div class="selection-group">
+                    <select name="report-type" id="reportType" class="form-select" aria-label="Default select example">
+                        {% for type in report_types %}
+                        <option>{{type}}</option>
+                        {% endfor %}
+                    </select>
 
+                    <select name = "payment_method" class="form-select" aria-label="Default select example">
+                        <option>CashOnDelivery</option>
+                        <option>Standard</option>
+                    </select>
+
+                    {% if shipping_dates %}
+                    <select name = "shipping_date" class="form-select" aria-label="Default select example">
+                        {% for date in shipping_dates %}
+                        <option>{{date}}</option>
+                        {% endfor %}
+                    </select>
+                    {% endif %}
+                </div>
+                
                 <div class="checkboxes">
                     <input type="checkbox" id="pivot_table" name="pivot_table" value="pivot_table">
                     <label for="vehicle1">Pivot table</label><br>
                 </div>
                 
 
-                {% if shipping_dates %}
-                <select name = "shipping_date" class="form-select" aria-label="Default select example">
-                    {% for date in shipping_dates %}
-                    <option>{{date}}</option>
-                    {% endfor %}
-                </select>
-                {% endif %}
+                
 
                 {% include 'date_range.html' %}
                 <button id= "submitButton" type='submit' class="btn btn-primary">Generate Report</button>
