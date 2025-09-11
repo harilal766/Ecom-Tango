@@ -46,13 +46,14 @@ a {
 /* Store detail */
 .store-detail{
     display: flex;
+    flex-wrap: wrap;
     gap: 10px;
 }
-
 
 .dashboard-module{
     background-color: var(--module_bg);
     border-radius: 5px;
+    width: auto;
     padding: var(--small_gap);
 }
 
@@ -61,7 +62,13 @@ a {
     gap: var(--small_gap)
 }
 
-.date-range{
-    display: flex; gap: 5px;
+select{
+    width: 100vh;
 }
 
+.checkboxes{
+    display: flex; gap:var(--small_gap)
+}
+.date-range, .date{
+    display: flex; gap: 5px;
+}

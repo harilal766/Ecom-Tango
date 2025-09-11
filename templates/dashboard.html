@@ -58,12 +58,10 @@
                 </div>
                 
                 <div class="checkboxes">
-                    <input type="checkbox" id="pivot_table" name="pivot_table" value="pivot_table">
-                    <label for="vehicle1">Pivot table</label><br>
-                </div>
-                
+                    <label class="form-check-label" for="vehicle1">Pivot table</label><br>
+                    <input class="form-check-input" type="checkbox" id="pivot_table" name="pivot_table" value="pivot_table">
 
-                
+                </div>
 
                 {% include 'date_range.html' %}
                 <button id= "submitButton" type='submit' class="btn btn-primary">Generate Report</button>
@@ -73,18 +71,22 @@
     </div>
 
     {% if settlements %}
-        <div class="settlements">
+    <div class="dashboard-module">
+        <form method="POST" class="form" enctype='multipart/form-data'>
+            {% csrf_token %}
+            <h2 id="formTitle">Settlements</h2>
             {% for settlement in settlements %}
             <div class="settlement">
                 <h5>Id : {{settlement.reportId}}</h5>
-                <h5>Id : {{settlement.reportDocumentId}}</h5>
                 <a href="">
                     <button class="btn btn-primary">Download</button>
                 </a>
             </div>
             {% endfor %}
-        </div>
-        {% endif %}
+            </div>
+        </form>
+        
+    {% endif %}
 
     {% else %} <!-- No added stores -->
         <h2>Add a store </h2>
