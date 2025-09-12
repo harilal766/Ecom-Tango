@@ -129,7 +129,7 @@ class StoreReport(View):
             if selected_store.platform == "Amazon" :
                 spapi_inst = SpapiCredential.objects.get(user = request.user, store = selected_store)
                 report_client = SpapiReportClient(credentials=spapi_inst.get_credentials())
-                report_df = report_client.get_report_df(reportId=report_id)
+                report_df = report_client.create_report_df(reportId=report_id)
         except Exception as e:
             print(e)
         else:
@@ -174,10 +174,9 @@ class StoreReport(View):
                         dataStartTime = iso_8601_converter(from_date),
                         dataEndTime = iso_8601_converter(to_date)
                     )
-                    report_df = report_client.get_report_df(
+                    report_df = report_client.create_report_df(
                         reportId=report_id
                     )
-                    
                     
                     if selected_report_type == "Order Report":
                         shipping_date = request.POST.get("shipping_date")
@@ -199,7 +198,8 @@ class StoreReport(View):
                 # and appears to be a placeholder or a comment. It does not have any conditional logic
                 # based on the value of `True`, so it will always evaluate to `True` and execute the
                 # block of code following it.
-                if True:
+                if report_df is not None:
+                    print(sheets)
                     response = HttpResponse( 
                         content_type = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
                     )

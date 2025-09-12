@@ -85,7 +85,6 @@ class SpapiOrderClient(SpapiBase):
             orders = orders.payload.get("Orders")
             df = pd.DataFrame(orders)
             
-            
         except Exception as e:
             print(e)
         else:
@@ -107,14 +106,14 @@ class SpapiReportClient(SpapiBase):
                 dataStartTime = dataStartTime,
                 dataEndTime = dataEndTime 
             )
-            if report_details:
-                id = report_details.payload.get("reportId")
+            id = report_details.payload.get("reportId")
+                
         except Exception as e:
             print(e)
         else:
             return id
             
-    def get_report_df(self,reportId = None,reportDocumentId = None):
+    def create_report_df(self,reportId = None,reportDocumentId = None,LatestShipDate= None,PaymentMethod=None):
         df = None
         try:
             if reportId  and reportDocumentId == None:
@@ -133,12 +132,13 @@ class SpapiReportClient(SpapiBase):
                             StringIO(requests.get(report_url).text),
                             sep = '\t'
                         )
-
                         break
                     elif report_status == 'CANCELLED':
-                        df = "cancel"
+                        print("Cancelled")
                         break
-                
+                    else:
+                        print(report_details["processingStatus"])
+            
         except Exception as e:
             print(e)
         else:
