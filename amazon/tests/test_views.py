@@ -41,8 +41,6 @@ class Test_SpapiOrderClient(Test_SpapiBase):
         )
         self.assertIsNotNone(order_df)
         
-        
-        
 class Test_SpapiReportClient(Test_SpapiBase):
     def setUp(self):
         super(Test_SpapiReportClient,self).setUp()

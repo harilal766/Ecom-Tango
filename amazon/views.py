@@ -122,6 +122,7 @@ class SpapiReportClient(SpapiBase):
                     report_status = report_details.payload.get("processingStatus")
                     time.sleep(5)
                             
+                    print(report_details)
                     if report_status == "DONE":
                         doc_id = report_details.payload.get('reportDocumentId')
                         report_url = self.api_model.get_report_document(
@@ -137,10 +138,10 @@ class SpapiReportClient(SpapiBase):
                         print("Cancelled")
                         break
                     else:
-                        print(report_details["processingStatus"])
-            
+                        print(report_status)
         except Exception as e:
             print(e)
         else:
-            print(report_details)
+            if df is None:
+                print(report_details)
             return df 

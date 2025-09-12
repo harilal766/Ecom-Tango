@@ -51,3 +51,6 @@ class BaseCredential(models.Model):
         finally:
             return credentials
     
+    
+class ReportProfile(BaseCredential):
+    columns = models.CharField(max_length=1000)

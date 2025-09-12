@@ -199,6 +199,7 @@ class StoreReport(View):
                 # based on the value of `True`, so it will always evaluate to `True` and execute the
                 # block of code following it.
                 if report_df is not None:
+                    print(report_df.columns.to_list())
                     print(sheets)
                     response = HttpResponse( 
                         content_type = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
@@ -214,9 +215,6 @@ class StoreReport(View):
                         if tally_table:
                             tally_df = pd.DataFrame
                             
-                            
-                        
-                    
                     return response
         except Exception as e:
             print(e)
