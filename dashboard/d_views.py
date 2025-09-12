@@ -200,6 +200,9 @@ class StoreReport(View):
                         content_type = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
                     )
                     response['Content-Disposition'] = f'attachment; filename = {selected_report_type} : {from_date} - {to_date}.xlsx'
+                    if pivot_table:
+                        pass
+                    
                     return response
         except Exception as e:
             print(e)

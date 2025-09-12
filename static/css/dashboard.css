@@ -4,7 +4,6 @@
     --dash_bg: rgb(240, 233, 213);
     --module_bg :rgb(203, 255, 242);
 
-
     --small_gap : 5px;
 }
 
@@ -12,7 +11,7 @@
     background-color: rgb(207, 247, 245);
     display: flex;
     gap: var(--small_gap);
-    padding: 5px;
+    padding: var(--small_gap);
     width: 100vh; 
 }
 
@@ -40,14 +39,14 @@ a {
 .added-stores{
     display: flex;
     align-items: center; justify-items: center;
-    gap : 5px;
+    gap : var(--small_gap);
 }
 
 /* Store detail */
 .store-detail{
     display: flex;
     flex-wrap: wrap;
-    gap: 10px;
+    gap: var(--small_gap);
 }
 
 .dashboard-module{
@@ -71,4 +70,8 @@ select{
 }
 .date-range, .date{
     display: flex; gap: 5px;
+}
+
+.settlements{
+    display: flex;
 }

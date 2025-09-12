@@ -68,26 +68,29 @@
             </form>
         </div>
         {% endif %}
-    </div>
 
-    {% if settlements %}
-    <div class="dashboard-module">
-        <form method="POST" class="form" enctype='multipart/form-data'>
-            {% csrf_token %}
+        {% if settlements %}
+        <div class="dashboard-module">
             <h2 id="formTitle">Settlements</h2>
-            {% for settlement in settlements %}
-            <div class="settlement">
-                <h5>Id : {{settlement.reportId}}</h5>
-                <a href="">
-                    <button class="btn btn-primary">Download</button>
-                </a>
-            </div>
-            {% endfor %}
-            </div>
-        </form>
-        
-    {% endif %}
 
+            <div class="settlements">
+                {% for settlement in settlements %}
+                <form method="POST" id="settlementForm" class="form" enctype='multipart/form-data'>
+                    {% csrf_token %}
+                    <div class="settlement">
+                        <h5>Id : {{settlement.reportId}}</h5>
+                        <a href="">
+                            <button class="btn btn-primary">Download</button>
+                        </a>
+                    </div>
+                </form>
+                {% endfor %}
+            </div>
+            
+        </div>
+        {% endif %}
+
+    </div>
     {% else %} <!-- No added stores -->
         <h2>Add a store </h2>
     {% endif %}
