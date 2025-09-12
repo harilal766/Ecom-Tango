@@ -75,7 +75,7 @@ class SpapiOrderClient(SpapiBase):
         except Exception as e:
             print(e)
         else:
-            return date_list
+            return sorted(date_list)
             
     
     def get_order_df(self,**kwargs):
@@ -84,6 +84,8 @@ class SpapiOrderClient(SpapiBase):
             orders = self.api_model.get_orders(**kwargs)
             orders = orders.payload.get("Orders")
             df = pd.DataFrame(orders)
+            
+            
         except Exception as e:
             print(e)
         else:
@@ -136,9 +138,9 @@ class SpapiReportClient(SpapiBase):
                     elif report_status == 'CANCELLED':
                         df = "cancel"
                         break
-                    else:
-                        print(report_details)
+                
         except Exception as e:
             print(e)
         else:
+            print(report_details)
             return df 

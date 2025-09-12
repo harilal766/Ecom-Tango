@@ -57,7 +57,7 @@ a {
 }
 
 .selection-group{
-    display: flex;
+    display: flex; flex-wrap: wrap;
     gap: var(--small_gap)
 }
 
@@ -66,7 +66,9 @@ select{
 }
 
 .checkboxes{
-    display: flex; gap:var(--small_gap)
+    display: flex; gap:var(--small_gap);
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: bold;
 }
 .date-range, .date{
     display: flex; gap: 5px;
@@ -74,4 +76,9 @@ select{
 
 .settlements{
     display: flex;
+    width: 100vh;
+}
+
+.settlements form{
+    width: 100vh;
 }

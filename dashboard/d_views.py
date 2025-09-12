@@ -1,18 +1,20 @@
 from django.shortcuts import render, redirect
-
+from django.views import View
+from django.http import HttpResponse, FileResponse
 # Amazon
 from amazon.models import *
 from amazon.views import *
+from amazon.views import SpapiReportClient
+from amazon.views import SpapiReportClient
 # Shopify
 from shopify.sh_models import *
 # Dashboard
 from dashboard.d_models import StoreProfile
 from datetime import datetime
-from django.views import View
-from django.http import HttpResponse, FileResponse
 
 from utils import iso_8601_converter
-import time,requests
+from sp_api.api import Orders
+from datetime import datetime, timedelta
 import pandas as pd
 import openpyxl
 from io import StringIO, BytesIO
@@ -118,8 +120,7 @@ class Store(Dashboard, View):
             context['error'] = str(e)
             return render(request,"error.html", context=context, status=500)
     
-    
-from amazon.views import SpapiReportClient
+
 class StoreReport(View):
     def get(self,request,store_slug,report_id):
         report_df = None
@@ -144,13 +145,20 @@ class StoreReport(View):
                 return response
     
     def post(self,request,store_slug,ship_date=None):
-        report_client = None; report_df = None; pivot = True
+        report_df = None; pivot_df = None; tally_df = None 
+        sheets = (
+            {"Name" : "Report", "Content" : report_df},
+            {"Name" : "Pivot Table", "Content" : pivot_df},
+            {"Name" : "Tally Table", "Content" : tally_df}
+        )
+        
+        report_client = None;  pivot = True
         try:
             if request.method == "POST":
                 selected_store = StoreProfile.objects.get(user=request.user,slug=store_slug)
                 
                 selected_report_type = request.POST.get("report-type")
-                pivot_table = request.POST.get("pivot_table")
+                pivot_table = request.POST.get("pivot_table"); tally_table = request.POST.get("tally_table")
                 
                 from_date = request.POST.get("from"); to_date = request.POST.get("to")
                 print(f"Request datas : {request.POST}")
@@ -192,24 +200,29 @@ class StoreReport(View):
                 # based on the value of `True`, so it will always evaluate to `True` and execute the
                 # block of code following it.
                 if True:
-                    buffer = BytesIO()
-                    report_df.to_excel(buffer,sheet_name='Report', index=False, engine = 'openpyxl')
-                    buffer.seek(0)
-                    response = HttpResponse(
-                        buffer, 
+                    response = HttpResponse( 
                         content_type = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
                     )
                     response['Content-Disposition'] = f'attachment; filename = {selected_report_type} : {from_date} - {to_date}.xlsx'
-                    if pivot_table:
-                        pass
+                    
+                    with pd.ExcelWriter(response, engine='openpyxl') as writer:
+                        report_df.to_excel(writer,index=False,sheet_name="Report")
+                        if pivot_table:
+                            pivot_df = pd.DataFrame(data={'col1': [1, 2], 'col2': [3, 4]})
+                            pivot_df.to_excel(writer,index=False,sheet_name="Pivot Table")
+                            
+                        if tally_table:
+                            tally_df = pd.DataFrame
+                            
+                            
+                        
                     
                     return response
         except Exception as e:
             print(e)
             return HttpResponse(e)
         
-from sp_api.api import Orders
-from datetime import datetime, timedelta
+
 
 class Order(View):
     def post(self,request,store_slug):

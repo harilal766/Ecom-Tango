@@ -32,9 +32,9 @@
 
         {% if report_types %}
         <div class="dashboard-module">
+            <h2 id="formTitle">Reports</h2>
             <form method="POST" id="reportForm" class="form" enctype='multipart/form-data' action="{% url 'dashboard:create_report' store_slug=selected_store.slug %}">
                 {% csrf_token %}
-                <h2 id="formTitle">Reports</h2>
 
                 <div class="selection-group">
                     <select name="report-type" id="reportType" class="form-select" aria-label="Default select example">
@@ -58,9 +58,11 @@
                 </div>
                 
                 <div class="checkboxes">
-                    <label class="form-check-label" for="vehicle1">Pivot table</label><br>
+                    <label class="form-check-label" for="pivot_table">Pivot table</label><br>
                     <input class="form-check-input" type="checkbox" id="pivot_table" name="pivot_table" value="pivot_table">
 
+                    <label class="form-check-label" for="tally_table">Tally Table</label><br>
+                    <input class="form-check-input" type="checkbox" id="tally_table" name="tally_table" value="tally_table">
                 </div>
 
                 {% include 'date_range.html' %}
@@ -72,17 +74,14 @@
         {% if settlements %}
         <div class="dashboard-module">
             <h2 id="formTitle">Settlements</h2>
-
             <div class="settlements">
                 {% for settlement in settlements %}
                 <form method="POST" id="settlementForm" class="form" enctype='multipart/form-data'>
                     {% csrf_token %}
-                    <div class="settlement">
-                        <h5>Id : {{settlement.reportId}}</h5>
-                        <a href="">
-                            <button class="btn btn-primary">Download</button>
-                        </a>
-                    </div>
+                    <h5>{{settlement.reportId}}</h5>
+                    <a href="">
+                        <button class="btn btn-primary">Download</button>
+                    </a>
                 </form>
                 {% endfor %}
             </div>
