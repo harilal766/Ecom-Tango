@@ -38,6 +38,7 @@ def home(request):
         if request.user.is_authenticated:
             first_store = StoreProfile.objects.filter(user = request.user)[0]
             store_instance = Store()
+            #redirect(f"view_store/{first_store.slug}")
             return store_instance.get(request=request, store_slug=first_store.slug)
         else:
             return render(request,'home.html')
@@ -71,7 +72,6 @@ class Store(Dashboard, View):
             context["order_types"] = self.platform_specific_datas[selected_store.platform]["order_types"]
             context["report_types"] = self.platform_specific_datas[selected_store.platform]["report_types"]
             
-            
             return render(request,'dashboard.html',context = context)
         except Exception as e:
             return HttpResponse(e)
@@ -83,6 +83,7 @@ class Store(Dashboard, View):
         }
         new_store = None
         try:
+            """
             if request.method == "POST":
                 platform = request.POST.get("platform")
                 # verify the store name and create based on it
@@ -115,6 +116,7 @@ class Store(Dashboard, View):
                         new_shopify_store.save()
                         new_store = new_shopify_store
                     return home(request)
+                """
             return render(request,"add_store.html", context=context)
         except Exception as e:
             context['error'] = str(e)
@@ -191,6 +193,7 @@ class StoreReport(View):
                         report_df = report_df[
                             report_df["amazon-order-id"].isin(order_ids)
                         ]
+                    
                 elif selected_store.platform == "Shopify":
                     pass
                 # save df as csv file
@@ -199,7 +202,6 @@ class StoreReport(View):
                 # based on the value of `True`, so it will always evaluate to `True` and execute the
                 # block of code following it.
                 if report_df is not None:
-                    print(report_df.columns.to_list())
                     print(sheets)
                     response = HttpResponse( 
                         content_type = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
@@ -220,8 +222,6 @@ class StoreReport(View):
             print(e)
             return HttpResponse(e)
         
-
-
 class Order(View):
     def post(self,request,store_slug):
         try:

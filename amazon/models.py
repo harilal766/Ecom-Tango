@@ -43,10 +43,3 @@ class SpapiCredential(BaseCredential):
             return correction_count == len(credentials.keys())
         except Exception as e:
             print(e)
-            
-            
-from dashboard.d_models import ReportProfile
-
-class SpapiReportProfile(ReportProfile):
-    main_section = models.CharField(max_length=20)
-    sub_section = models.TextField(max_length=100)

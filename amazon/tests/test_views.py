@@ -28,7 +28,6 @@ class Test_SpapiOrderClient(Test_SpapiBase):
             PaymentMethod = "Standard" #Standard CashOnDelivery
         )
         self.assertGreater(len(ids),0)
-        print(len(ids))
         
     def test_get_shipping_dates(self):
         dates = self.test_api_model.get_shipping_dates()

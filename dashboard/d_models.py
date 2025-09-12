@@ -33,9 +33,6 @@ class BaseCredential(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     store = models.ForeignKey(StoreProfile,on_delete=models.CASCADE)
     
-    def __str__(self):
-        return f"{self.store.storename} - {self.store.platform}"
-    
     @classmethod
     def get_credentials(cls,user, store_slug):
         credentials = None
@@ -54,3 +51,11 @@ class BaseCredential(models.Model):
     
 class ReportProfile(BaseCredential):
     columns = models.CharField(max_length=1000)
+    main_section = models.CharField(max_length=20)
+    sub_section = models.TextField(max_length=100)
+    
+    def handle_report_data(self):
+        try:
+            return self.columns
+        except Exception as e:
+            print(e)

@@ -1,6 +1,6 @@
+
 /* Theme configuration */
 :root {
-
     --dash_bg: rgb(240, 233, 213);
     --module_bg :rgb(203, 255, 242);
 
@@ -11,7 +11,6 @@
     background-color: rgb(207, 247, 245);
     display: flex;
     gap: var(--small_gap);
-    padding: var(--small_gap);
     width: 100vh; 
 }
 
@@ -22,7 +21,6 @@
 /* Appearance*/
 .content{
     background-color: var(--dash_bg);
-    padding: var(--small_gap);
 }
 
 /* basic config*/
@@ -44,8 +42,7 @@ a {
 
 /* Store detail */
 .store-detail{
-    display: flex;
-    flex-wrap: wrap;
+    display: flex; flex-wrap: wrap;
     gap: var(--small_gap);
 }
 
@@ -53,7 +50,10 @@ a {
     background-color: var(--module_bg);
     border-radius: 5px;
     width: auto;
-    padding: var(--small_gap);
+}
+
+.dashboard-module form{
+    margin: 0;
 }
 
 .selection-group{
@@ -71,14 +71,12 @@ select{
     font-weight: bold;
 }
 .date-range, .date{
-    display: flex; gap: 5px;
+    display: flex; 
+    flex-wrap: wrap;
+    gap: 5px;
 }
+
 
 .settlements{
     display: flex;
-    width: 100vh;
-}
-
-.settlements form{
-    width: 100vh;
 }
