@@ -15,11 +15,11 @@
     <div class="store-detail">
         <!-- Request for order type -->
         {% if order_types %}
-        <div class="order">
+        <div class="dashboard-module">
             <h2>Orders</h2>  
             <form method="POST" class="form" enctype="multipart/form-data" action="{% url 'dashboard:orders' store_slug=selected_store.slug %}">
                 {% csrf_token %}
-                <select name="order-type">
+                <select name="order-type" class="form-select" aria-label="Default select example">
                     {% for type in order_types %}
                     <option>{{type}}</option>
                     {% endfor %}
@@ -27,27 +27,69 @@
                 {% include 'date_range.html' %}
                 <button type='submit' class="btn btn-primary">Get orders</button>
             </form> 
-            
         </div>
         {% endif %}
 
         {% if report_types %}
-        <div class="report">
-            <form method="POST" class="form" enctype='multipart/form-data' action="{% url 'dashboard:create_report' store_slug=selected_store.slug %}">
+        <div class="dashboard-module">
+            <h2 id="formTitle">Reports</h2>
+            <form method="POST" id="reportForm" class="form" enctype='multipart/form-data' action="{% url 'dashboard:create_report' store_slug=selected_store.slug %}">
                 {% csrf_token %}
-                <h2>Reports</h2>
-                <select name="report-type">
-                    {% for type in report_types %}
-                    <option>{{type}}</option>
-                    {% endfor %}
-                </select>
+
+                <div class="selection-group">
+                    <select name="report-type" id="reportType" class="form-select" aria-label="Default select example">
+                        {% for type in report_types %}
+                        <option>{{type}}</option>
+                        {% endfor %}
+                    </select>
+
+                    <select name = "payment_method" class="form-select" aria-label="Default select example">
+                        <option>CashOnDelivery</option>
+                        <option>Standard</option>
+                    </select>
+
+                    {% if shipping_dates %}
+                    <select name = "shipping_date" class="form-select" aria-label="Default select example">
+                        {% for date in shipping_dates %}
+                        <option>{{date}}</option>
+                        {% endfor %}
+                    </select>
+                    {% endif %}
+                </div>
+                
+                <div class="checkboxes">
+                    <label class="form-check-label" for="pivot_table">Pivot table</label><br>
+                    <input class="form-check-input" type="checkbox" id="pivot_table" name="pivot_table" value="pivot_table">
+
+                    <label class="form-check-label" for="tally_table">Tally Table</label><br>
+                    <input class="form-check-input" type="checkbox" id="tally_table" name="tally_table" value="tally_table">
+                </div>
+
                 {% include 'date_range.html' %}
-                <button type='submit' class="btn btn-primary">Generate Report</button>
+                <button id= "submitButton" type='submit' class="btn btn-primary">Generate Report</button>
             </form>
         </div>
         {% endif %}
-    </div>
 
+        {% if settlements %}
+        <div class="dashboard-module">
+            <h2 id="formTitle">Settlements</h2>
+            <div class="settlements">
+                {% for settlement in settlements %}
+                <form method="POST" id="settlementForm" class="form" enctype='multipart/form-data'>
+                    {% csrf_token %}
+                    <h5>{{settlement.reportId}}</h5>
+                    <a href="">
+                        <button class="btn btn-primary">Download</button>
+                    </a>
+                </form>
+                {% endfor %}
+            </div>
+            
+        </div>
+        {% endif %}
+
+    </div>
     {% else %} <!-- No added stores -->
         <h2>Add a store </h2>
     {% endif %}

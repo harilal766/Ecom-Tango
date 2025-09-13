@@ -43,3 +43,19 @@ const platformSelector = document.querySelector('select');
 platformSelector.addEventListener('change',(event)=>{
     storeForms(selection = event.target.value);
 });
+
+const ReportType = document.getElementById("reportType");
+const dateRangeHtml = document.getElementById("dateRange");
+const shipDateHtml = document.getElementById("shipDates")
+
+
+/* To make sure only a particular form will be affected */
+const reportForm = document.getElementById("reportForm");
+const formTitle = document.getElementById("formTitle");
+const submitButton = document.getElementById("submitButton");
+
+ReportType.addEventListener("change",()=>{
+    if (ReportType.value == "Order Report"){
+        reportForm.insertBefore(shipDateHtml,submitButton);
+    }
+});

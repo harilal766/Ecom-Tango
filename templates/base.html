@@ -8,17 +8,17 @@
 
     {% include 'connections.html' %}
 
-
-
 </head>
 <body>
     <!-- For other pages -->
-    <div class="leftright">
+    <div class="dashboard">
         {% include 'sidebar.html' %}
-        <div class="content">
+        <div class="right">
             {% include 'navbar.html' %}
-            {% block base %}
-            {% endblock %} 
+            <div class="content">
+                {% block base %}
+                {% endblock %} 
+            </div>
         </div>
     </div>
 </body>

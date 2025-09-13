@@ -1,19 +1,22 @@
 from django.shortcuts import render, redirect
-
+from django.views import View
+from django.http import HttpResponse, FileResponse
 # Amazon
 from amazon.models import *
 from amazon.views import *
+from amazon.views import SpapiReportClient
+from amazon.views import SpapiReportClient
 # Shopify
 from shopify.sh_models import *
 # Dashboard
 from dashboard.d_models import StoreProfile
 from datetime import datetime
-from django.views import View
-from django.http import HttpResponse, FileResponse
 
 from utils import iso_8601_converter
-import time,requests
+from sp_api.api import Orders
+from datetime import datetime, timedelta
 import pandas as pd
+import openpyxl
 from io import StringIO, BytesIO
 
 class Dashboard:
@@ -29,14 +32,14 @@ class Dashboard:
                 "report_types" : ("Order","Return")
             }
         }
-
-
 # Create your views here.
 def home(request):
     try:
+        print(request.user.is_superuser)
         if request.user.is_authenticated:
             first_store = StoreProfile.objects.filter(user = request.user)[0]
             store_instance = Store()
+            #redirect(f"view_store/{first_store.slug}")
             return store_instance.get(request=request, store_slug=first_store.slug)
         else:
             return render(request,'home.html')
@@ -49,11 +52,23 @@ class Store(Dashboard, View):
             "user" : request.user.username.capitalize(),
             "stores" : StoreProfile.objects.filter(user=request.user),
             "selected_store" : None,
-            "order_types" : None, "report_types" : None
+            "order_types" : None, "report_types" : None,
+            "settlements" : None,
+            "shipping_dates" : None
         }
-
         try:
             selected_store = StoreProfile.objects.get(user=request.user,slug=store_slug)
+            if selected_store.platform == "Amazon":
+                spapi_inst = SpapiCredential.objects.get(user = request.user, store = selected_store)
+                report_client = SpapiReportClient(credentials=spapi_inst.get_credentials()).api_model
+                order_client = SpapiOrderClient(credentials=spapi_inst.get_credentials())
+                
+                context["settlements"] = report_client.get_reports(
+                    reportTypes = ReportType.GET_V2_SETTLEMENT_REPORT_DATA_FLAT_FILE_V2
+                ).payload.get("reports")
+                
+                context["shipping_dates"] = order_client.get_shipping_dates()
+                
             context["selected_store"] = selected_store
             context["order_types"] = self.platform_specific_datas[selected_store.platform]["order_types"]
             context["report_types"] = self.platform_specific_datas[selected_store.platform]["report_types"]
@@ -69,6 +84,7 @@ class Store(Dashboard, View):
         }
         new_store = None
         try:
+            """
             if request.method == "POST":
                 platform = request.POST.get("platform")
                 # verify the store name and create based on it
@@ -101,79 +117,112 @@ class Store(Dashboard, View):
                         new_shopify_store.save()
                         new_store = new_shopify_store
                     return home(request)
+                """
             return render(request,"add_store.html", context=context)
         except Exception as e:
             context['error'] = str(e)
             return render(request,"error.html", context=context, status=500)
     
-    
-from amazon.views import SpapiReportClient
+
 class StoreReport(View):
-    def post(self,request,store_slug):
-        report_inst = None; report_df = None
+    def get(self,request,store_slug,report_id):
+        report_df = None
+        try:
+            selected_store = StoreProfile.objects.get(user=request.user,slug=store_slug)
+            if selected_store.platform == "Amazon" :
+                spapi_inst = SpapiCredential.objects.get(user = request.user, store = selected_store)
+                report_client = SpapiReportClient(credentials=spapi_inst.get_credentials())
+                report_df = report_client.create_report_df(reportId=report_id)
+        except Exception as e:
+            print(e)
+        else:
+            if report_df:
+                buffer = BytesIO()
+                report_df.to_excel(buffer,sheet_name='Report', index=False, engine = 'openpyxl')
+                buffer.seek(0)
+                response = HttpResponse(
+                    buffer,
+                    content_type = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+                )
+                response['Content-Disposition'] = f'attachment; filename = settlement : .xlsx'
+                return response
+    
+    def post(self,request,store_slug,ship_date=None):
+        report_df = None; pivot_df = None; tally_df = None 
+        sheets = (
+            {"Name" : "Report", "Content" : report_df},
+            {"Name" : "Pivot Table", "Content" : pivot_df},
+            {"Name" : "Tally Table", "Content" : tally_df}
+        )
+        
+        report_client = None;  pivot = True
         try:
             if request.method == "POST":
                 selected_store = StoreProfile.objects.get(user=request.user,slug=store_slug)
                 
                 selected_report_type = request.POST.get("report-type")
+                pivot_table = request.POST.get("pivot_table"); tally_table = request.POST.get("tally_table")
+                
                 from_date = request.POST.get("from"); to_date = request.POST.get("to")
+                print(f"Request datas : {request.POST}")
                 
                 if selected_store.platform == "Amazon":
                     spapi_inst = SpapiCredential.objects.get(user = request.user, store = selected_store)
+                    report_client = SpapiReportClient(credentials=spapi_inst.get_credentials())
                     
-                    report_client = ReportsV2(
-                        credentials=spapi_inst.get_credentials(),
-                        marketplace=Marketplaces.IN
-                    )
-                    report_id = report_client.create_report(
+                    order_client = SpapiOrderClient(credentials=spapi_inst.get_credentials())
+                    
+                    report_id = report_client.create_report_id(
                         reportType = permitted_amazon_report_types[selected_report_type],
                         dataStartTime = iso_8601_converter(from_date),
                         dataEndTime = iso_8601_converter(to_date)
-                    ).payload.get("reportId")
-                    while True:
-                        report_details = report_client.get_report(reportId=report_id)
-                        report_status = report_details.payload.get("processingStatus")
-                        time.sleep(10)
+                    )
+                    report_df = report_client.create_report_df(
+                        reportId=report_id
+                    )
+                    
+                    if selected_report_type == "Order Report":
+                        shipping_date = request.POST.get("shipping_date")
+                        method = request.POST.get("payment_method")
+                        order_ids  = order_client.get_order_ids(
+                            CreatedAfter = from_date,
+                            CreatedBefore = to_date,
+                            LatestShipDate = shipping_date,
+                            PaymentMethod = method
+                        )
                         
-                        print(report_status)
-                        
-                        if report_status == "DONE":
-                            doc_id = report_details.payload.get('reportDocumentId')
-                            report_df = doc_id
-                            report_url = report_client.get_report_document(
-                                reportDocumentId=doc_id
-                            ).payload.get('url')
-                            
-                            report_df = pd.read_csv(
-                                StringIO(requests.get(report_url).text),
-                                sep = '\t'
-                            )
-
-                            break
-                        elif report_status == 'CANCELLED':
-                            report_df = "cancel"
-                            break
-
+                        report_df = report_df[
+                            report_df["amazon-order-id"].isin(order_ids)
+                        ]
+                    
                 elif selected_store.platform == "Shopify":
                     pass
-                
-                
                 # save df as csv file
-                buffer = StringIO()
-                report_df.to_csv(buffer, index=False)
-                buffer.seek(0)
-                response = HttpResponse(
-                    buffer, content_type = 'text/csv' 
-                )
-                response['Content-Disposition'] = f'attachment; filename = {selected_report_type} : {from_date} - {to_date}.csv'
-                return response
+                # The `if True:` statement in the code snippet is not serving any functional purpose
+                # and appears to be a placeholder or a comment. It does not have any conditional logic
+                # based on the value of `True`, so it will always evaluate to `True` and execute the
+                # block of code following it.
+                if report_df is not None:
+                    print(sheets)
+                    response = HttpResponse( 
+                        content_type = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+                    )
+                    response['Content-Disposition'] = f'attachment; filename = {selected_report_type} : {from_date} - {to_date}.xlsx'
+                    
+                    with pd.ExcelWriter(response, engine='openpyxl') as writer:
+                        report_df.to_excel(writer,index=False,sheet_name="Report")
+                        if pivot_table:
+                            pivot_df = pd.DataFrame(data={'col1': [1, 2], 'col2': [3, 4]})
+                            pivot_df.to_excel(writer,index=False,sheet_name="Pivot Table")
+                            
+                        if tally_table:
+                            tally_df = pd.DataFrame
+                            
+                    return response
         except Exception as e:
             print(e)
             return HttpResponse(e)
         
-from sp_api.api import Orders
-from datetime import datetime, timedelta
-
 class Order(View):
     def post(self,request,store_slug):
         try:
