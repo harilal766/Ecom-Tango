@@ -5,14 +5,14 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.views import View
 
-from django.contrib.auth.forms import AuthenticationForm
+from authorization.forms import LoginForm
 
 # Create your views here.
 class AuthView(View):
     def get(self,request):
         form = None
         try:
-            form = AuthenticationForm()
+            form = LoginForm()
             return render(request,"auth/auth_form.html",{"form":form})
         except Exception as e:
             return HttpResponse(e)

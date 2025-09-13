@@ -1,3 +1,5 @@
+{% load static %}
+{% include 'connections.html' %}
 <div id="auth-div" class="form">
     <h2>Login</h2>
     <form method="POST" id="authForm" class="form" enctype="multipart/form-data" action="{% url 'authorization:login' %}">
