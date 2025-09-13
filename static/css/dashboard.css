@@ -7,11 +7,13 @@
     --small_gap : 5px;
 }
 
+
+.nav 
+
 .nav {
     background-color: rgb(207, 247, 245);
     display: flex;
     gap: var(--small_gap);
-    width: 100vh; 
 }
 
 .right{
@@ -21,6 +23,7 @@
 /* Appearance*/
 .content{
     background-color: var(--dash_bg);
+    padding: 5px;
 }
 
 /* basic config*/
@@ -70,13 +73,17 @@ select{
     font-family: Arial, Helvetica, sans-serif;
     font-weight: bold;
 }
-.date-range, .date{
-    display: flex; 
-    flex-wrap: wrap;
+.date-range{
+    display: flex;
     gap: 5px;
 }
 
-
 .settlements{
     display: flex;
+    gap:var(--small_gap);
+    flex-wrap: wrap;
+}
+
+div.settlements form{
+    width: auto;
 }

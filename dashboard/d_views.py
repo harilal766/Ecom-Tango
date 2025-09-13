@@ -35,6 +35,7 @@ class Dashboard:
 # Create your views here.
 def home(request):
     try:
+        print(request.user.is_superuser)
         if request.user.is_authenticated:
             first_store = StoreProfile.objects.filter(user = request.user)[0]
             store_instance = Store()
