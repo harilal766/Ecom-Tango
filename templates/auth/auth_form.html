@@ -1,0 +1,8 @@
+<div id="auth-div" class="form">
+    <h2>Login</h2>
+    <form method="POST" id="authForm" class="form" enctype="multipart/form-data" action="{% url 'authorization:login' %}">
+        {% csrf_token %}
+        {{form}}
+        <button type="submit" class="btn btn-primary">Sign in</button>
+    </form>
+</div>

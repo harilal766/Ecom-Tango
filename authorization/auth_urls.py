@@ -20,6 +20,6 @@ from authorization.auth_views import *
 app_name='authorization'
 
 urlpatterns = [
-    path('login',signin,name='login'),
+    path('login',  AuthView.as_view(),name='login'),
     path('logout',signout,name='logout')
 ]
