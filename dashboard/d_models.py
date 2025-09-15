@@ -6,9 +6,9 @@ from django.utils.text import slugify
 class StoreProfile(models.Model):
     slug = models.SlugField(unique=True, blank=True)
     user = models.ForeignKey(User,on_delete=models.CASCADE)
-    platform = models.CharField(max_length=30)
     storename = models.CharField(max_length=200)
-    created_date = models.CharField(max_length=200)
+    platform = models.CharField(max_length=30)
+    created_date = models.DateTimeField(auto_now_add=True)
     
     def __str__(self):
         return f"{self.storename} : {self.platform}"
@@ -32,6 +32,9 @@ class StoreProfile(models.Model):
 class BaseCredential(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     store = models.ForeignKey(StoreProfile,on_delete=models.CASCADE)
+    
+    def __str__(self):
+        return f"{self.store}"
     
     @classmethod
     def get_credentials(cls,user, store_slug):
