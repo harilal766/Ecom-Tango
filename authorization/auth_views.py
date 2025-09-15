@@ -12,7 +12,10 @@ class AuthView(View):
     def get(self,request):
         form = None
         try:
-            form = LoginForm()
+            if request.method == "POST":
+                form = LoginForm(request.POST)
+            else:
+                form = LoginForm()
             return render(request,"auth/auth_form.html",{"form":form})
         except Exception as e:
             return HttpResponse(e)

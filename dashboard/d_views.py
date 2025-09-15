@@ -37,10 +37,12 @@ def home(request):
     try:
         print(request.user.is_superuser)
         if request.user.is_authenticated:
-            first_store = StoreProfile.objects.filter(user = request.user)[0]
-            store_instance = Store()
-            #redirect(f"view_store/{first_store.slug}")
-            return store_instance.get(request=request, store_slug=first_store.slug)
+            first_store = StoreProfile.objects.filter(user = request.user).first()
+            if first_store:
+                store_instance = Store()
+                return store_instance.get(request=request, store_slug=first_store.slug)
+            else:
+                return render(request,"dashboard.html")
         else:
             return render(request,'home.html')
     except Exception as e:
