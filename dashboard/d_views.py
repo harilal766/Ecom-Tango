@@ -5,7 +5,6 @@ from django.http import HttpResponse, FileResponse
 from amazon.models import *
 from amazon.views import *
 from amazon.views import SpapiReportClient
-from amazon.views import SpapiReportClient
 # Shopify
 from shopify.sh_models import *
 # Dashboard
@@ -86,7 +85,6 @@ class Store(Dashboard, View):
         }
         new_store = None
         try:
-            """
             if request.method == "POST":
                 platform = request.POST.get("platform")
                 # verify the store name and create based on it
@@ -119,7 +117,7 @@ class Store(Dashboard, View):
                         new_shopify_store.save()
                         new_store = new_shopify_store
                     return home(request)
-                """
+                
             return render(request,"add_store.html", context=context)
         except Exception as e:
             context['error'] = str(e)
@@ -151,12 +149,6 @@ class StoreReport(View):
     
     def post(self,request,store_slug,ship_date=None):
         report_df = None; pivot_df = None; tally_df = None 
-        sheets = (
-            {"Name" : "Report", "Content" : report_df},
-            {"Name" : "Pivot Table", "Content" : pivot_df},
-            {"Name" : "Tally Table", "Content" : tally_df}
-        )
-        
         report_client = None;  pivot = True
         try:
             if request.method == "POST":
@@ -167,6 +159,7 @@ class StoreReport(View):
                 
                 from_date = request.POST.get("from"); to_date = request.POST.get("to")
                 print(f"Request datas : {request.POST}")
+                
                 
                 if selected_store.platform == "Amazon":
                     spapi_inst = SpapiCredential.objects.get(user = request.user, store = selected_store)
@@ -205,6 +198,11 @@ class StoreReport(View):
                 # based on the value of `True`, so it will always evaluate to `True` and execute the
                 # block of code following it.
                 if report_df is not None:
+                    sheets = (
+                        {"Name" : "Report", "Content" : report_df},
+                        {"Name" : "Pivot Table", "Content" : pivot_df},
+                        {"Name" : "Tally Table", "Content" : tally_df}
+                    )
                     print(sheets)
                     response = HttpResponse( 
                         content_type = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
@@ -213,12 +211,10 @@ class StoreReport(View):
                     
                     with pd.ExcelWriter(response, engine='openpyxl') as writer:
                         report_df.to_excel(writer,index=False,sheet_name="Report")
-                        if pivot_table:
-                            pivot_df = pd.DataFrame(data={'col1': [1, 2], 'col2': [3, 4]})
-                            pivot_df.to_excel(writer,index=False,sheet_name="Pivot Table")
-                            
-                        if tally_table:
-                            tally_df = pd.DataFrame
+                        
+                        for sheet in sheets:
+                            if sheet["Content"] is not None:
+                                sheet["Content"].to_excel(writer,index=False,sheet_name = sheet["Name"])
                             
                     return response
         except Exception as e:
