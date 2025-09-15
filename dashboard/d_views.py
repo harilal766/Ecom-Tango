@@ -192,11 +192,6 @@ class StoreReport(View):
                     
                 elif selected_store.platform == "Shopify":
                     pass
-                # save df as csv file
-                # The `if True:` statement in the code snippet is not serving any functional purpose
-                # and appears to be a placeholder or a comment. It does not have any conditional logic
-                # based on the value of `True`, so it will always evaluate to `True` and execute the
-                # block of code following it.
                 if report_df is not None:
                     sheets = (
                         {"Name" : "Report", "Content" : report_df},
@@ -215,8 +210,6 @@ class StoreReport(View):
                         main_section = selected_report_type,
                         sub_section = permitted_amazon_report_types[selected_report_type]
                     )
-                    print(new_report_profile)
-                    
                     
                     with pd.ExcelWriter(response, engine='openpyxl') as writer:
                         report_df.to_excel(writer,index=False,sheet_name="Report")

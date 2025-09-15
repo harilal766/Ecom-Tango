@@ -135,10 +135,15 @@ class SpapiReportClient(SpapiBase):
                     elif report_status == 'CANCELLED':
                         print("Cancelled")
                         break
-                print(report_details)
-                print(df)
+                    
                 if "order" in ReportType:
-                    pass
+                    order_client = SpapiOrderClient(credentials=self.credentials)
+                    ids = order_client.get_order_ids(
+                        CreatedBefore = report_details["dataStartTime"],
+                        CreatedAfter = report_details["dataEndTime"]
+                    )
+                    print(ids)
+                    
                 
         except Exception as e:
             print(e)
