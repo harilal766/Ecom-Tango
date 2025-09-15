@@ -135,6 +135,11 @@ class SpapiReportClient(SpapiBase):
                     elif report_status == 'CANCELLED':
                         print("Cancelled")
                         break
+                print(report_details)
+                print(df)
+                if "order" in ReportType:
+                    pass
+                
         except Exception as e:
             print(e)
         else:

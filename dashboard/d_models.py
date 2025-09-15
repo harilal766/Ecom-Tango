@@ -52,9 +52,9 @@ class BaseCredential(models.Model):
             return credentials
     
 class ReportProfile(BaseCredential):
-    columns = models.CharField(max_length=1000)
+    columns = models.TextField(max_length=1000)
     main_section = models.CharField(max_length=20)
-    sub_section = models.TextField(max_length=100)
+    sub_section = models.CharField(max_length=100)
     
     def handle_report_data(self):
         try:

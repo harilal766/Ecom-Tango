@@ -8,7 +8,7 @@ from amazon.views import SpapiReportClient
 # Shopify
 from shopify.sh_models import *
 # Dashboard
-from dashboard.d_models import StoreProfile
+from dashboard.d_models import StoreProfile,ReportProfile
 from datetime import datetime
 
 from utils import iso_8601_converter
@@ -208,6 +208,15 @@ class StoreReport(View):
                         content_type = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
                     )
                     response['Content-Disposition'] = f'attachment; filename = {selected_report_type} : {from_date} - {to_date}.xlsx'
+                    
+                    new_report_profile = ReportProfile.objects.get_or_create(
+                        user = request.user, store = selected_store,
+                        columns = ','.join(report_df.columns.tolist()),
+                        main_section = selected_report_type,
+                        sub_section = permitted_amazon_report_types[selected_report_type]
+                    )
+                    print(new_report_profile)
+                    
                     
                     with pd.ExcelWriter(response, engine='openpyxl') as writer:
                         report_df.to_excel(writer,index=False,sheet_name="Report")
