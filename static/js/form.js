@@ -54,14 +54,25 @@ const reportForm = document.getElementById("reportForm");
 const formTitle = document.getElementById("formTitle");
 const submitButton = document.getElementById("submitButton");
 
-ReportType.addEventListener("change",()=>{
-    if (ReportType.value == "Order Report"){
-        reportForm.insertBefore(shipDateHtml,submitButton);
+async function apiAccess(apiUrl){
+    try{
+        const response = await fetch(apiUrl);
+        if (!response.ok){
+            throw new Error(`Response : ${response.status}`);
+        }
+        const result = await response.json();
+        console.log(result);
+        return result;
     }
+    catch(error){
+        console.error(error.message);
+    }
+}
+const baseUrl = '/api/router/';
+
+ReportType.addEventListener("change",async ()=>{
+    let report = await apiAccess(apiUrl = baseUrl + '/reports');
+    console.log(report);
 });
-
-
-
-
 
 

@@ -17,6 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
+<<<<<<< HEAD
 from django.contrib.auth.models import User
 from rest_framework import routers, serializers, viewsets
 # Serializers define the API representation.
@@ -36,14 +37,24 @@ router.register(r'users', UserViewSet)
 
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browsable API.
+=======
+
+
+>>>>>>> e7821f5eb815f88c8a36995c66a3bc5e2cecd1e4
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('',include('dashboard.d_urls')),
     path('auth/',include('authorization.auth_urls')),
     #path('amazon/',include('amazon.a_urls')),
     #path('shopify/',include('shopify.urls')),
+<<<<<<< HEAD
     path('api-auth/',include('rest_framework.urls')),
     
     path('router/',include(router.urls)),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework'))
+=======
+    
+    # drf
+    path('api/',include('api.urls'))
+>>>>>>> e7821f5eb815f88c8a36995c66a3bc5e2cecd1e4
 ]
