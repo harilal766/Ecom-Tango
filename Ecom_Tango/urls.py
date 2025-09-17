@@ -26,4 +26,7 @@ urlpatterns = [
     path('auth/',include('authorization.auth_urls')),
     #path('amazon/',include('amazon.a_urls')),
     #path('shopify/',include('shopify.urls')),
+    
+    # drf
+    path('api-auth/', include('rest_framework.urls'))
 ]
