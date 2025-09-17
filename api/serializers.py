@@ -14,4 +14,4 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
 class ReportProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = ReportProfile
-        fields = ["user","store","columns"]
+        fields = "__all__"
