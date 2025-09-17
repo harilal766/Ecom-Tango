@@ -27,6 +27,5 @@ urlpatterns = [
     #path('shopify/',include('shopify.urls')),
     
     # drf
-    path('api-auth/', include('rest_framework.urls')),
-    path('api',include('api.urls'))
+    path('api/',include('api.urls'))
 ]
