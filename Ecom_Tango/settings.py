@@ -43,7 +43,7 @@ INSTALLED_APPS = [
     'authorization',
     'dashboard', 'amazon', 'shopify',
     # drf
-    'rest_framework'
+    'rest_framework','api'
 ]
 
 MIDDLEWARE = [
