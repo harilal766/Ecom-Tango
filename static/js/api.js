@@ -5,7 +5,6 @@ async function apiAccess(apiUrl){
             throw new Error(`Response : ${response.status}`);
         }
         const result = await response.json();
-        console.log(result);
         return result;
     }
     catch(error){

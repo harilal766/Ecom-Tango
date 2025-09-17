@@ -193,6 +193,13 @@ class StoreReport(View):
                 elif selected_store.platform == "Shopify":
                     pass
                 if report_df is not None:
+                    
+                    selected_columns = request.POST.getlist("report_column")
+                    if len(selected_columns) > 0:
+                        report_df = report_df[selected_columns]
+                    
+                    print(f"Selected : \n{report_df}")
+                    
                     sheets = (
                         {"Name" : "Report", "Content" : report_df},
                         {"Name" : "Pivot Table", "Content" : pivot_df},

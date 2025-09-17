@@ -1,3 +1,4 @@
+
 function storeForms(selection){
     const commonCredentials = ["Name of the store"]
     const formDict = {
@@ -54,6 +55,7 @@ const reportForm = document.getElementById("reportForm");
 const formTitle = document.getElementById("formTitle");
 const submitButton = document.getElementById("submitButton");
 
+
 async function apiAccess(apiUrl){
     try{
         const response = await fetch(apiUrl);
@@ -61,7 +63,6 @@ async function apiAccess(apiUrl){
             throw new Error(`Response : ${response.status}`);
         }
         const result = await response.json();
-        console.log(result);
         return result;
     }
     catch(error){
@@ -70,9 +71,35 @@ async function apiAccess(apiUrl){
 }
 const baseUrl = '/api/router/';
 
+
+let columnDiv = document.getElementById("columnCheckBoxes");
+
 ReportType.addEventListener("change",async ()=>{
-    let report = await apiAccess(apiUrl = baseUrl + '/reports');
-    console.log(report);
+    columnDiv.innerHTML = ""; /*resetting report column selector*/
+    let profiles = await apiAccess(apiUrl = baseUrl + 'reports');
+    let columns;
+    profiles.forEach((profile) => {
+        if (profile["main_section"] === ReportType.value){
+            columns = profile["columns"].split(",");
+        }
+    });
+    
+    if (columns.length > 0){
+        columns.forEach((column) =>{
+            let columnLabel = document.createElement("label");
+            columnLabel.className = "form-check-label"; 
+            columnLabel.innerText = column;
+
+            let columnInput = document.createElement("input");
+            columnInput.className = "form-check-input";
+            columnInput.type = "checkbox";
+            columnInput.name = "report_column"; columnInput.value = column;
+
+            columnDiv.appendChild(columnLabel);
+            columnDiv.appendChild(columnInput);
+
+        });
+    }
 });
 
 

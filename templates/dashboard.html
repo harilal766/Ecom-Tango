@@ -35,7 +35,6 @@
             <h2 id="formTitle">Reports</h2>
             <form method="POST" id="reportForm" class="form" enctype='multipart/form-data' action="{% url 'dashboard:create_report' store_slug=selected_store.slug %}">
                 {% csrf_token %}
-
                 <div class="selection-group">
                     <select name="report-type" id="reportType" class="form-select" aria-label="Default select example">
                         {% for type in report_types %}
@@ -56,6 +55,8 @@
                     </select>
                     {% endif %}
                 </div>
+
+                <div id="columnCheckBoxes"></div>
                 
                 <div class="checkboxes">
                     <label class="form-check-label" for="pivot_table">Pivot table</label><br>
