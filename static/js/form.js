@@ -54,14 +54,8 @@ const reportForm = document.getElementById("reportForm");
 const formTitle = document.getElementById("formTitle");
 const submitButton = document.getElementById("submitButton");
 
+
 ReportType.addEventListener("change",()=>{
-    if (ReportType.value == "Order Report"){
-        reportForm.insertBefore(shipDateHtml,submitButton);
-    }
+    console.log(0);
 });
-
-
-
-
-
 

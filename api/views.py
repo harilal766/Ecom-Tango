@@ -4,12 +4,10 @@ from rest_framework import permissions,viewsets
 
 from .serializers import UserSerializer, ReportProfileSerializer
 
-
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = [permissions.IsAuthenticated]
-
 
 class ReportProfileViewSet(viewsets.ModelViewSet):
     queryset = ReportProfile.objects.all()
