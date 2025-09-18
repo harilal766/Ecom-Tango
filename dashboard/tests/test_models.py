@@ -18,4 +18,6 @@ class TestStoreProfile(TestUser):
 class TestReportProfile(TestStoreProfile):
     def SetUp(self):
         super(TestReportProfile, self).setUp()
-        self.profile = 0
+        self.profile = ReportProfile.objects.get()
+        
+    

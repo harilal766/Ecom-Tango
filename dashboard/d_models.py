@@ -65,15 +65,16 @@ class ReportProfile(BaseCredential):
         except Exception as e:
             print(e)
             
-    def cache_report_columns(self,user,store,columns : list = None):
+    def cache_report_columns(self,user,store,
+        columns : list = None, sub_section : str = None
+        ):
         try:
             if user and store and columns:
                 report_profile = ReportProfile.objects.filter(
                     user = user, store = store
                 ).first()
                 if report_profile:
-                    report_profile
-                
-                
+                    report_profile.sub_section = sub_section
+                    report_profile.save()
         except Exception as e:
             print(e)

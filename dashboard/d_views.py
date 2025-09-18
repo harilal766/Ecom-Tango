@@ -74,7 +74,7 @@ class Store(Dashboard, View):
                 
             # Common configurations
             if report_client is not None:
-                report_client.cache_report_columns(user = request.user, store=selected_store)
+                pass
                 
             context["selected_store"] = selected_store
             context["order_types"] = self.platform_specific_datas[selected_store.platform]["order_types"]
@@ -198,8 +198,14 @@ class StoreReport(View):
                     
                 elif selected_store.platform == "Shopify":
                     pass
+                
+                
+                # updation of selected columns 
+                report_profile = ReportProfile.objects.get(user = request.userm, store = selected_store)
+                report_profile.cache_report_columns(user = request.user)
+                
+                
                 if report_df is not None:
-                    
                     selected_columns = request.POST.getlist("report_column")
                     if len(selected_columns) > 0:
                         report_df = report_df[selected_columns]
@@ -217,10 +223,7 @@ class StoreReport(View):
                     )
                     response['Content-Disposition'] = f'attachment; filename = {selected_report_type} : {from_date} - {to_date}.xlsx'
                     
-                    if report_client is not None:
-                        report_client.cache_report_columns(
-                            user=request.user, store=selected_store,columns=selected_columns
-                        )
+                    
                     
                     with pd.ExcelWriter(response, engine='openpyxl') as writer:
                         report_df.to_excel(writer,index=False,sheet_name="Report")
