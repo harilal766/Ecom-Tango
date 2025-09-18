@@ -164,7 +164,7 @@ class StoreReport(View):
                 pivot_table = request.POST.get("pivot_table"); tally_table = request.POST.get("tally_table")
                 
                 from_date = request.POST.get("from"); to_date = request.POST.get("to")
-                print(f"Request datas : {request.POST}")
+                #print(f"Request datas : {request.POST}")
                 
                 
                 if selected_store.platform == "Amazon":
@@ -199,25 +199,30 @@ class StoreReport(View):
                 elif selected_store.platform == "Shopify":
                     pass
                 
-                
-                # updation of selected columns 
-                report_profile = ReportProfile.objects.get(user = request.userm, store = selected_store)
-                report_profile.cache_report_columns(user = request.user)
-                
-                
                 if report_df is not None:
                     selected_columns = request.POST.getlist("report_column")
+                    
+                    # updation of selected columns 
+                    report_profile = ReportProfile.objects.filter(
+                        user = request.user, store = selected_store, 
+                        main_section = selected_report_type
+                    ).first()
+                
+                    print(f"reports {report_profile}")
+                    
+                    if report_profile:
+                        report_profile.cache_report_columns(
+                            selected_columns=selected_columns
+                        )
+                    
                     if len(selected_columns) > 0:
                         report_df = report_df[selected_columns]
-                    
-                    print(f"Selected : \n{report_df}")
                     
                     sheets = (
                         {"Name" : "Report", "Content" : report_df},
                         {"Name" : "Pivot Table", "Content" : pivot_df},
                         {"Name" : "Tally Table", "Content" : tally_df}
                     )
-                    print(sheets)
                     response = HttpResponse( 
                         content_type = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
                     )

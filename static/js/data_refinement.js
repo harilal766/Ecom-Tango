@@ -40,35 +40,41 @@ async function injectReportColumns(){
     try{
         columnDiv.innerHTML = ""; /*resetting report column selector*/
         let profiles = await apiAccess(apiUrl = baseUrl + 'reports');
-        let columns;
+        let columns; let selected_columns; 
         profiles.forEach((profile) => {
             if (profile["main_section"] === reportType.value){
                 columns = profile["columns"].split(",");
+                selected_columns = profile["selected_columns"].split(",");
             }
         });
         if (columns.length > 0){
-
             let columnCount = 0;
-        columns.forEach((column) =>{
-            columnCount ++;
-            let checkDiv = document.createElement("div");
-            checkDiv.className = "check";
+            columns.forEach((column) =>{
+                columnCount ++;
 
-            let columnLabel = document.createElement("label");
-            columnLabel.className = "form-check-label"; 
-            columnLabel.innerText = column;
+                console.log(columnCount);
 
-            let columnInput = document.createElement("input");
-            columnInput.className = "form-check-input";
-            columnInput.type = "checkbox";
-            columnInput.name = "report_column"; columnInput.value = column;
+                let checkDiv = document.createElement("div");
+                checkDiv.className = "check";
 
+                let columnLabel = document.createElement("label");
+                columnLabel.className = "form-check-label"; 
+                columnLabel.innerText = `${columnCount}. ${column}`;
 
-            checkDiv.appendChild(columnLabel);
-            checkDiv.appendChild(columnInput);
+                let columnInput = document.createElement("input");
+                columnInput.className = "form-check-input";
+                columnInput.type = "checkbox";
+                columnInput.name = "report_column"; columnInput.value = column;
 
-            columnDiv.appendChild(checkDiv);
-        });
+                if (selected_columns.includes(column)){
+                    columnInput.checked = true;
+                }
+
+                checkDiv.appendChild(columnLabel);
+                checkDiv.appendChild(columnInput);
+
+                columnDiv.appendChild(checkDiv);
+            });
     }
     }catch(error){
         console.error(error);
