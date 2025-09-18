@@ -51,15 +51,29 @@ class BaseCredential(models.Model):
         finally:
             return credentials
     
+from datetime import datetime
 class ReportProfile(BaseCredential):
     columns = models.TextField(max_length=1000)
     selected_columns = models.TextField(max_length=1000,blank=True)
     main_section = models.CharField(max_length=20)
     sub_section = models.CharField(max_length=100)
-    
+    updated_time = models.DateTimeField(auto_now_add=True,null=True)
     
     def handle_report_data(self):
         try:
             return self.columns
+        except Exception as e:
+            print(e)
+            
+    def cache_report_columns(self,user,store,columns : list = None):
+        try:
+            if user and store and columns:
+                report_profile = ReportProfile.objects.filter(
+                    user = user, store = store
+                ).first()
+                if report_profile:
+                    report_profile
+                
+                
         except Exception as e:
             print(e)

@@ -1,6 +1,6 @@
 from django.shortcuts import render
 
-from dashboard.d_models import StoreProfile
+from dashboard.d_models import StoreProfile, ReportProfile
 from .models import SpapiCredential
 
 from sp_api.api import Orders, ReportsV2
@@ -150,14 +150,3 @@ class SpapiReportClient(SpapiBase):
             if df is None:
                 print(report_details)
             return df 
-    
-    def cache_report_columns(self):
-        try:
-            for type, data in generatable_amazon_report_types.items():
-                report_id = self.create_report_id(
-                    reportType=data, dataStartTime=iso_8601_timestamp(1),
-                    dataEndTime=iso_8601_timestamp(0)
-                )
-                
-        except Exception as e:
-            print(e)

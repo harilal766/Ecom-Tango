@@ -6,9 +6,14 @@ from utils import iso_8601_timestamp, iso_8601_converter
 from sp_api.base.reportTypes import ReportType
 import pandas as pd
 
+from unittest import skip
+
+from dashboard.d_models import ReportProfile
+
 
 class Test_SpapiBase(TestSpapiCredential):
     def setUp(self):
+        
         super(Test_SpapiBase,self).setUp()
         self.test_credentials = self.spapi_inst.get_credentials()
         
@@ -58,6 +63,3 @@ class Test_SpapiReportClient(Test_SpapiBase):
             
             df = self.test_api_model.create_report_df(reportId=id)
             self.assertIsNotNone(df)
-            
-    def test_cache_report_columns(self):
-        pass

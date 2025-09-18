@@ -57,22 +57,24 @@ class Store(Dashboard, View):
             "settlements" : None,
             "shipping_dates" : None
         }
+        report_client = None; order_client = None
         try:
             selected_store = StoreProfile.objects.get(user=request.user,slug=store_slug)
             if selected_store.platform == "Amazon":
                 spapi_inst = SpapiCredential.objects.get(user = request.user, store = selected_store)
-                report_client = SpapiReportClient(credentials=spapi_inst.get_credentials()).api_model
+                report_client = SpapiReportClient(credentials=spapi_inst.get_credentials())
                 order_client = SpapiOrderClient(credentials=spapi_inst.get_credentials())
                 
-                context["settlements"] = report_client.get_reports(
+                context["settlements"] = report_client.api_model.get_reports(
                     reportTypes = ReportType.GET_V2_SETTLEMENT_REPORT_DATA_FLAT_FILE_V2
                 ).payload.get("reports")
                 
                 # store report columns to use later
-                
-                
-                
                 context["shipping_dates"] = order_client.get_shipping_dates()
+                
+            # Common configurations
+            if report_client is not None:
+                report_client.cache_report_columns(user = request.user, store=selected_store)
                 
             context["selected_store"] = selected_store
             context["order_types"] = self.platform_specific_datas[selected_store.platform]["order_types"]
@@ -215,12 +217,10 @@ class StoreReport(View):
                     )
                     response['Content-Disposition'] = f'attachment; filename = {selected_report_type} : {from_date} - {to_date}.xlsx'
                     
-                    report_profile_handling = ReportProfile.objects.get(
-                        user = request.user, store = selected_store,
-                        sub_section = generatable_amazon_report_types[selected_report_type]
-                    )
-                    
-                    print(report_profile_handling)
+                    if report_client is not None:
+                        report_client.cache_report_columns(
+                            user=request.user, store=selected_store,columns=selected_columns
+                        )
                     
                     with pd.ExcelWriter(response, engine='openpyxl') as writer:
                         report_df.to_excel(writer,index=False,sheet_name="Report")
