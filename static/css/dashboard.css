@@ -49,7 +49,7 @@ a {
 .dashboard-module{
     background-color: var(--module_bg);
     border-radius: 5px;
-    width: auto;
+    max-width: 500px;
 }
 
 .dashboard-module form{
@@ -70,6 +70,8 @@ select{
     display: flex; gap:var(--small_gap); flex-wrap: wrap;
     font-family: Arial, Helvetica, sans-serif;
     font-weight: bold;
+    padding:var(--small_gap);
+    background-color: #D0F2D7;
 }
 .date-range{
     display: flex;
@@ -80,6 +82,10 @@ select{
     display: flex;
     gap:var(--small_gap);
     flex-wrap: wrap;
+}
+.settlement{
+    display: flex;
+    gap: var(--small_gap);
 }
 
 div.settlements form{

@@ -30,6 +30,26 @@
         </div>
         {% endif %}
 
+        <!-- Settlement -->
+        {% if settlements %}
+        <div class="dashboard-module">
+            <h2 id="formTitle">Settlements</h2>
+            <div class="settlements">
+                {% for settlement in settlements %}
+                <form method="POST" id="settlementForm" class="form" enctype='multipart/form-data'>
+                    {% csrf_token %}
+                    <div class="settlement">
+                        <h5>{{settlement.reportId}}</h5>
+                        <a href="">
+                            <button class="btn btn-primary">Download</button>
+                        </a>
+                    </div>
+                </form>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
         {% if report_types %}
         <div class="dashboard-module">
             <h2 id="formTitle">Reports</h2>
@@ -58,6 +78,7 @@
 
                 <div id="columnCheckBoxes" class="checkboxes"></div>
                 
+                <h4>Additional Sheets</h4>
                 <div class="checkboxes">
                     <label class="form-check-label" for="pivot_table">Pivot table</label><br>
                     <input class="form-check-input" type="checkbox" id="pivot_table" name="pivot_table" value="pivot_table">
@@ -72,23 +93,7 @@
         </div>
         {% endif %}
 
-        {% if settlements %}
-        <div class="dashboard-module">
-            <h2 id="formTitle">Settlements</h2>
-            <div class="settlements">
-                {% for settlement in settlements %}
-                <form method="POST" id="settlementForm" class="form" enctype='multipart/form-data'>
-                    {% csrf_token %}
-                    <h5>{{settlement.reportId}}</h5>
-                    <a href="">
-                        <button class="btn btn-primary">Download</button>
-                    </a>
-                </form>
-                {% endfor %}
-            </div>
-            
-        </div>
-        {% endif %}
+        
 
     </div>
     {% else %} <!-- No added stores -->

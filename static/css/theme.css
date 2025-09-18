@@ -1,0 +1,11 @@
+/* Theme configuration */
+:root {
+    --dash_bg: rgb(240, 233, 213);
+    --module_bg :rgb(203, 255, 242);
+
+    --small_gap : 5px;
+
+    /* Titles */
+    --main_title : 23px;
+    --sub_title : 33px;
+}
