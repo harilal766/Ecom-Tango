@@ -32,7 +32,11 @@ const submitButton = document.getElementById("submitButton");
 
 let columnDiv = document.getElementById("columnCheckBoxes");
 
-async function filterReportColumns(){
+function injectReportFilters(){
+    
+}
+
+async function injectReportColumns(){
     try{
         columnDiv.innerHTML = ""; /*resetting report column selector*/
         let profiles = await apiAccess(apiUrl = baseUrl + 'reports');
@@ -42,22 +46,7 @@ async function filterReportColumns(){
                 columns = profile["columns"].split(",");
             }
         });
-    }catch(error){
-        console.error(error);
-    }
-}
-
-reportType.addEventListener("change",async ()=>{
-    columnDiv.innerHTML = ""; /*resetting report column selector*/
-    let profiles = await apiAccess(apiUrl = baseUrl + 'reports');
-    let columns;
-    profiles.forEach((profile) => {
-        if (profile["main_section"] === reportType.value){
-            columns = profile["columns"].split(",");
-        }
-    });
-    
-    if (columns.length > 0){
+        if (columns.length > 0){
         columns.forEach((column) =>{
             let columnLabel = document.createElement("label");
             columnLabel.className = "form-check-label"; 
@@ -72,4 +61,15 @@ reportType.addEventListener("change",async ()=>{
             columnDiv.appendChild(columnInput);
         });
     }
+    }catch(error){
+        console.error(error);
+    }
+}
+
+reportType.addEventListener("change",async ()=>{
+    injectReportColumns();
+});
+
+document.addEventListener("DOMContentLoaded",async ()=>{
+    injectReportColumns();
 });
