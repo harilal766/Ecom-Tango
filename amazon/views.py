@@ -22,7 +22,7 @@ amazon_reports_trial = {
     } 
 }
 
-permitted_amazon_report_types = {
+generatable_amazon_report_types = {
     "Order Report" : ReportType.GET_FLAT_FILE_ALL_ORDERS_DATA_BY_ORDER_DATE_GENERAL,
     "Return Report" : ReportType.GET_FLAT_FILE_RETURNS_DATA_BY_RETURN_DATE
 }
@@ -144,12 +144,20 @@ class SpapiReportClient(SpapiBase):
                         CreatedBefore = report_details["dataStartTime"],
                         CreatedAfter = report_details["dataEndTime"]
                     )
-                    print(ids)
-                    
-                
         except Exception as e:
             print(e)
         else:
             if df is None:
                 print(report_details)
             return df 
+    
+    def cache_report_columns(self):
+        try:
+            for type, data in generatable_amazon_report_types.items():
+                report_id = self.create_report_id(
+                    reportType=data, dataStartTime=iso_8601_timestamp(1),
+                    dataEndTime=iso_8601_timestamp(0)
+                )
+                
+        except Exception as e:
+            print(e)

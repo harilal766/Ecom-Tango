@@ -24,7 +24,7 @@ class Dashboard:
         self.platform_specific_datas = {
             "Amazon" : {
                 "order_types" : ("Pending","Unshipped", "Shipped"),
-                "report_types" : permitted_amazon_report_types
+                "report_types" : generatable_amazon_report_types
             },
             "Shopify" : {
                 "order_types" : ("unfulfilled","fulfilled"),
@@ -67,6 +67,10 @@ class Store(Dashboard, View):
                 context["settlements"] = report_client.get_reports(
                     reportTypes = ReportType.GET_V2_SETTLEMENT_REPORT_DATA_FLAT_FILE_V2
                 ).payload.get("reports")
+                
+                # store report columns to use later
+                
+                
                 
                 context["shipping_dates"] = order_client.get_shipping_dates()
                 
@@ -168,7 +172,7 @@ class StoreReport(View):
                     order_client = SpapiOrderClient(credentials=spapi_inst.get_credentials())
                     
                     report_id = report_client.create_report_id(
-                        reportType = permitted_amazon_report_types[selected_report_type],
+                        reportType = generatable_amazon_report_types[selected_report_type],
                         dataStartTime = iso_8601_converter(from_date),
                         dataEndTime = iso_8601_converter(to_date)
                     )
@@ -211,12 +215,12 @@ class StoreReport(View):
                     )
                     response['Content-Disposition'] = f'attachment; filename = {selected_report_type} : {from_date} - {to_date}.xlsx'
                     
-                    new_report_profile = ReportProfile.objects.get_or_create(
+                    report_profile_handling = ReportProfile.objects.get(
                         user = request.user, store = selected_store,
-                        columns = ','.join(report_df.columns.tolist()),
-                        main_section = selected_report_type,
-                        sub_section = permitted_amazon_report_types[selected_report_type]
+                        sub_section = generatable_amazon_report_types[selected_report_type]
                     )
+                    
+                    print(report_profile_handling)
                     
                     with pd.ExcelWriter(response, engine='openpyxl') as writer:
                         report_df.to_excel(writer,index=False,sheet_name="Report")

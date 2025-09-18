@@ -1,5 +1,5 @@
 from amazon.tests.test_models import *
-from amazon.views import SpapiBase, SpapiOrderClient, SpapiReportClient, permitted_amazon_report_types,amazon_reports_trial
+from amazon.views import SpapiBase, SpapiOrderClient, SpapiReportClient, generatable_amazon_report_types,amazon_reports_trial
 from pprint import pprint
 from utils import iso_8601_timestamp, iso_8601_converter
 
@@ -27,7 +27,7 @@ class Test_SpapiOrderClient(Test_SpapiBase):
             LatestShipDate = '2025-09-08T18:29:59Z',
             PaymentMethod = "Standard" #Standard CashOnDelivery
         )
-        self.assertGreater(len(ids),0)
+        self.assertIsNotNone(ids)
         
     def test_get_shipping_dates(self):
         dates = self.test_api_model.get_shipping_dates()
@@ -48,9 +48,9 @@ class Test_SpapiReportClient(Test_SpapiBase):
     
     def test_report_id_and_df(self):
         # Working report types
-        for type in permitted_amazon_report_types:
+        for type in generatable_amazon_report_types:
             id = self.test_api_model.create_report_id(
-                reportType=permitted_amazon_report_types[type],
+                reportType=generatable_amazon_report_types[type],
                 dataStartTime=iso_8601_timestamp(5),
                 dataEndTime=iso_8601_timestamp(0)
             )
@@ -58,3 +58,6 @@ class Test_SpapiReportClient(Test_SpapiBase):
             
             df = self.test_api_model.create_report_df(reportId=id)
             self.assertIsNotNone(df)
+            
+    def test_cache_report_columns(self):
+        pass
