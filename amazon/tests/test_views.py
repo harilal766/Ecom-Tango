@@ -31,6 +31,7 @@ class Test_SpapiOrderClient(Test_SpapiBase):
         
     def test_get_shipping_dates(self):
         dates = self.test_api_model.get_shipping_dates()
+        todays_shipping_timestamp = iso_8601_timestamp(0)
         self.assertGreater(len(dates),0)
         
     def test_get_order_df(self):

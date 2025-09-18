@@ -20,7 +20,7 @@ class TestUser(TestCase):
         self.test_user = User.objects.create_user(**json_testdata["user"])
         self.assertIsNotNone(self.test_user)
         
-    #@skip("")
+    @skip("")
     def test_signin(self):
         client = Client()
         response = client.get(

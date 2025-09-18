@@ -66,7 +66,9 @@ class SpapiOrderClient(SpapiBase):
     def get_shipping_dates(self):
         date_list = []
         try:
-            orders = self.api_model.get_orders(CreatedAfter = iso_8601_timestamp(10))
+            orders = self.api_model.get_orders(
+                CreatedAfter = iso_8601_timestamp(7)
+            )
             orders = orders.payload.get("Orders")
             for order in orders:
                 date = order["LatestShipDate"]
