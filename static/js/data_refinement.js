@@ -47,7 +47,13 @@ async function injectReportColumns(){
             }
         });
         if (columns.length > 0){
+
+            let columnCount = 0;
         columns.forEach((column) =>{
+            columnCount ++;
+            let checkDiv = document.createElement("div");
+            checkDiv.className = "check";
+
             let columnLabel = document.createElement("label");
             columnLabel.className = "form-check-label"; 
             columnLabel.innerText = column;
@@ -57,8 +63,11 @@ async function injectReportColumns(){
             columnInput.type = "checkbox";
             columnInput.name = "report_column"; columnInput.value = column;
 
-            columnDiv.appendChild(columnLabel);
-            columnDiv.appendChild(columnInput);
+
+            checkDiv.appendChild(columnLabel);
+            checkDiv.appendChild(columnInput);
+
+            columnDiv.appendChild(checkDiv);
         });
     }
     }catch(error){

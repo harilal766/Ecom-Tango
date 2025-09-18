@@ -58,21 +58,25 @@ a {
 }
 
 .selection-group{
-    display: flex; flex-wrap: wrap;
-    gap: var(--small_gap)
+    display: flex; gap: var(--small_gap);
+    flex-wrap: wrap;
 }
 
 select{
     width: 100vh;
 }
 
+.checkboxes, .check{
+    display: flex; gap:var(--small_gap);
+}
 .checkboxes{
-    display: flex; gap:var(--small_gap); flex-wrap: wrap;
+    flex-wrap: wrap;
     font-family: Arial, Helvetica, sans-serif;
     font-weight: bold;
     padding:var(--small_gap);
     background-color: #D0F2D7;
 }
+
 .date-range{
     display: flex;
     gap: 5px;
