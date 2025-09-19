@@ -25,7 +25,7 @@
                     {% endfor %}
                 </select>
                 {% include 'date_range.html' %}
-                <button type='submit' class="btn btn-dark">Get orders</button>
+                <button type='submit' class="btn btn-secondary">Get orders</button>
             </form> 
         </div>
         {% endif %}
@@ -41,7 +41,7 @@
                     <div class="settlement">
                         <h5>{{settlement.reportId}}</h5>
                         <a href="">
-                            <button class="btn btn-dark">Download</button>
+                            <button class="btn btn-secondary">Download</button>
                         </a>
                     </div>
                 </form>
@@ -85,17 +85,17 @@
                 <div class="checkboxes">
                     <div class="check">
                         <label class="form-check-label" for="pivot_table">Pivot table</label><br>
-                        <input class="form-check-input" type="checkbox" id="pivot_table" name="pivot_table" value="pivot_table">
+                        <input class="form-check-input" type="checkbox" id="pivot_table" name="additional_sheet" value="pivot_table">
                     </div>
                     
                     <div class="check">
                         <label class="form-check-label" for="tally_table">Tally Table</label><br>
-                        <input class="form-check-input" type="checkbox" id="tally_table" name="tally_table" value="tally_table">
+                        <input class="form-check-input" type="checkbox" id="tally_table" name="additional_sheet" value="tally_table">
                     </div>
                 </div>
 
                 {% include 'date_range.html' %}
-                <button id= "submitButton" type='submit' class="btn btn-dark">Generate Report</button>
+                <button id= "submitButton" type='submit' class="btn btn-secondary">Generate Report</button>
             </form>
         </div>
         {% endif %}

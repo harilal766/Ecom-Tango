@@ -1,8 +1,8 @@
 
 /* Theme configuration */
 :root {
-    --dash_bg: white;
-    --module_bg : white; 
+    --dash_bg: #FCFCFC;
+    --module_bg : #FCFCFC; 
 
     --small_gap : 5px;
 }
@@ -18,15 +18,12 @@ a {
 }
 
 /* Common Styles */
-.nav-list,
-div.settlements,
-.dashboard-module, #reportColumns, .date-range {
+.dashboard-module {
     border: 1px solid grey;
     border-radius: 10px;
+    box-shadow: 0 0 1px 1px lightgrey;
 }
-.sidebar, .nav{
-    border: 1px solid grey;
-}
+
 
 /* PADDING */
 .sidebar,.nav-list,
@@ -36,6 +33,7 @@ div.settlements,
 }
 .nav {
     display: flex; gap: var(--small_gap);
+    background-color: lightgrey;
 }
 
 /* Appearance*/
@@ -120,7 +118,7 @@ div.settlements form{
 .sidebar {
     box-sizing: content-box;
     min-width: 145px;
-    background-color: var(--module_bg);
+    background-color: #DBDBDB;
 }
 
 .nav-list {

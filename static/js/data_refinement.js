@@ -52,8 +52,6 @@ async function injectReportColumns(){
             columns.forEach((column) =>{
                 columnCount ++;
 
-                console.log(columnCount);
-
                 let checkDiv = document.createElement("div");
                 checkDiv.className = "check";
 
@@ -81,6 +79,15 @@ async function injectReportColumns(){
     }
 }
 
+async function additionalSheets(){
+    try{
+        let pivot = document.getElementById("pivot_table");
+        console.log
+    }
+    catch(error){
+        console.error(error);
+    }
+}
 
 reportType.addEventListener("change",async ()=>{
     injectReportColumns();
@@ -88,4 +95,12 @@ reportType.addEventListener("change",async ()=>{
 
 document.addEventListener("DOMContentLoaded",async ()=>{
     injectReportColumns();
+});
+
+let report_columns = document.getElementsByName("report_column");
+let extrasheets = document.getElementsByName("additional_sheet");
+extrasheets.forEach((sheet)=>{
+    sheet.addEventListener("click",()=>{
+        console.log(report_columns);
+    });
 });

@@ -161,11 +161,8 @@ class StoreReport(View):
                 selected_store = StoreProfile.objects.get(user=request.user,slug=store_slug)
                 
                 selected_report_type = request.POST.get("report-type")
-                pivot_table = request.POST.get("pivot_table"); tally_table = request.POST.get("tally_table")
                 
                 from_date = request.POST.get("from"); to_date = request.POST.get("to")
-                #print(f"Request datas : {request.POST}")
-                
                 
                 if selected_store.platform == "Amazon":
                     spapi_inst = SpapiCredential.objects.get(user = request.user, store = selected_store)
@@ -201,6 +198,9 @@ class StoreReport(View):
                 
                 if report_df is not None:
                     selected_columns = request.POST.getlist("report_column")
+                    additional_sheets = request.POST.getlist("additional_sheet")
+                    if additional_sheets:
+                        pass
                     
                     # updation of selected columns 
                     report_profile = ReportProfile.objects.filter(
@@ -224,6 +224,8 @@ class StoreReport(View):
                         content_type = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
                     )
                     response['Content-Disposition'] = f'attachment; filename = {selected_report_type} : {from_date} - {to_date}.xlsx'
+                    
+                    print(f"Request datas : {request.POST}")
                     
                     with pd.ExcelWriter(response, engine='openpyxl') as writer:
                         report_df.to_excel(writer,index=False,sheet_name="Report")
