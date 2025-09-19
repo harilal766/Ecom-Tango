@@ -81,6 +81,7 @@ async function injectReportColumns(){
     }
 }
 
+
 reportType.addEventListener("change",async ()=>{
     injectReportColumns();
 });
