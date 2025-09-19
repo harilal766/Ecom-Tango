@@ -41,7 +41,7 @@
                     <div class="settlement">
                         <h5>{{settlement.reportId}}</h5>
                         <a href="">
-                            <button class="btn btn-primary">Download</button>
+                            <button class="btn btn-secondary">Download</button>
                         </a>
                     </div>
                 </form>
@@ -76,15 +76,22 @@
                     {% endif %}
                 </div>
 
-                <div id="columnCheckBoxes" class="checkboxes"></div>
+                <div id="reportColumns">
+                    <h5>Select columns</h5>
+                    <div id="columnCheckBoxes" class="checkboxes"></div>
+                </div>
                 
-                <h4>Additional Sheets</h4>
+                <h4>Additional Sheets</h4><br>
                 <div class="checkboxes">
-                    <label class="form-check-label" for="pivot_table">Pivot table</label><br>
-                    <input class="form-check-input" type="checkbox" id="pivot_table" name="pivot_table" value="pivot_table">
-
-                    <label class="form-check-label" for="tally_table">Tally Table</label><br>
-                    <input class="form-check-input" type="checkbox" id="tally_table" name="tally_table" value="tally_table">
+                    <div class="check">
+                        <label class="form-check-label" for="pivot_table">Pivot table</label><br>
+                        <input class="form-check-input" type="checkbox" id="pivot_table" name="pivot_table" value="pivot_table">
+                    </div>
+                    
+                    <div class="check">
+                        <label class="form-check-label" for="tally_table">Tally Table</label><br>
+                        <input class="form-check-input" type="checkbox" id="tally_table" name="tally_table" value="tally_table">
+                    </div>
                 </div>
 
                 {% include 'date_range.html' %}
