@@ -1,8 +1,8 @@
 
 /* Theme configuration */
 :root {
-    --dash_bg: rgb(241, 241, 241);
-    --module_bg : rgb(241, 241, 241);
+    --dash_bg: white;
+    --module_bg : white; 
 
     --small_gap : 5px;
 }
