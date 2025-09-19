@@ -7,10 +7,24 @@
     --small_gap : 5px;
 }
 
+
+/* Common Styles */
+/* borders with round edge */
+.dashboard-module, .checkboxes, .date-range {
+    border: 1px solid black;
+    border-radius: 5px;
+}
+/* border only*/
+.nav{
+    border: 1px solid black;
+}
+
+/* PADDING */
+
+
 .nav {
-    background-color: rgb(207, 247, 245);
-    display: flex;
-    gap: var(--small_gap);
+    display: flex; gap: var(--small_gap);
+    padding: var(--small_gap);
 }
 
 .right{
@@ -48,7 +62,6 @@ a {
 
 .dashboard-module{
     background-color: var(--module_bg);
-    border: 1px solid black; border-radius: 5px;
     max-width: 500px;
 }
 
@@ -71,12 +84,11 @@ select{
 }
 .checkboxes{
     flex-wrap: wrap;
-    border: 1px solid black; border-radius: 5px;
     font-family: Arial, Helvetica, sans-serif;
     padding:var(--small_gap);
 }
 
-.date-range{
+.dates{
     display: flex;
     gap: 5px;
 }
