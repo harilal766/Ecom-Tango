@@ -2,6 +2,8 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils.text import slugify
 
+from datetime import datetime
+
 # Create your models here.
 class StoreProfile(models.Model):
     slug = models.SlugField(unique=True, blank=True)
@@ -53,10 +55,12 @@ class BaseCredential(models.Model):
     
 from datetime import datetime
 class ReportProfile(BaseCredential):
-    columns = models.TextField(max_length=1000)
-    selected_columns = models.TextField(max_length=1000,blank=True)
     main_section = models.CharField(max_length=20)
     sub_section = models.CharField(max_length=100)
+    columns = models.TextField(max_length=1000)
+    selected_columns = models.TextField(max_length=1000,blank=True)
+    pivot_table = models.BooleanField(default=False)
+    tally_table = models.BooleanField(default=False)
     updated_time = models.DateTimeField(auto_now_add=True,null=True)
     
     def handle_report_data(self):
@@ -68,7 +72,7 @@ class ReportProfile(BaseCredential):
     def cache_report_columns(self,selected_columns : str = None):
         try:
             if selected_columns:
-                self.selected_columns = ','.join(selected_columns) 
+                self.selected_columns = ','.join(selected_columns)
                 self.save()
         except Exception as e:
             print(e)

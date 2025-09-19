@@ -207,13 +207,10 @@ class StoreReport(View):
                         user = request.user, store = selected_store, 
                         main_section = selected_report_type
                     ).first()
-                
-                    print(f"reports {report_profile}")
-                    
                     if report_profile:
-                        report_profile.cache_report_columns(
-                            selected_columns=selected_columns
-                        )
+                        report_profile.selected_columns = ','.join(selected_columns)
+                        report_profile.updated_time = datetime.now()
+                        report_profile.save()
                     
                     if len(selected_columns) > 0:
                         report_df = report_df[selected_columns]

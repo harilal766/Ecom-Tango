@@ -7,24 +7,33 @@
     --small_gap : 5px;
 }
 
+.dashboard {
+    display: flex;
+}
+
+a {
+    font-weight: bold;
+    text-decoration: none;
+    color: black;
+}
 
 /* Common Styles */
-/* borders with round edge */
+.nav-list,
 .dashboard-module, .checkboxes, .date-range {
     border: 1px solid black;
     border-radius: 5px;
 }
-/* border only*/
-.nav{
+.sidebar, .nav{
     border: 1px solid black;
 }
 
 /* PADDING */
-
-
+.sidebar,.nav-list,
+.nav{
+    padding: var(--small_gap);
+}
 .nav {
     display: flex; gap: var(--small_gap);
-    padding: var(--small_gap);
 }
 
 .right{
@@ -37,16 +46,7 @@
     padding: 5px;
 }
 
-/* basic config*/
-.dashboard {
-    display: flex;
-}
 
-/* Link stylings */
-a {
-    font-weight: bold;
-    text-decoration: none;
-}
 
 .added-stores{
     display: flex;
@@ -63,6 +63,7 @@ a {
 .dashboard-module{
     background-color: var(--module_bg);
     max-width: 500px;
+    flex-grow: 3;
 }
 
 .dashboard-module form{
@@ -91,6 +92,11 @@ select{
 .dates{
     display: flex;
     gap: 5px;
+    padding: 5px;
+}
+.date{
+    display: flex;
+    gap:5px;
 }
 
 .settlements{
@@ -105,4 +111,35 @@ select{
 
 div.settlements form{
     width: auto;
+}
+
+
+/* Side bar */
+
+
+ul {
+    list-style-type: none;
+}
+
+.sidebar {
+    box-sizing: content-box;
+    min-width: 190px;
+    background-color: var(--module_bg);
+}
+
+.sidebar a{
+    font-weight: 550;
+}
+
+.site-name {
+    font-weight: bold;
+}
+
+.nav-list {
+    margin: 0px 0px 5px 0px;
+}
+
+.nav-list h6{
+    font-size: 12px;
+    font-weight: bold;
 }
