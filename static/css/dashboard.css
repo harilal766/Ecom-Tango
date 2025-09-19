@@ -19,13 +19,13 @@ a {
 
 /* Common Styles */
 .nav-list,
-div.settlements form,
+div.settlements,
 .dashboard-module, #reportColumns, .date-range {
-    border: 1px solid black;
-    border-radius: 5px;
+    border: 1px solid grey;
+    border-radius: 10px;
 }
 .sidebar, .nav{
-    border: 1px solid black;
+    border: 1px solid grey;
 }
 
 /* PADDING */
@@ -127,7 +127,7 @@ div.settlements form{
     margin: 0px 0px 5px 0px;
 }
 
-ul {
+li {
     list-style-type: none;
 }
 

@@ -25,7 +25,7 @@
                     {% endfor %}
                 </select>
                 {% include 'date_range.html' %}
-                <button type='submit' class="btn btn-primary">Get orders</button>
+                <button type='submit' class="btn btn-dark">Get orders</button>
             </form> 
         </div>
         {% endif %}
@@ -41,7 +41,7 @@
                     <div class="settlement">
                         <h5>{{settlement.reportId}}</h5>
                         <a href="">
-                            <button class="btn btn-secondary">Download</button>
+                            <button class="btn btn-dark">Download</button>
                         </a>
                     </div>
                 </form>
@@ -95,7 +95,7 @@
                 </div>
 
                 {% include 'date_range.html' %}
-                <button id= "submitButton" type='submit' class="btn btn-primary">Generate Report</button>
+                <button id= "submitButton" type='submit' class="btn btn-dark">Generate Report</button>
             </form>
         </div>
         {% endif %}
