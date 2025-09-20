@@ -1,5 +1,5 @@
 function cssDebugger() {
-    const debug_style = "1px solid black";
+    const debug_style = "0.5px dotted black";
     // find the element
     
     const elements = document.querySelectorAll("*"); 
