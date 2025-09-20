@@ -47,7 +47,7 @@ function injectCheckBoxes(checkNames, parentDiv, commonName){
                     checkValue = checkName;
                 }
                 else{
-                    console.log(0);
+                    checkValue = checkName.value;
                 }
                 if (checkValue){
                     columnCount ++;
