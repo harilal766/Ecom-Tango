@@ -64,7 +64,7 @@ function injectCheckBoxes(checkNames, parentDiv, commonName, preSelected){
                     columnInput.name = commonName; 
                     columnInput.value = checkValue;
 
-                    if (preSelected.includes(checkValue)){
+                    if (preSelected && preSelected.includes(checkValue)){
                         columnInput.checked = true;
                     }
 
@@ -123,11 +123,14 @@ function findSelectedCheckBoxes(checkBoxes){
 }
 
 let reportColumns = document.getElementsByName("report_column");
+console.log(findSelectedCheckBoxes(checkBoxes = reportColumns));
+
 let extrasheets = document.getElementsByName("additional_sheet");
 let pivotDiv = document.getElementById("pivotColumns");
 
 extrasheets.forEach((sheet)=>{
-    sheet.addEventListener("change",()=>{
+    sheet.addEventListener("change",(event)=>{
+        console.log(event);
         if (sheet.value === "pivot_table"){
             let indexSelector = document.createElement("select");
             indexSelector.className = "form-select"
