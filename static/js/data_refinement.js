@@ -38,31 +38,38 @@ function injectReportFilters(){
 
 function injectCheckBoxes(checkNames, parentDiv, commonName){
     try{
-        /* 
-        inject a div for each checkbox, 
-        the checkbox and its label should be inside it
-        */
+        parentDiv.innerHTML = ""
         if (checkNames.length > 0){
             let columnCount = 0;
             checkNames.forEach((checkName)=>{
-                columnCount ++;
-                let checkDiv = document.createElement("div");
-                checkDiv.className = "check";
+                let checkValue;
+                if (typeof(checkName) === "string"){
+                    checkValue = checkName;
+                }
+                else{
+                    console.log(0);
+                }
+                if (checkValue){
+                    columnCount ++;
+                    let checkDiv = document.createElement("div");
+                    checkDiv.className = "check";
 
-                let columnLabel = document.createElement("label");
-                columnLabel.className = "form-check-label"; 
-                columnLabel.innerText = `${columnCount}. ${checkName.value}`;
+                    let columnLabel = document.createElement("label");
+                    columnLabel.className = "form-check-label"; 
+                    columnLabel.innerText = `${columnCount}. ${checkValue}`;
 
-                let columnInput = document.createElement("input");
-                columnInput.className = "form-check-input";
-                columnInput.type = "checkbox";
-                columnInput.name = commonName; 
-                columnInput.value = checkName.value;
+                    let columnInput = document.createElement("input");
+                    columnInput.className = "form-check-input";
+                    columnInput.type = "checkbox";
+                    columnInput.name = commonName; 
+                    columnInput.value = checkValue;
 
-                checkDiv.appendChild(columnLabel);
-                checkDiv.appendChild(columnInput);
+                    checkDiv.appendChild(columnLabel);
+                    checkDiv.appendChild(columnInput);
 
-                parentDiv.appendChild(checkDiv);
+                    parentDiv.appendChild(checkDiv);
+
+                }
             });
         }
         
@@ -82,33 +89,7 @@ async function injectReportColumns(){
                 selected_columns = profile["selected_columns"].split(",");
             }
         });
-        if (columns.length > 0){
-            let columnCount = 0;
-            columns.forEach((column) =>{
-                columnCount ++;
-
-                let checkDiv = document.createElement("div");
-                checkDiv.className = "check";
-
-                let columnLabel = document.createElement("label");
-                columnLabel.className = "form-check-label"; 
-                columnLabel.innerText = `${columnCount}. ${column}`;
-
-                let columnInput = document.createElement("input");
-                columnInput.className = "form-check-input";
-                columnInput.type = "checkbox";
-                columnInput.name = "report_column"; columnInput.value = column;
-
-                if (selected_columns.includes(column)){
-                    columnInput.checked = true;
-                }
-
-                checkDiv.appendChild(columnLabel);
-                checkDiv.appendChild(columnInput);
-
-                columnDiv.appendChild(checkDiv);
-            });
-    }
+        injectCheckBoxes(checkNames = columns, parentDiv = columnDiv,commonName="report_column");
     }catch(error){
         console.error(error);
     }
@@ -140,7 +121,6 @@ let pivotDiv = document.getElementById("pivotColumns");
 
 extrasheets.forEach((sheet)=>{
     sheet.addEventListener("change",()=>{
-        console.log(sheet.value);
         if (sheet.value === "pivot_table"){
             let indexSelector = document.createElement("select");
             indexSelector.className = "form-select"
