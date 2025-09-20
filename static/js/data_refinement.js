@@ -36,6 +36,41 @@ function injectReportFilters(){
     
 }
 
+function injectCheckBoxes(checkNames, parentDiv, commonName){
+    try{
+        /* 
+        inject a div for each checkbox, 
+        the checkbox and its label should be inside it
+        */
+        if (checkNames.length > 0){
+            let columnCount = 0;
+            checkNames.forEach((checkName)=>{
+                columnCount ++;
+                let checkDiv = document.createElement("div");
+                checkDiv.className = "check";
+
+                let columnLabel = document.createElement("label");
+                columnLabel.className = "form-check-label"; 
+                columnLabel.innerText = `${columnCount}. ${checkName.value}`;
+
+                let columnInput = document.createElement("input");
+                columnInput.className = "form-check-input";
+                columnInput.type = "checkbox";
+                columnInput.name = commonName; 
+                columnInput.value = checkName.value;
+
+                checkDiv.appendChild(columnLabel);
+                checkDiv.appendChild(columnInput);
+
+                parentDiv.appendChild(checkDiv);
+            });
+        }
+        
+    } catch(error){
+        console.error(error);
+    }
+}
+
 async function injectReportColumns(){
     try{
         columnDiv.innerHTML = ""; /*resetting report column selector*/
@@ -89,18 +124,25 @@ async function additionalSheets(){
     }
 }
 
+
+
+let reportColumns = document.getElementsByName("report_column");
+let selectedReportColumns;
+
+let extrasheets = document.getElementsByName("additional_sheet");
+let pivotDiv = document.getElementById("pivotColumns");
+extrasheets.forEach((sheet)=>{
+    sheet.addEventListener("click",()=>{
+        console.log(reportColumns);
+        injectCheckBoxes(
+            checkNames=reportColumns, parentDiv=pivotDiv,commonName="pivot_columns"
+        );
+    });
+});
+
 reportType.addEventListener("change",async ()=>{
     injectReportColumns();
 });
-
 document.addEventListener("DOMContentLoaded",async ()=>{
     injectReportColumns();
-});
-
-let report_columns = document.getElementsByName("report_column");
-let extrasheets = document.getElementsByName("additional_sheet");
-extrasheets.forEach((sheet)=>{
-    sheet.addEventListener("click",()=>{
-        console.log(report_columns);
-    });
 });
