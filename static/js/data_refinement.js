@@ -36,7 +36,7 @@ function injectReportFilters(){
     
 }
 
-function injectCheckBoxes(checkNames, parentDiv, commonName){
+function injectCheckBoxes(checkNames, parentDiv, commonName, preSelected){
     try{
         parentDiv.innerHTML = ""
         if (checkNames.length > 0){
@@ -64,6 +64,10 @@ function injectCheckBoxes(checkNames, parentDiv, commonName){
                     columnInput.name = commonName; 
                     columnInput.value = checkValue;
 
+                    if (preSelected.includes(checkValue)){
+                        columnInput.checked = true;
+                    }
+
                     checkDiv.appendChild(columnLabel);
                     checkDiv.appendChild(columnInput);
 
@@ -89,7 +93,10 @@ async function injectReportColumns(){
                 selected_columns = profile["selected_columns"].split(",");
             }
         });
-        injectCheckBoxes(checkNames = columns, parentDiv = columnDiv,commonName="report_column");
+        injectCheckBoxes(
+            checkNames = columns, parentDiv = columnDiv,commonName="report_column",
+            preSelected = selected_columns
+        );
     }catch(error){
         console.error(error);
     }
