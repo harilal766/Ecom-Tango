@@ -137,14 +137,19 @@ async function additionalSheets(){
 
 extrasheets.forEach((sheet)=>{
     sheet.addEventListener("change",(event)=>{
-        if (sheet.value === "pivot_table"){
+        let pivotColumns = document.getElementById("pivotColumns");
+        pivotColumns.innerHTML = "";
+        if (sheet.checked == true){
+            if (sheet.value === "pivot_table"){
             let selectedReportColumns = findSelectedCheckBoxes(checkBoxes = reportColumns);
             injectCheckBoxes(
                 checkNames = selectedReportColumns,
-                parentDiv = document.getElementById("pivotColumns"),
+                parentDiv = pivotColumns,
                 commonName = "pivot_column"
             );
+            }
         }
+        
     });
 });
 
