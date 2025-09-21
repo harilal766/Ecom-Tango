@@ -47,6 +47,7 @@ function injectCheckBoxes(checkNames, parentDiv, commonName, preSelected){
                     checkValue = checkName;
                 }
                 else{
+                    console.log(typeof(checkName));
                     checkValue = checkName.value;
                 }
                 if (checkValue){
@@ -102,15 +103,6 @@ async function injectReportColumns(){
     }
 }
 
-async function additionalSheets(){
-    try{
-        let pivot = document.getElementById("pivot_table");
-        console.log
-    }
-    catch(error){
-        console.error(error);
-    }
-}
 
 function findSelectedCheckBoxes(checkBoxes){
     let selected = [];
@@ -133,10 +125,25 @@ let reportColumns = document.getElementsByName("report_column");
 let extrasheets = document.getElementsByName("additional_sheet");
 let pivotDiv = document.getElementById("pivotColumns");
 
+async function additionalSheets(){
+    try{
+        let pivot = document.getElementById("pivot_table");
+        console.log
+    }
+    catch(error){
+        console.error(error);
+    }
+}
+
 extrasheets.forEach((sheet)=>{
     sheet.addEventListener("change",(event)=>{
         if (sheet.value === "pivot_table"){
-            console.log(findSelectedCheckBoxes(checkBoxes = reportColumns));
+            let selectedReportColumns = findSelectedCheckBoxes(checkBoxes = reportColumns);
+            injectCheckBoxes(
+                checkNames = selectedReportColumns,
+                parentDiv = document.getElementById("pivotColumns"),
+                commonName = "pivot_column"
+            );
         }
     });
 });
