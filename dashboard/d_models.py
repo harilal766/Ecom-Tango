@@ -59,7 +59,7 @@ class ReportProfile(BaseCredential):
     sub_section = models.CharField(max_length=100)
     columns = models.TextField(max_length=1000)
     selected_columns = models.TextField(max_length=1000,blank=True)
-    pivot_table = models.BooleanField(default=False)
+    pivot_columns = models.TextField(max_length=1000, blank=True)
     tally_table = models.BooleanField(default=False)
     updated_time = models.DateTimeField(auto_now_add=True,null=True)
     

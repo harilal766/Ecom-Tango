@@ -200,7 +200,7 @@ class StoreReport(View):
                     selected_columns = request.POST.getlist("report_column")
                     additional_sheets = request.POST.getlist("additional_sheet")
                     if additional_sheets:
-                        pass
+                        print(f"Additional : {additional_sheets}")
                     
                     # updation of selected columns 
                     report_profile = ReportProfile.objects.filter(

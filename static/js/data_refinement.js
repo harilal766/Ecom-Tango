@@ -47,7 +47,6 @@ function injectCheckBoxes(checkNames, parentDiv, commonName, preSelected){
                     checkValue = checkName;
                 }
                 else{
-                    console.log(typeof(checkName));
                     checkValue = checkName.value;
                 }
                 if (checkValue){
