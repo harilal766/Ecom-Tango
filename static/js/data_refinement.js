@@ -113,31 +113,30 @@ async function additionalSheets(){
 }
 
 function findSelectedCheckBoxes(checkBoxes){
+    let selected = [];
     try{
-        checkBoxes.forEach(checkBox=>{
-            console.log(checkBox.value);
+        Array.from(checkBoxes).forEach(checkBox =>{
+            if (checkBox.checked == true){
+            console.log(checkBox.checked);
+                selected.push(checkBox);
+            }
         });
+        return selected;
     }catch(error){
         console.error(error)
     }
 }
 
+
 let reportColumns = document.getElementsByName("report_column");
-console.log(findSelectedCheckBoxes(checkBoxes = reportColumns));
 
 let extrasheets = document.getElementsByName("additional_sheet");
 let pivotDiv = document.getElementById("pivotColumns");
 
 extrasheets.forEach((sheet)=>{
     sheet.addEventListener("change",(event)=>{
-        console.log(event);
         if (sheet.value === "pivot_table"){
-            let indexSelector = document.createElement("select");
-            indexSelector.className = "form-select"
-            pivotDiv.appendChild(indexSelector);
-            injectCheckBoxes(
-                checkNames=reportColumns, parentDiv=pivotDiv,commonName="pivot_columns"
-            );
+            console.log(findSelectedCheckBoxes(checkBoxes = reportColumns));
         }
     });
 });
