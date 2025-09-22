@@ -36,9 +36,11 @@ function injectReportFilters(){
     
 }
 
-function injectCheckBoxes(checkNames, parentDiv, commonName, preSelected){
+function injectCheckBoxes(checkNames, parentDiv, commonName, preSelected,resetting = "off"){
     try{
-        parentDiv.innerHTML = ""
+        if (resetting !== "off"){
+            parentDiv.innerHTML = ""
+        }
         if (checkNames.length > 0){
             let columnCount = 0;
             checkNames.forEach((checkName)=>{
@@ -95,7 +97,7 @@ async function injectReportColumns(){
         });
         injectCheckBoxes(
             checkNames = columns, parentDiv = columnDiv,commonName="report_column",
-            preSelected = selected_columns
+            preSelected = selected_columns,resetting = "on"
         );
     }catch(error){
         console.error(error);
@@ -118,43 +120,78 @@ function findSelectedCheckBoxes(checkBoxes){
     }
 }
 
+function injectSelectTag(parentDiv,title,id,selectName,options){
+    try{
+        let selectDiv = document.createElement("div");
+
+
+        let injectedTitle = document.createElement("h5");
+        injectedTitle.innerText = title;
+
+        let injectedSelectTag = document.createElement("select");
+        injectedSelectTag.className = "form-select";
+        injectSelectTag.id = id; injectedSelectTag.name = selectName;
+
+        options.forEach(option => {
+            let injectedOption = document.createElement("option");
+            injectedOption.value = option.value;
+            injectedOption.innerText = option.value;
+
+            injectedSelectTag.appendChild(injectedOption);
+        });
+
+        selectDiv.appendChild(injectedTitle);
+        selectDiv.appendChild(injectedSelectTag);
+
+        parentDiv.appendChild(selectDiv);
+    } catch(error){
+        console.error(error);
+    }
+}
 
 let reportColumns = document.getElementsByName("report_column");
-
-let extrasheets = document.getElementsByName("additional_sheet");
 let pivotDiv = document.getElementById("pivotColumns");
 
 async function additionalSheets(){
     try{
-        let pivot = document.getElementById("pivot_table");
-        console.log
+        let extrasheets = document.getElementsByName("additional_sheet");
+        extrasheets.forEach((sheet)=>{
+            sheet.addEventListener("change",(event)=>{
+            let pivotColumns = document.getElementById("pivotColumns");
+            pivotColumns.innerHTML = "";
+            if (sheet.checked == true){
+                if (sheet.value === "pivot_table"){
+                    let selectedReportColumns = findSelectedCheckBoxes(checkBoxes = reportColumns);
+                    injectSelectTag(
+                        parentDiv=pivotColumns,
+                        title="Index",id="pivotIndex",selectName = "pivot_index",
+                        options = selectedReportColumns
+                    );
+
+                    injectCheckBoxes(
+                        checkNames = selectedReportColumns,
+                        parentDiv = pivotColumns,
+                        commonName = "pivot_column",resetting = "off"
+                    );
+                }
+            }                
+            });
+        });
     }
     catch(error){
         console.error(error);
     }
 }
 
-extrasheets.forEach((sheet)=>{
-    sheet.addEventListener("change",(event)=>{
-        let pivotColumns = document.getElementById("pivotColumns");
-        pivotColumns.innerHTML = "";
-        if (sheet.checked == true){
-            if (sheet.value === "pivot_table"){
-            let selectedReportColumns = findSelectedCheckBoxes(checkBoxes = reportColumns);
-            injectCheckBoxes(
-                checkNames = selectedReportColumns,
-                parentDiv = pivotColumns,
-                commonName = "pivot_column"
-            );
-            }
-        }
-        
-    });
-});
+
+
+
 
 reportType.addEventListener("change",async ()=>{
     injectReportColumns();
+    additionalSheets();
 });
 document.addEventListener("DOMContentLoaded",async ()=>{
     injectReportColumns();
+    additionalSheets();
 });

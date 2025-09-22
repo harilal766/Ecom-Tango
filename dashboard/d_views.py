@@ -18,6 +18,8 @@ import pandas as pd
 import openpyxl
 from io import StringIO, BytesIO
 
+from pprint import pprint
+
 class Dashboard:
     def __init__(self):
         self.supported_platforms = ("Amazon", "Shopify")
@@ -200,12 +202,18 @@ class StoreReport(View):
                     selected_columns = request.POST.getlist("report_column")
                     additional_sheets = request.POST.getlist("additional_sheet")
                     if additional_sheets:
-                        print(f"Additional : {additional_sheets}")
+                        for sheet in additional_sheets:
+                            if sheet == "pivot_table":
+                                pivot_index = request.POST.get("pivot_index")
+                                other_columns = request.POST.getlist("pivot_column")
+                                
+                                print(pivot_index)
+                                print(other_columns)
                     
                     # updation of selected columns 
                     report_profile = ReportProfile.objects.filter(
                         user = request.user, store = selected_store, 
-                        main_section = selected_report_type
+                        main_section = selected_report_type,
                     ).first()
                     if report_profile:
                         report_profile.selected_columns = ','.join(selected_columns)
@@ -225,7 +233,7 @@ class StoreReport(View):
                     )
                     response['Content-Disposition'] = f'attachment; filename = {selected_report_type} : {from_date} - {to_date}.xlsx'
                     
-                    print(f"Request datas : {request.POST}")
+                    pprint(f"Request datas : {request.POST}")
                     
                     with pd.ExcelWriter(response, engine='openpyxl') as writer:
                         report_df.to_excel(writer,index=False,sheet_name="Report")
@@ -234,6 +242,7 @@ class StoreReport(View):
                             if sheet["Content"] is not None:
                                 sheet["Content"].to_excel(writer,index=False,sheet_name = sheet["Name"])
                             
+                    
                     return response
         except Exception as e:
             print(e)
