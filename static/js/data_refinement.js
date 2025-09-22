@@ -32,11 +32,17 @@ const submitButton = document.getElementById("submitButton");
 
 let columnDiv = document.getElementById("columnCheckBoxes");
 
-function injectReportFilters(){
+class InjectHtml {
+    constructor(parentDiv,title){
+        this.parentDiv = parentDiv;
+        this.title = title;
+    }
+
     
 }
 
-function injectCheckBoxes(checkNames, parentDiv, commonName, preSelected,resetting = "off"){
+
+function injectCheckBoxes(checkNames,parentDiv,title, commonName, preSelected,resetting = "off"){
     try{
         if (resetting !== "off"){
             parentDiv.innerHTML = ""
@@ -84,12 +90,14 @@ function injectCheckBoxes(checkNames, parentDiv, commonName, preSelected,resetti
     }
 }
 
+
+
 async function injectReportColumns(){
     try{
         columnDiv.innerHTML = ""; /*resetting report column selector*/
-        let profiles = await apiAccess(apiUrl = baseUrl + 'reports');
+        let reportProfiles = await apiAccess(apiUrl = baseUrl + 'reports');
         let columns; let selected_columns; 
-        profiles.forEach((profile) => {
+        reportProfiles.forEach((profile) => {
             if (profile["main_section"] === reportType.value){
                 columns = profile["columns"].split(",");
                 selected_columns = profile["selected_columns"].split(",");
@@ -152,7 +160,9 @@ function injectSelectTag(parentDiv,title,id,selectName,options){
 let reportColumns = document.getElementsByName("report_column");
 let pivotDiv = document.getElementById("pivotColumns");
 
-async function additionalSheets(){
+async function additionalReportSheets(){
+    let profiles = await apiAccess(apiUrl = baseUrl + 'reports');
+    console.log(profiles);
     try{
         let extrasheets = document.getElementsByName("additional_sheet");
         extrasheets.forEach((sheet)=>{
@@ -167,6 +177,8 @@ async function additionalSheets(){
                         title="Index",id="pivotIndex",selectName = "pivot_index",
                         options = selectedReportColumns
                     );
+
+                    console.log(profiles);
 
                     injectCheckBoxes(
                         checkNames = selectedReportColumns,
@@ -185,13 +197,14 @@ async function additionalSheets(){
 
 
 
-
-
 reportType.addEventListener("change",async ()=>{
     injectReportColumns();
-    additionalSheets();
+    additionalReportSheets();
 });
+
 document.addEventListener("DOMContentLoaded",async ()=>{
     injectReportColumns();
-    additionalSheets();
+    additionalReportSheets();
 });
+
+
