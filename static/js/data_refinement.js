@@ -168,7 +168,6 @@ function findSelectedCheckBoxes(checkBoxes){
     try{
         Array.from(checkBoxes).forEach(checkBox =>{
             if (checkBox.checked == true){
-            console.log(checkBox.checked);
                 selected.push(checkBox);
             }
         });
@@ -183,7 +182,9 @@ async function configureAdditionalReportSheets(){
     let reportColumns = document.getElementsByName("report_column");
     let checkboxes = document.getElementsByName("additional_sheet");
 
-    let injector =  new injectHtml(parentDiv = sheetConfigDiv, title = "Select Pivot Columns", reset = true);
+    let injector =  new injectHtml(
+        parentDiv = sheetConfigDiv, title = "Select Pivot Columns", reset = true
+    );
 
     try{
         checkboxes.forEach(checkbox =>{
@@ -195,6 +196,8 @@ async function configureAdditionalReportSheets(){
                             commonName = "pivot_columns", preSelected = ""
                         );
                     }
+                } else {
+                    injector.resetinnerHtml();
                 }
             },true);
         });
