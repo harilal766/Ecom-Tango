@@ -11,22 +11,6 @@ class injectHtml{
         }
     }
 
-    async getPreSelectedData(endpoint = 'reports'){
-        try{
-            let reportProfiles = await apiAccess(apiUrl = baseUrl + endpoint);
-            let columns; let preselectedColumns;
-            reportProfiles.forEach((profile) => {
-                if (profile["main_section"] === reportType.value){
-                    columns = profile["columns"].split(",");
-                    preselectedColumns = profile["selected_columns"].split(",");
-                }
-            });
-            return preselectedColumns;
-        } catch (error){
-            console.error(error);
-        }
-    }
-
 
     injectTitle(){
         let titleDiv = document.createElement("div");
@@ -119,9 +103,23 @@ class injectHtml{
     }
 }
 
+async function getPreSelectedData(endpoint = 'reports',filtering_field,filtering_value,result_field){
+    let preselected;
+    try{
+        let reportProfiles = await apiAccess(apiUrl = baseUrl + endpoint);
+        for (const profile of reportProfiles){
+            if (profile[filtering_field] == filtering_value){
+                preselected = profile[result_field];
+                break;
+            }
+        }
+        return preselected;
+    } catch (error){
+        console.error(error);
+    }
+}
 
 const baseUrl = '/api/router/';
-
 async function apiAccess(apiUrl){
     try{
         const response = await fetch(apiUrl);
@@ -152,7 +150,12 @@ async function configureReportFiltration(){
             }
         });
 
-        let preselectedReportColumns = injector.getPreSelectedData(endpoint="reports");
+        let preselectedReportColumns = await getPreSelectedData(
+            endpoint="reports",
+            filtering_field="main_section",filtering_value="Order Report",
+            result_field = "pivot_columns"
+        );
+        console.log(preselectedReportColumns);
 
         injector.injectCheckBoxes(
             checkNames = columns,commonName="report_column",
@@ -181,28 +184,11 @@ async function configureAdditionalReportSheets(){
     let sheetConfigDiv = document.getElementById("sheetConfig");
     let reportColumns = document.getElementsByName("report_column");
     let checkboxes = document.getElementsByName("additional_sheet");
+    
+    let injector = new injectHtml(parentDiv = sheetConfigDiv, title = "Select",reset = true);
 
-    let injector =  new injectHtml(
-        parentDiv = sheetConfigDiv, title = "Select Pivot Columns", reset = true
-    );
+    let preselection = await apiAccess(apiUrl = baseUrl + "reports");
 
-    try{
-        checkboxes.forEach(checkbox =>{
-            if (checkbox.checked == true){
-                if (checkbox.value === "pivot_table"){
-                    injector.injectCheckBoxes(
-                    checkNames = findSelectedCheckBoxes(checkboxes = reportColumns),
-                    commonName = "pivot_columns"
-                    );
-                    console.log(`Click ${injector.title}`);
-                }
-            } else {
-                injector.resetinnerHtml();
-            }
-        });
-    } catch(error){
-        console.error(error);
-    }
 
 }
 
@@ -215,6 +201,7 @@ document.addEventListener("DOMContentLoaded",async ()=>{
 
 reportType.addEventListener("change",async ()=>{
     configureReportFiltration();
-    
 });
+
+
 
