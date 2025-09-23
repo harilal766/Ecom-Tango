@@ -188,13 +188,13 @@ async function configureAdditionalReportSheets(){
 
     try{
         checkboxes.forEach(checkbox =>{
-            console.log(event.target.checked);
             if (checkbox.checked == true){
                 if (checkbox.value === "pivot_table"){
                     injector.injectCheckBoxes(
                     checkNames = findSelectedCheckBoxes(checkboxes = reportColumns),
-                    commonName = "pivot_columns", preSelected = ""
+                    commonName = "pivot_columns"
                     );
+                    console.log(`Click ${injector.title}`);
                 }
             } else {
                 injector.resetinnerHtml();
@@ -215,5 +215,6 @@ document.addEventListener("DOMContentLoaded",async ()=>{
 
 reportType.addEventListener("change",async ()=>{
     configureReportFiltration();
+    
 });
 
