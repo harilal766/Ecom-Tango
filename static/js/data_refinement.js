@@ -89,6 +89,35 @@ class injectHtml{
             console.error(error);
         }
     }
+
+    injectSelectTag(id,selectName,options){
+        this.injectTitle();
+        try{
+            let selectDiv = document.createElement("div");
+
+            let injectedTitle = document.createElement("h5");
+            injectedTitle.innerText = title;
+
+            let injectedSelectTag = document.createElement("select");
+            injectedSelectTag.className = "form-select";
+            injectSelectTag.id = id; injectedSelectTag.name = selectName;
+
+            options.forEach(option => {
+                let injectedOption = document.createElement("option");
+                injectedOption.value = option.value;
+                injectedOption.innerText = option.value;
+
+                injectedSelectTag.appendChild(injectedOption);
+            });
+
+            selectDiv.appendChild(injectedTitle);
+            selectDiv.appendChild(injectedSelectTag);
+
+            this.parentDiv.appendChild(selectDiv);
+        } catch(error){
+            console.error(error);
+        }
+    }
 }
 
 
@@ -160,34 +189,7 @@ function findSelectedCheckBoxes(checkBoxes){
     }
 }
 
-function injectSelectTag(parentDiv,title,id,selectName,options){
-    try{
-        let selectDiv = document.createElement("div");
 
-
-        let injectedTitle = document.createElement("h5");
-        injectedTitle.innerText = title;
-
-        let injectedSelectTag = document.createElement("select");
-        injectedSelectTag.className = "form-select";
-        injectSelectTag.id = id; injectedSelectTag.name = selectName;
-
-        options.forEach(option => {
-            let injectedOption = document.createElement("option");
-            injectedOption.value = option.value;
-            injectedOption.innerText = option.value;
-
-            injectedSelectTag.appendChild(injectedOption);
-        });
-
-        selectDiv.appendChild(injectedTitle);
-        selectDiv.appendChild(injectedSelectTag);
-
-        parentDiv.appendChild(selectDiv);
-    } catch(error){
-        console.error(error);
-    }
-}
 
 let reportColumns = document.getElementsByName("report_column");
 let pivotDiv = document.getElementById("pivotColumns");
