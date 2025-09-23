@@ -79,7 +79,7 @@ class injectHtml{
                         checkDiv.appendChild(columnInput);
 
                         checksDiv.appendChild(checkDiv);
-                        parentDiv.appendChild(checksDiv);
+                        this.parentDiv.appendChild(checksDiv);
                     }
                 });
             }
@@ -136,7 +136,6 @@ async function apiAccess(apiUrl){
     }
 }
 
-
 async function configureReportFiltration(){
     let columnDiv = document.getElementById("reportColumns");
     let injector = new injectHtml(
@@ -152,7 +151,8 @@ async function configureReportFiltration(){
                 selected_columns = profile["selected_columns"].split(",");
             }
         });
-        let preselected_fields = injector.getPreSelectedData(endpoint="reports");
+
+        let preselectedReportColumns = injector.getPreSelectedData(endpoint="reports");
 
         injector.injectCheckBoxes(
             checkNames = columns,commonName="report_column",
@@ -178,17 +178,22 @@ function findSelectedCheckBoxes(checkBoxes){
     }
 }
 
-
-
 async function configureAdditionalReportSheets(){
     let sheetConfigDiv = document.getElementById("sheetConfig");
     let reportColumns = document.getElementsByName("report_column");
     let checkboxes = document.getElementsByName("additional_sheet");
+
+    let injector =  new injectHtml(parentDiv = sheetConfigDiv, title = "Select Pivot Columns", reset = true);
+
     try{
         checkboxes.forEach(checkbox =>{
             checkbox.addEventListener("change", ()=>{
                 if (checkbox.checked == true){
                     if (checkbox.value === "pivot_table"){
+                        injector.injectCheckBoxes(
+                            checkNames = findSelectedCheckBoxes(checkboxes = reportColumns),
+                            commonName = "pivot_columns", preSelected = ""
+                        );
                     }
                 }
             },true);

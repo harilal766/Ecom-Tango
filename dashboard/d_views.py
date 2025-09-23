@@ -194,6 +194,8 @@ class StoreReport(View):
                         report_df = report_df[
                             report_df["amazon-order-id"].isin(order_ids)
                         ]
+                        
+                        
                     
                 elif selected_store.platform == "Shopify":
                     pass
@@ -213,7 +215,6 @@ class StoreReport(View):
                                 )
                                 #pivot_df = pivot_df.reset_index().rename(columns={pivot_index : 'Row Labels'})
                                 
-                    
                     # updation of selected columns 
                     report_profile = ReportProfile.objects.filter(
                         user = request.user, store = selected_store, 
