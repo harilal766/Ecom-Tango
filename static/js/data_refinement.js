@@ -6,7 +6,7 @@ class injectHtml{
     }
 
     resetinnerHtml(){
-        if (this.reset == "on"){
+        if (this.reset == true){
             this.parentDiv.innerHTML = "";
         }
     }
@@ -78,7 +78,6 @@ class injectHtml{
                         checkDiv.appendChild(columnLabel);
                         checkDiv.appendChild(columnInput);
 
-
                         checksDiv.appendChild(checkDiv);
                         parentDiv.appendChild(checksDiv);
                     }
@@ -138,23 +137,14 @@ async function apiAccess(apiUrl){
 }
 
 
-const reportType = document.getElementById("reportType");
-const dateRangeHtml = document.getElementById("dateRange");
-const shipDateHtml = document.getElementById("shipDates")
-
-
-const reportForm = document.getElementById("reportForm");
-const formTitle = document.getElementById("formTitle");
-const submitButton = document.getElementById("submitButton");
-
-
-async function injectReportColumns(){
+async function configureReportFiltration(){
     let columnDiv = document.getElementById("reportColumns");
     let injector = new injectHtml(
-        parentDiv=columnDiv, title = "Select Report Columns", reset = "on"
+        parentDiv=columnDiv, title = "Select Report Columns", reset = true
     );
     try{
         let reportProfiles = await apiAccess(apiUrl = baseUrl + 'reports');
+        const reportType = document.getElementById("reportType");
         let columns; let selected_columns; 
         reportProfiles.forEach((profile) => {
             if (profile["main_section"] === reportType.value){
@@ -173,7 +163,6 @@ async function injectReportColumns(){
     }
 }
 
-
 function findSelectedCheckBoxes(checkBoxes){
     let selected = [];
     try{
@@ -191,46 +180,33 @@ function findSelectedCheckBoxes(checkBoxes){
 
 
 
-let reportColumns = document.getElementsByName("report_column");
-let pivotDiv = document.getElementById("pivotColumns");
-
-/*
-async function additionalReportSheets(){
-    let pivotColumns = document.getElementById("pivotColumns");
-    let injector = new injectHtml(parentDiv = pivotColumns,title = "Pivot Index",reset = "on");
+async function configureAdditionalReportSheets(){
+    let sheetConfigDiv = document.getElementById("sheetConfig");
+    let reportColumns = document.getElementsByName("report_column");
+    let checkboxes = document.getElementsByName("additional_sheet");
     try{
-        let extrasheets = document.getElementsByName("additional_sheet");
-        extrasheets.forEach((sheet)=>{
-            sheet.addEventListener("change",(event)=>{
-            
-            pivotColumns.innerHTML = "";
-            if (sheet.checked == true){
-                if (sheet.value === "pivot_table"){
-                    let selectedReportColumns = findSelectedCheckBoxes(checkBoxes = reportColumns);
-                    injectSelectTag(
-                        parentDiv=pivotColumns,
-                        title="Index",id="pivotIndex",selectName = "pivot_index",
-                        options = selectedReportColumns
-                    );
-
-                    injector.injectCheckBoxes(
-                        checkNames = selectedReportColumns,commonName="pivot_column",
-                        preSelected = 0
-                    )
+        checkboxes.forEach(checkbox =>{
+            checkbox.addEventListener("change", ()=>{
+                if (checkbox.checked == true){
+                    if (checkbox.value === "pivot_table"){
+                    }
                 }
-            }                
-            });
+            },true);
         });
-    }
-    catch(error){
+    } catch(error){
         console.error(error);
     }
+
 }
-*/
-reportType.addEventListener("change",async ()=>{
-    injectReportColumns();
+
+
+/* Events configuration */
+document.addEventListener("DOMContentLoaded",async ()=>{
+    configureReportFiltration();
+    configureAdditionalReportSheets();
 });
 
-document.addEventListener("DOMContentLoaded",async ()=>{
-    injectReportColumns();
+reportType.addEventListener("change",async ()=>{
+    configureReportFiltration();
 });
+
