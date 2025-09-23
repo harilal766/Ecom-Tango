@@ -43,6 +43,10 @@ class injectHtml{
         try{
             if (checkNames.length > 0){
                 this.injectTitle();
+
+                let checksDiv = document.createElement("div");
+                checksDiv.className = "checkboxes"
+
                 let columnCount = 0;
                 checkNames.forEach((checkName)=>{
                     let checkValue;
@@ -74,7 +78,9 @@ class injectHtml{
                         checkDiv.appendChild(columnLabel);
                         checkDiv.appendChild(columnInput);
 
-                        parentDiv.appendChild(checkDiv);
+
+                        checksDiv.appendChild(checkDiv);
+                        parentDiv.appendChild(checksDiv);
                     }
                 });
             }
@@ -113,10 +119,8 @@ const formTitle = document.getElementById("formTitle");
 const submitButton = document.getElementById("submitButton");
 
 
-let columnDiv = document.getElementById("columnCheckBoxes");
-
-
 async function injectReportColumns(){
+    let columnDiv = document.getElementById("reportColumns");
     let injector = new injectHtml(
         parentDiv=columnDiv, title = "Select Report Columns", reset = "on"
     );
@@ -220,7 +224,6 @@ async function additionalReportSheets(){
         console.error(error);
     }
 }
-
 */
 reportType.addEventListener("change",async ()=>{
     injectReportColumns();
