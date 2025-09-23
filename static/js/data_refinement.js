@@ -188,18 +188,17 @@ async function configureAdditionalReportSheets(){
 
     try{
         checkboxes.forEach(checkbox =>{
-            checkbox.addEventListener("change", ()=>{
-                if (checkbox.checked == true){
-                    if (checkbox.value === "pivot_table"){
-                        injector.injectCheckBoxes(
-                            checkNames = findSelectedCheckBoxes(checkboxes = reportColumns),
-                            commonName = "pivot_columns", preSelected = ""
-                        );
-                    }
-                } else {
-                    injector.resetinnerHtml();
+            console.log(event.target.checked);
+            if (checkbox.checked == true){
+                if (checkbox.value === "pivot_table"){
+                    injector.injectCheckBoxes(
+                    checkNames = findSelectedCheckBoxes(checkboxes = reportColumns),
+                    commonName = "pivot_columns", preSelected = ""
+                    );
                 }
-            },true);
+            } else {
+                injector.resetinnerHtml();
+            }
         });
     } catch(error){
         console.error(error);
