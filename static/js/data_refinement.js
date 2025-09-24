@@ -184,6 +184,8 @@ async function configureAdditionalReportSheet(){
         checkboxes.forEach(box => {
             box.addEventListener("change",() => {
                 let sheetDiv = document.createElement("div");
+                sheetDiv.id = box.id;
+
                 let injector = new injectHtml(
                     parentDiv = sheetDiv,title = "select columns",
                     reset = true
@@ -196,7 +198,8 @@ async function configureAdditionalReportSheet(){
                     );
                     sheetConfigDiv.appendChild(sheetDiv);
                 }else {
-                    sheetConfigDiv.innerHTML = "";
+                    console.log(sheetConfigDiv.innerHTML);
+                    console.log(sheetDiv.innerHTML);
                 }
             });
         });
