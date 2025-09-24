@@ -145,9 +145,6 @@ async function configureReportFiltration(){
             endpoint="reports",
             filtering_field="main_section",filtering_value=reportType.value
         );
-        console.log(preselectedReportColumns);
-
-        
         injector.injectCheckBoxes(
             checkNames = preselectedReportColumns["columns"].split(","),
             commonName="report_column",
@@ -173,23 +170,54 @@ function findSelectedCheckBoxes(checkBoxes){
     }
 }
 
-async function configureAdditionalReportSheets(){
+async function configureAdditionalReportSheet(){
+    let checkboxes = document.getElementsByName("additional_sheet");
     let sheetConfigDiv = document.getElementById("sheetConfig");
     let reportColumns = document.getElementsByName("report_column");
-    let checkboxes = document.getElementsByName("additional_sheet");
-    
-    let injector = new injectHtml(parentDiv = sheetConfigDiv, title = "Select",reset = true);
 
-    let preselection = await apiAccess(apiUrl = baseUrl + "reports");
+    let reportType = document.getElementById("reportType");
+    let preselection = await getPreSelectedData(
+        endpoint="reports",
+        filtering_field = "main_section", filtering_value = reportType.value
+    );
+    try{
+        console.log(preselection);
+        checkboxes.forEach(box => {
+            box.addEventListener("change",() => {
+                if (box.checked){
+                    let sheetDiv = document.createElement("div");
+                    let injector = new injectHtml(
+                        parentDiv = sheetDiv,title = "select columns",
+                        reset = true
+                    );
 
-
+                    injector.injectCheckBoxes(
+                        checkNames = preselection["selected_columns"].split(","),
+                        commonName = box.id,
+                        preSelected = preselection["pivot_columns"]
+                    );
+                    
+                    sheetConfigDiv.appendChild(sheetDiv);
+                }
+            });
+        });
+    } catch(error){
+        console.error(error);
+    }
 }
 
 
+configureAdditionalReportSheet()
 /* Events configuration */
+
+
 document.addEventListener("DOMContentLoaded",async ()=>{
     configureReportFiltration();
-    configureAdditionalReportSheets();
+
+    let checkboxes = document.getElementsByName("additional_sheet");
+    checkboxes.forEach(box => {
+        box.checked = false;
+    });
 });
 
 reportType.addEventListener("change",async ()=>{
