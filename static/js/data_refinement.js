@@ -181,23 +181,22 @@ async function configureAdditionalReportSheet(){
         filtering_field = "main_section", filtering_value = reportType.value
     );
     try{
-        console.log(preselection);
         checkboxes.forEach(box => {
             box.addEventListener("change",() => {
+                let sheetDiv = document.createElement("div");
+                let injector = new injectHtml(
+                    parentDiv = sheetDiv,title = "select columns",
+                    reset = true
+                );
                 if (box.checked){
-                    let sheetDiv = document.createElement("div");
-                    let injector = new injectHtml(
-                        parentDiv = sheetDiv,title = "select columns",
-                        reset = true
-                    );
-
                     injector.injectCheckBoxes(
                         checkNames = preselection["selected_columns"].split(","),
                         commonName = box.id,
                         preSelected = preselection["pivot_columns"]
                     );
-                    
                     sheetConfigDiv.appendChild(sheetDiv);
+                }else {
+                    sheetConfigDiv.innerHTML = "";
                 }
             });
         });
