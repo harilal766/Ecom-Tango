@@ -190,7 +190,7 @@ async function configureAdditionalReportSheet(){
                     reset = true
                 );
                 if (box.checked){
-                    title = "Select Pivot Index"
+                    title = "Index"
                     if (box.value == "pivot_table"){
                         injector.injectSelectTag(
                             id=box.id, selectName = "pivot_index",

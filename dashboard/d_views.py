@@ -218,6 +218,8 @@ class StoreReport(View):
                                     )
                                     pivot_df = pivot_df.reset_index().rename(columns={pivot_index: 'Row Labels'})
                                     print(f"pivot : {pivot_df}")
+                            elif sheet == 'tally_table':
+                                tally_df = None
                     # updation of selected columns 
                     report_profile = ReportProfile.objects.filter(
                         user = request.user, store = selected_store, 
