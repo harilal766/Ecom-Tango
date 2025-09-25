@@ -74,27 +74,18 @@ class injectHtml{
     }
 
     injectSelectTag(id,selectName,options){
-        this.injectTitle();
+        this.resetinnerHtml();
         try{
             let selectDiv = document.createElement("div");
+            selectDiv.id = id;
 
+            /* Title for index*/
             let injectedTitle = document.createElement("h5");
             injectedTitle.innerText = title;
-
-            let injectedSelectTag = document.createElement("select");
-            injectedSelectTag.className = "form-select";
-            injectSelectTag.id = id; injectedSelectTag.name = selectName;
-
-            options.forEach(option => {
-                let injectedOption = document.createElement("option");
-                injectedOption.value = option.value;
-                injectedOption.innerText = option.value;
-
-                injectedSelectTag.appendChild(injectedOption);
-            });
-
             selectDiv.appendChild(injectedTitle);
-            selectDiv.appendChild(injectedSelectTag);
+
+            let injectedSelect = document.createElement("select");
+            selectDiv.appendChild(injectedSelect);
 
             this.parentDiv.appendChild(selectDiv);
         } catch(error){
@@ -187,15 +178,22 @@ async function configureAdditionalReportSheet(){
                 sheetDiv.id = box.id;
 
                 let injector = new injectHtml(
-                    parentDiv = sheetDiv,title = "select columns",
+                    parentDiv = sheetDiv,title = "select Index",
                     reset = true
                 );
                 if (box.checked){
+                    injector.injectSelectTag(
+                        id=box.id, selectName = box.id,
+                        options = preselection["pivot_columns"].split(",")
+                    ); 
+
+                    injector.reset = false; injector.title = "select Pivot Columns"
                     injector.injectCheckBoxes(
                         checkNames = preselection["selected_columns"].split(","),
                         commonName = box.id,
                         preSelected = preselection["pivot_columns"].split(",")
                     );
+                    
                     sheetConfigDiv.appendChild(sheetDiv);
                 }else {
                     sheetConfigDiv.innerHTML = "";

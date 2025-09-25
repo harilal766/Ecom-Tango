@@ -208,10 +208,7 @@ class StoreReport(View):
                             if sheet == "pivot_table":
                                 pivot_index = request.POST.get("pivot_index")
                                 other_pivot_columns = request.POST.getlist("pivot_table")
-
                                 print(pivot_index, other_pivot_columns, sep = "\n")
-                                #pivot_df = pivot_df.reset_index().rename(columns={pivot_index : 'Row Labels'})
-                                
                     # updation of selected columns 
                     report_profile = ReportProfile.objects.filter(
                         user = request.user, store = selected_store, 
