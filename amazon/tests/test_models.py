@@ -15,7 +15,7 @@ class TestSpapiCredential(TestStoreProfile):
         super(TestSpapiCredential,self).setUp()
         self.spapi_inst = SpapiCredential.objects.create(
             **{
-                "user" : self.test_user, "store" : self.store,
+                "user" : self.test_user, "store" : self.test_store,
                **json_testdata["amazon"]
             }
         )
@@ -27,3 +27,4 @@ class TestSpapiCredential(TestStoreProfile):
             self.spapi_inst.are_credentials_verified(),
             True
         )
+        

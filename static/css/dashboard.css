@@ -1,0 +1,142 @@
+
+/* Theme configuration */
+:root {
+    --dash_bg: #FCFCFC;
+    --module_bg : #FCFCFC; 
+
+    --small_gap : 5px;
+}
+
+.dashboard {
+    display: flex;
+}
+
+a {
+    font-weight: bold;
+    text-decoration: none;
+    color: black;
+}
+
+/* Common Styles */
+.dashboard-module {
+    border: 1px solid grey;
+    border-radius: 10px;
+    box-shadow: 0 0 1px 1px lightgrey;
+}
+
+
+/* PADDING */
+.sidebar,.nav-list,
+.nav, .dashboard-module,.settlements
+{
+    padding: var(--small_gap);
+}
+.nav {
+    display: flex; gap: var(--small_gap);
+    background-color: lightgrey;
+}
+
+/* Appearance*/
+.content{
+    background-color: var(--dash_bg);
+    padding: 5px;
+}
+
+.added-stores{
+    display: flex;
+    align-items: center; justify-items: center;
+    gap : var(--small_gap);
+}
+
+/* Store detail */
+.store-detail{
+    display: flex; flex-wrap: wrap;
+    gap: var(--small_gap);
+}
+
+.dashboard-module{
+    background-color: var(--module_bg);
+    max-width: 500px;
+    flex-grow: 3; flex-shrink: 4;
+}
+
+.dashboard-module form{
+    margin: 0;
+    padding: 5px;
+}
+
+.selection-group{
+    display: flex; gap: var(--small_gap);
+    flex-wrap: wrap;
+}
+
+select{
+    width: 100vh;
+}
+
+.checkboxes, .check{
+    display: flex; gap:var(--small_gap);
+}
+.checkboxes{
+    flex-wrap: wrap;
+    font-family: Arial, Helvetica, sans-serif;
+    padding:var(--small_gap);
+}
+
+#reportColumns{
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.dates{
+    display: flex;
+    gap: 5px;
+    padding: 5px;
+}
+.date{
+    display: flex;
+    gap:3px;
+}
+
+.settlements{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+div.settlements form{
+    width: auto;
+}
+
+.settlement{
+    display: flex;
+    gap: var(--small_gap);
+}
+
+
+/* Side bar */
+.sidebar {
+    box-sizing: content-box;
+    min-width: 145px;
+    background-color: #DBDBDB;
+}
+
+.nav-list {
+    margin: 0px 0px 5px 0px;
+}
+
+li {
+    list-style-type: none;
+}
+
+.sidebar a{
+    font-weight: 550;
+}
+
+.site-name {
+    font-weight: bold;
+}
+
+.nav-list ul {
+    display: inline;
+}

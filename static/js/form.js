@@ -1,3 +1,4 @@
+
 function storeForms(selection){
     const commonCredentials = ["Name of the store"]
     const formDict = {
@@ -43,3 +44,4 @@ const platformSelector = document.querySelector('select');
 platformSelector.addEventListener('change',(event)=>{
     storeForms(selection = event.target.value);
 });
+

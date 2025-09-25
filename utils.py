@@ -12,3 +12,17 @@ def iso_8601_timestamp(days):
     return (
         datetime.now()- timedelta(days=days)
     ).isoformat()
+    
+    
+class ExcelUtilities:
+    def pivot_table(self,allowed_columns:list):
+        try:
+            pass
+        except Exception as e:
+            print(e)
+            
+    def tally_table(self):
+        try:
+            pass
+        except Exception as e:
+            print(e)
