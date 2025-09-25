@@ -209,6 +209,9 @@ class StoreReport(View):
                                 pivot_index = request.POST.get("pivot_index")
                                 other_pivot_columns = request.POST.getlist("pivot_table")
                                 print(pivot_index, other_pivot_columns, sep = "\n")
+                                
+                                if pivot_index and other_pivot_columns:
+                                    pivot_df = None
                     # updation of selected columns 
                     report_profile = ReportProfile.objects.filter(
                         user = request.user, store = selected_store, 

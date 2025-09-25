@@ -85,6 +85,14 @@ class injectHtml{
             selectDiv.appendChild(injectedTitle);
 
             let injectedSelect = document.createElement("select");
+            injectedSelect.name = selectName;
+            injectedSelect.className = "form-select";
+            options.forEach(opt =>{
+                let injectedOptionTag = document.createElement("option");
+                injectedOptionTag.name = opt; injectedOptionTag.value = opt;
+                injectedOptionTag.innerText = opt;
+                injectedSelect.appendChild(injectedOptionTag);
+            });
             selectDiv.appendChild(injectedSelect);
 
             this.parentDiv.appendChild(selectDiv);
@@ -178,22 +186,31 @@ async function configureAdditionalReportSheet(){
                 sheetDiv.id = box.id;
 
                 let injector = new injectHtml(
-                    parentDiv = sheetDiv,title = "select Index",
+                    parentDiv = sheetDiv,title = "select Column",
                     reset = true
                 );
                 if (box.checked){
-                    injector.injectSelectTag(
-                        id=box.id, selectName = box.id,
-                        options = preselection["pivot_columns"].split(",")
-                    ); 
+                    title = "Select Pivot Index"
+                    if (box.value == "pivot_table"){
+                        injector.injectSelectTag(
+                            id=box.id, selectName = "pivot_index",
+                            options = preselection["pivot_columns"].split(",")
+                        );
+                        
+                        let injectedSelect = document.getElementById(box.id);
+                        console.log(injectedSelect);
 
-                    injector.reset = false; injector.title = "select Pivot Columns"
-                    injector.injectCheckBoxes(
-                        checkNames = preselection["selected_columns"].split(","),
-                        commonName = box.id,
-                        preSelected = preselection["pivot_columns"].split(",")
-                    );
-                    
+                        injector.reset = false;
+                        injector.title = "select Pivot Columns"
+
+                        preselectedColumns = preselection["pivot_columns"].split(",");
+                        injector.injectCheckBoxes(
+                            checkNames = preselection["selected_columns"].split(","),
+                            commonName = box.id,
+                            preSelected = preselectedColumns
+                        );
+                        console.log(preselectedColumns[1]);
+                    }
                     sheetConfigDiv.appendChild(sheetDiv);
                 }else {
                     sheetConfigDiv.innerHTML = "";
