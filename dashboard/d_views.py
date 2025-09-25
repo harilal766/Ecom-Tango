@@ -213,13 +213,12 @@ class StoreReport(View):
                                 if pivot_index and other_pivot_columns:
                                     pivot_df = report_df.pivot_table(
                                         values= other_pivot_columns,
-                                        index=pivot_index,
+index=pivot_index,
                                         aggfunc='sum',margins= True, margins_name='Grand Total'
                                     )
                                     pivot_df = pivot_df.reset_index().rename(columns={pivot_index: 'Row Labels'})
-                                    print(f"pivot : {pivot_df}")
                             elif sheet == 'tally_table':
-                                tally_df = None
+                                tally_df = pivot_df
                     # updation of selected columns 
                     report_profile = ReportProfile.objects.filter(
                         user = request.user, store = selected_store, 
