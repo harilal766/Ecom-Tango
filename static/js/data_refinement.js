@@ -194,12 +194,11 @@ async function configureAdditionalReportSheet(){
                     injector.injectCheckBoxes(
                         checkNames = preselection["selected_columns"].split(","),
                         commonName = box.id,
-                        preSelected = preselection["pivot_columns"]
+                        preSelected = preselection["pivot_columns"].split(",")
                     );
                     sheetConfigDiv.appendChild(sheetDiv);
                 }else {
-                    console.log(sheetConfigDiv.innerHTML);
-                    console.log(sheetDiv.innerHTML);
+                    sheetConfigDiv.innerHTML = "";
                 }
             });
         });
