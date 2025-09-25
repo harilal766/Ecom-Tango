@@ -60,7 +60,7 @@ class ReportProfile(BaseCredential):
     columns = models.TextField(max_length=1000)
     selected_columns = models.TextField(max_length=1000,blank=True)
     pivot_columns = models.TextField(max_length=1000, blank=True)
-    tally_table = models.BooleanField(default=False)
+    tally_columns = models.TextField(max_length=1000, blank=True)
     updated_time = models.DateTimeField(auto_now_add=True,null=True)
     
     def handle_report_data(self):

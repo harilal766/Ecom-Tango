@@ -207,12 +207,9 @@ class StoreReport(View):
                         for sheet in additional_sheets:
                             if sheet == "pivot_table":
                                 pivot_index = request.POST.get("pivot_index")
-                                other_pivot_columns = request.POST.getlist("pivot_column")
+                                other_pivot_columns = request.POST.getlist("pivot_table")
 
-                                pivot_df = report_df.pivot_table(
-                                    values = other_pivot_columns,index = pivot_index, 
-                                    aggfunc="sum",margins=True,margins_name="Grand Total"
-                                )
+                                print(pivot_index, other_pivot_columns, sep = "\n")
                                 #pivot_df = pivot_df.reset_index().rename(columns={pivot_index : 'Row Labels'})
                                 
                     # updation of selected columns 
