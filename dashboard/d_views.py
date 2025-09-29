@@ -30,7 +30,7 @@ class Dashboard:
             },
             "Shopify" : {
                 "order_types" : ("unfulfilled","fulfilled"),
-                "report_types" : ("Order","Return")
+                "report_types" : ("Order Report","Return Report")
             }
         }
 # Create your views here.

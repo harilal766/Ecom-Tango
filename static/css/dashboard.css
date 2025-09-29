@@ -18,6 +18,9 @@ a {
 }
 
 /* Common Styles */
+.right {
+    width: 100vw;
+}
 
 /* PADDING */
 .sidebar,.nav-list,
@@ -32,7 +35,8 @@ a {
 
 .dashboard-module {
     border-radius: 4px;
-    box-shadow: 0 0 3px 3px lightgrey;
+    box-shadow: 0 0 2px 2px rgb(206, 206, 206);
+    gap: 5px;
 }
 
 
