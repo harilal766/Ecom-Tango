@@ -16,7 +16,7 @@
         <!-- Request for order type -->
         {% if order_types %}
         <div class="dashboard-module">
-            <h2>Orders</h2>  
+            <h2 class="form-title">Orders</h2>  
             <form method="POST" class="form" enctype="multipart/form-data" action="{% url 'dashboard:orders' store_slug=selected_store.slug %}">
                 {% csrf_token %}
                 <select name="order-type" class="form-select" aria-label="Default select example">
@@ -33,7 +33,7 @@
         <!-- Settlement -->
         {% if settlements %}
         <div class="dashboard-module">
-            <h2 id="formTitle">Settlements</h2>
+            <h2 id="formTitle" class="form-title">Settlements</h2>
             <div class="settlements">
                 {% for settlement in settlements %}
                 <form method="POST" id="settlementForm" class="form" enctype='multipart/form-data'>
@@ -52,7 +52,7 @@
 
         {% if report_types %}
         <div class="dashboard-module">
-            <h2 id="formTitle">Reports</h2>
+            <h2 id="formTitle" class="form-title">Reports</h2>
             <form method="POST" id="reportForm" class="form" enctype='multipart/form-data' action="{% url 'dashboard:create_report' store_slug=selected_store.slug %}">
                 {% csrf_token %}
                 <div class="selection-group">

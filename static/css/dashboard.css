@@ -98,7 +98,6 @@ select{
     padding: 5px;
 }
 .date{
-    display: flex;
     gap:3px;
 }
 
@@ -106,6 +105,7 @@ select{
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
+    width: auto;
 }
 
 div.settlements form{
@@ -143,4 +143,14 @@ li {
 
 .nav-list ul {
     display: inline;
+}
+
+
+.btn {
+    width :auto;
+    padding:5px;
+}
+
+.form-title {
+    width: auto;
 }
