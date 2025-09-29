@@ -70,7 +70,6 @@ class Store(Dashboard, View):
                 context["settlements"] = report_client.api_model.get_reports(
                     reportTypes = ReportType.GET_V2_SETTLEMENT_REPORT_DATA_FLAT_FILE_V2
                 ).payload.get("reports")
-                
                 # store report columns to use later
                 context["shipping_dates"] = order_client.get_shipping_dates()
                 
@@ -202,7 +201,7 @@ class StoreReport(View):
                 
                 if report_df is not None:
                     selected_columns = request.POST.getlist("report_column")
-                    additional_sheets = request.POST.getlist("additional_sheet")
+                    additional_sheets = request.POST.getlist("additional_sheet",None)
                     if additional_sheets:
                         for sheet in additional_sheets:
                             if sheet == "pivot_table":
@@ -212,8 +211,7 @@ class StoreReport(View):
                                 
                                 if pivot_index and other_pivot_columns:
                                     pivot_df = report_df.pivot_table(
-                                        values= other_pivot_columns,
-index=pivot_index,
+                                        values= other_pivot_columns,index=pivot_index,
                                         aggfunc='sum',margins= True, margins_name='Grand Total'
                                     )
                                     pivot_df = pivot_df.reset_index().rename(columns={pivot_index: 'Row Labels'})
@@ -221,7 +219,7 @@ index=pivot_index,
                                 tally_df = pivot_df
                     # updation of selected columns 
                     report_profile = ReportProfile.objects.filter(
-                        user = request.user, store = selected_store, 
+                        user = request.user, store = selected_store,
                         main_section = selected_report_type,
                     ).first()
                     if report_profile:
