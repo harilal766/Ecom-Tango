@@ -1,7 +1,7 @@
 
 /* Theme configuration */
 :root {
-    --dash_bg: #FCFCFC;
+    --dash_bg: #fcfae2;
     --module_bg : #FCFCFC; 
 
     --small_gap : 5px;
@@ -18,12 +18,6 @@ a {
 }
 
 /* Common Styles */
-.dashboard-module {
-    border: 1px solid grey;
-    border-radius: 10px;
-    box-shadow: 0 0 1px 1px lightgrey;
-}
-
 
 /* PADDING */
 .sidebar,.nav-list,
@@ -35,6 +29,12 @@ a {
     display: flex; gap: var(--small_gap);
     background-color: lightgrey;
 }
+
+.dashboard-module {
+    border-radius: 4px;
+    box-shadow: 0 0 3px 3px lightgrey;
+}
+
 
 /* Appearance*/
 .content{
