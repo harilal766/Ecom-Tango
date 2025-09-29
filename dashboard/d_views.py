@@ -214,7 +214,9 @@ class StoreReport(View):
                                         values= other_pivot_columns,index=pivot_index,
                                         aggfunc='sum',margins= True, margins_name='Grand Total'
                                     )
-                                    pivot_df = pivot_df.reset_index().rename(columns={pivot_index: 'Row Labels'})
+                                    pivot_df = pivot_df.reset_index().rename(
+                                        columns={pivot_index: 'Row Labels'}
+                                    )
                             elif sheet == 'tally_table':
                                 tally_df = pivot_df
                     # updation of selected columns 
