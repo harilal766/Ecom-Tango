@@ -102,7 +102,7 @@ class injectHtml{
     }
 }
 
-async function getPreSelectedData(endpoint,filtering_field,filtering_value){
+async function getRecentSelectedDataFromAPI(endpoint,filtering_field,filtering_value){
     let preselected;
     try{
         let reportProfiles = await apiAccess(apiUrl = baseUrl + endpoint);
@@ -140,7 +140,7 @@ async function configureReportFiltration(){
     );
     try{
         const reportType = document.getElementById("reportType");
-        let preselectedReportColumns = await getPreSelectedData(
+        let preselectedReportColumns = await getRecentSelectedDataFromAPI(
             endpoint="reports",
             filtering_field="main_section",filtering_value=reportType.value
         );
@@ -175,7 +175,7 @@ async function configureAdditionalReportSheet(){
     let reportColumns = document.getElementsByName("report_column");
 
     let reportType = document.getElementById("reportType");
-    let preselection = await getPreSelectedData(
+    let preselection = await getRecentSelectedDataFromAPI(
         endpoint="reports",
         filtering_field = "main_section", filtering_value = reportType.value
     );
