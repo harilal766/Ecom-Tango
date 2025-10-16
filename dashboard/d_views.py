@@ -193,20 +193,17 @@ class StoreReport(View):
                         report_df = report_df[
                             report_df["amazon-order-id"].isin(order_ids)
                         ]
-                        
-                        
-                    
                 elif selected_store.platform == "Shopify":
                     pass
                 
                 if report_df is not None:
                     selected_columns = request.POST.getlist("report_column")
-                    additional_sheets = request.POST.getlist("additional_sheet",None)
+                    additional_sheets = request.POST.getlist("additional_sheet")
                     if additional_sheets:
                         for sheet in additional_sheets:
                             if sheet == "pivot_table":
-                                pivot_index = request.POST.get("pivot_index")
-                                other_pivot_columns = request.POST.getlist("pivot_table")
+                                pivot_index = request.POST.get("pivot_index",None)
+                                other_pivot_columns = request.POST.getlist("pivot_table",None)
                                 print(pivot_index, other_pivot_columns, sep = "\n")
                                 
                                 if pivot_index and other_pivot_columns:
@@ -224,6 +221,14 @@ class StoreReport(View):
                         user = request.user, store = selected_store,
                         main_section = selected_report_type,
                     ).first()
+                    
+                    
+                    # compartmentalization 
+                    """ 
+                    arguments : store, selected_columns
+                    """
+                    print(f"Selected : {report_profile}\n{selected_columns}")
+                    
                     if report_profile:
                         print(f"Joint : {other_pivot_columns}")
                         report_profile.selected_columns = ','.join(selected_columns)
@@ -233,6 +238,20 @@ class StoreReport(View):
                     
                     if len(selected_columns) > 0:
                         report_df = report_df[selected_columns]
+                        
+                    tally_df = pd.DataFrame({
+                        'Product Name' : [],
+                        'Orders' : [], 
+                        '1' : [],
+                        '2' : [],
+                        '3' : [],
+                        'Mixed' : [],
+                        'Total Qty' : [],
+                        'Rate' : [],
+                        'Amount' : []
+                    })
+                    
+                    print(999, tally_df)
                     
                     sheets = (
                         {"Name" : "Report", "Content" : report_df},
