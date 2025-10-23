@@ -67,12 +67,13 @@ class SpapiOrderClient(SpapiBase):
         date_list = []
         try:
             orders = self.api_model.get_orders(
-                CreatedAfter = iso_8601_timestamp(6),
-                CreatedBeore = iso_8601_converter(0)
+                CreatedAfter = iso_8601_timestamp(4),
+                CreatedBeore = iso_8601_converter(-1)
             )
             orders = orders.payload.get("Orders")
             for order in orders:
                 date = order["LatestShipDate"]
+                print(date)
                 if not date in date_list:
                     date_list.append(date)
         except Exception as e:

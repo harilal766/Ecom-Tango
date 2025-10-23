@@ -57,7 +57,8 @@ class Store(Dashboard, View):
             "selected_store" : None,
             "order_types" : None, "report_types" : None,
             "settlements" : None,
-            "shipping_dates" : None
+            "shipping_dates" : None,
+            'incomplete_orders' : None
         }
         report_client = None; order_client = None
         try:
@@ -72,6 +73,8 @@ class Store(Dashboard, View):
                 ).payload.get("reports")
                 # store report columns to use later
                 context["shipping_dates"] = order_client.get_shipping_dates()
+            elif selected_store.platform == 'Shopify':
+                pass
                 
             # Common configurations
             if report_client is not None:
@@ -222,7 +225,6 @@ class StoreReport(View):
                         main_section = selected_report_type,
                     ).first()
                     
-                    
                     # compartmentalization 
                     """ 
                     arguments : store, selected_columns
@@ -238,7 +240,11 @@ class StoreReport(View):
                     
                     if len(selected_columns) > 0:
                         report_df = report_df[selected_columns]
-                        
+                    
+                    """  
+                    product_names = pivot_df['Row Labels']
+                    print(product_names)
+                    """
                     tally_df = pd.DataFrame({
                         'Product Name' : [],
                         'Orders' : [], 
@@ -250,8 +256,6 @@ class StoreReport(View):
                         'Rate' : [],
                         'Amount' : []
                     })
-                    
-                    print(999, tally_df)
                     
                     sheets = (
                         {"Name" : "Report", "Content" : report_df},

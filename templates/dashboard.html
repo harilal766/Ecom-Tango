@@ -27,6 +27,12 @@
                 {% include 'date_range.html' %}
                 <button type='submit' class="btn btn-secondary">Get orders</button>
             </form> 
+
+            {% if selected_store.platform == 'Shopify' %}
+            <div>
+                <h1>f</h1>
+            </div>
+            {% endif %}
         </div>
         {% endif %}
 
