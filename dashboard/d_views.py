@@ -218,7 +218,20 @@ class StoreReport(View):
                                         columns={pivot_index: 'Row Labels'}
                                     )
                             elif sheet == 'tally_table':
-                                tally_df = pivot_df
+                                #tally_df = pivot_df
+                                tally_df = pd.DataFrame({
+                                    'Product Name' : [],
+                                    'Orders' : [], 
+                                    '1' : [],
+                                    '2' : [],
+                                    '3' : [],
+                                    'Mixed' : [],
+                                    'Total Qty' : [],
+                                    'Rate' : [],
+                                    'Amount' : []
+                                })
+                                
+                                
                     # updation of selected columns 
                     report_profile = ReportProfile.objects.filter(
                         user = request.user, store = selected_store,
@@ -240,23 +253,7 @@ class StoreReport(View):
                     
                     if len(selected_columns) > 0:
                         report_df = report_df[selected_columns]
-                    
-                    """  
-                    product_names = pivot_df['Row Labels']
-                    print(product_names)
-                    """
-                    tally_df = pd.DataFrame({
-                        'Product Name' : [],
-                        'Orders' : [], 
-                        '1' : [],
-                        '2' : [],
-                        '3' : [],
-                        'Mixed' : [],
-                        'Total Qty' : [],
-                        'Rate' : [],
-                        'Amount' : []
-                    })
-                    
+                
                     sheets = (
                         {"Name" : "Report", "Content" : report_df},
                         {"Name" : "Pivot Table", "Content" : pivot_df},
