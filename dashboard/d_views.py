@@ -213,27 +213,14 @@ class StoreReport(View):
                         )
                         for sheet in additional_sheets:
                             if sheet == "pivot_table":
-                                pivot_index = request.POST.get("pivot_index",None)
+                                pivot_index = request.POST.get("pivot_index","product-name")
                                 other_pivot_columns = request.POST.getlist("pivot_table",None)
                                 
                                 pivot_df = spreadsheet_instance.create_pivot_table(
                                     index = pivot_index, other_columns = other_pivot_columns 
                                 )
                             elif sheet == 'tally_table':
-                                #tally_df = pivot_df
-                                tally_df = pd.DataFrame({
-                                    'Product Name' : [],
-                                    'Orders' : [], 
-                                    '1' : [],
-                                    '2' : [],
-                                    '3' : [],
-                                    'Mixed' : [],
-                                    'Total Qty' : [],
-                                    'Rate' : [],
-                                    'Amount' : []
-                                })
-                                
-                                
+                                tally_df = spreadsheet_instance.create_tally_table()
                     # updation of selected columns 
                     report_profile = ReportProfile.objects.filter(
                         user = request.user, store = selected_store,

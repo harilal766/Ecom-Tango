@@ -1,3 +1,5 @@
+import pandas as pd
+
 class Spreadsheet:
     def __init__(self, report_type, df):
         self.main_sheet = df
@@ -19,5 +21,18 @@ class Spreadsheet:
         except Exception as e:
             pass
     
-    def tally_table(self):
-        pass
+    def create_tally_table(self):
+        tally_df = None
+        try:
+            tally_df = pd.DataFrame({
+                'Product Name' : [],
+                'Orders' : [],
+                '1' : [],'2' : [],'3' : [],
+                'Mixed' : [],
+                'Total Qty' : [],
+                'Rate' : [],
+                'Amount' : []
+            })
+            return tally_df 
+        except Exception as e:
+            pass
