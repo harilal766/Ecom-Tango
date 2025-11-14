@@ -15,11 +15,6 @@ from datetime import datetime
 from utils import iso_8601_converter
 from sp_api.api import Orders
 from datetime import datetime, timedelta
-import pandas as pd
-import openpyxl
-from io import StringIO, BytesIO
-
-
 
 
 from pprint import pprint
@@ -191,8 +186,7 @@ class StoreReport(View):
                         shipping_date = request.POST.get("shipping_date")
                         method = request.POST.get("payment_method")
                         order_ids  = order_client.get_order_ids(
-                            CreatedAfter = from_date,
-                            CreatedBefore = to_date,
+                            CreatedAfter = from_date, CreatedBefore = to_date,
                             LatestShipDate = shipping_date,
                             PaymentMethod = method
                         )
@@ -203,6 +197,10 @@ class StoreReport(View):
                 elif selected_store.platform == "Shopify":
                     pass
                 
+                
+                
+                
+                
                 if report_df is not None:
                     selected_columns = request.POST.getlist("report_column")
                     additional_sheets = request.POST.getlist("additional_sheet")
@@ -212,6 +210,7 @@ class StoreReport(View):
                             df = report_df
                         )
                         for sheet in additional_sheets:
+                            print(f'Sheets : {sheet}')
                             if sheet == "pivot_table":
                                 pivot_index = request.POST.get("pivot_index","product-name")
                                 other_pivot_columns = request.POST.getlist("pivot_table",None)
@@ -220,7 +219,10 @@ class StoreReport(View):
                                     index = pivot_index, other_columns = other_pivot_columns 
                                 )
                             elif sheet == 'tally_table':
-                                tally_df = spreadsheet_instance.create_tally_table()
+                                if pivot_df is not None:
+                                    tally_df = spreadsheet_instance.create_tally_table(
+                                        products_list= pivot_df['Row Labels'].to_list()
+                                    )
                     # updation of selected columns 
                     report_profile = ReportProfile.objects.filter(
                         user = request.user, store = selected_store,

@@ -21,17 +21,19 @@ class Spreadsheet:
         except Exception as e:
             pass
     
-    def create_tally_table(self):
+    def create_tally_table(self, products_list: list):
         tally_df = None
+        filler = [None] * len(products_list)
+        print(f'Fillers : {filler}')
         try:
             tally_df = pd.DataFrame({
-                'Product Name' : [],
-                'Orders' : [],
-                '1' : [],'2' : [],'3' : [],
-                'Mixed' : [],
-                'Total Qty' : [],
-                'Rate' : [],
-                'Amount' : []
+                'Product Name' : products_list,
+                'Orders' : filler,
+                '1' : filler,'2' : filler,'3' : filler,
+                'Mixed' : filler,
+                'Total Qty' : filler,
+                'Rate' : filler,
+                'Amount' : filler
             })
             return tally_df 
         except Exception as e:

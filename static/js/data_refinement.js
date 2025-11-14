@@ -239,6 +239,3 @@ document.addEventListener("DOMContentLoaded",async ()=>{
 reportType.addEventListener("change",async ()=>{
     configureReportFiltration();
 });
-
-
-
