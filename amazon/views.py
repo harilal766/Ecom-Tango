@@ -68,7 +68,7 @@ class SpapiOrderClient(SpapiBase):
         try:
             orders = self.api_model.get_orders(
                 CreatedAfter = iso_8601_timestamp(4),
-                CreatedBeore = iso_8601_converter(-1)
+                CreatedBeore = iso_8601_timestamp(-1)
             )
             orders = orders.payload.get("Orders")
             for order in orders:

@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 def iso_8601_converter(date_string:str):
     try:
         timestamp = datetime.strptime(
-            str(date_string),"%Y-%m-%d"
+            date_string,"%Y-%m-%d"
         )
         return timestamp.isoformat()
     except Exception as e:
