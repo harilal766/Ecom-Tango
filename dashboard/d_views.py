@@ -200,13 +200,12 @@ class StoreReport(View):
                 
                 
                 
-                
                 if report_df is not None:
                     selected_columns = request.POST.getlist("report_column")
                     additional_sheets = request.POST.getlist("additional_sheet")
                     if additional_sheets:
                         spreadsheet_instance = Spreadsheet(
-                            report_type=selected_report_type,
+                            store = selected_store,
                             df = report_df
                         )
                         for sheet in additional_sheets:
