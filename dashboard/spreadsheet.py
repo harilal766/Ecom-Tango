@@ -1,10 +1,21 @@
 class Spreadsheet:
-    def __init__(self, main_sheet):
-        self.main_sheet = 0
+    def __init__(self, report_type, df):
+        self.main_sheet = df
             
-    def pivot_table(self,index,other_columns):
+    def create_pivot_table(self,index,other_columns):
+        pivot_df = None
         try:
-            pass
+            if index and other_columns:
+                pivot_df = self.main_sheet.pivot_table(
+                    values = other_columns,
+                    index = index,
+                    aggfunc = 'sum', margins = True,
+                    margins_name = 'Grand Total'
+                )
+                pivot_df = pivot_df.reset_index().rename(
+                    columns={index: 'Row Labels'}
+                )
+            return pivot_df
         except Exception as e:
             pass
     

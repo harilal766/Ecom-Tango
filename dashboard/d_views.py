@@ -8,6 +8,7 @@ from amazon.views import SpapiReportClient
 # Shopify
 from shopify.sh_models import *
 # Dashboard
+from dashboard.spreadsheet import Spreadsheet
 from dashboard.d_models import StoreProfile,ReportProfile
 from datetime import datetime
 
@@ -17,6 +18,9 @@ from datetime import datetime, timedelta
 import pandas as pd
 import openpyxl
 from io import StringIO, BytesIO
+
+
+
 
 from pprint import pprint
 
@@ -203,20 +207,18 @@ class StoreReport(View):
                     selected_columns = request.POST.getlist("report_column")
                     additional_sheets = request.POST.getlist("additional_sheet")
                     if additional_sheets:
+                        spreadsheet_instance = Spreadsheet(
+                            report_type=selected_report_type,
+                            df = report_df
+                        )
                         for sheet in additional_sheets:
                             if sheet == "pivot_table":
                                 pivot_index = request.POST.get("pivot_index",None)
                                 other_pivot_columns = request.POST.getlist("pivot_table",None)
-                                print(pivot_index, other_pivot_columns, sep = "\n")
                                 
-                                if pivot_index and other_pivot_columns:
-                                    pivot_df = report_df.pivot_table(
-                                        values= other_pivot_columns,index=pivot_index,
-                                        aggfunc='sum',margins= True, margins_name='Grand Total'
-                                    )
-                                    pivot_df = pivot_df.reset_index().rename(
-                                        columns={pivot_index: 'Row Labels'}
-                                    )
+                                pivot_df = spreadsheet_instance.create_pivot_table(
+                                    index = pivot_index, other_columns = other_pivot_columns 
+                                )
                             elif sheet == 'tally_table':
                                 #tally_df = pivot_df
                                 tally_df = pd.DataFrame({
