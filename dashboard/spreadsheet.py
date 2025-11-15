@@ -11,6 +11,9 @@ class Spreadsheet:
         self.report_type = report_type
         self.store = store
         
+    def alphabet_based_indexing(self):
+        pass
+        
     def df_styling(self):
         try:
             borders = Styler(
@@ -59,11 +62,19 @@ class Spreadsheet:
                     for qty in sorted(report_df['quantity'].to_list()):
                         if qty > 0 and not qty in quantity_dict.keys():
                             quantity_dict[str(qty)] = filler
-                    # form the tally df template,
+                            
+                    # form primary columns
                     input_dict = {"Product Name" : products_list, "Orders" : filler }
+                    # update the quantiy list
                     input_dict.update(quantity_dict)
+                    # update mixed orders condition
+                    order_ids = report_df['amazon-order-id'].to_list()
+                    product_names = report_df['product-name'].to_list()
+                    if len(order_ids) < len(product_names):
+                        input_dict.update({"Mixed" : filler})
+                    # add the rest
                     input_dict.update({
-                        'Mixed' : filler, 'Total Qty' : filler,
+                        'Total Qty' : filler,
                         'Rate' : filler,'Amount' : filler
                     })
                     # and fill it with datas.
