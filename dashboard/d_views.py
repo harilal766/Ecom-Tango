@@ -196,17 +196,15 @@ class StoreReport(View):
                         ]
                 elif selected_store.platform == "Shopify":
                     pass
-                
-                
-                
-                
+
+                # Additional Sheets 
                 if report_df is not None:
                     selected_columns = request.POST.getlist("report_column")
                     additional_sheets = request.POST.getlist("additional_sheet")
                     if additional_sheets:
                         spreadsheet_instance = Spreadsheet(
                             store = selected_store,
-                            df = report_df
+                            df = report_df, report_type= selected_report_type
                         )
                         for sheet in additional_sheets:
                             print(f'Sheets : {sheet}')
@@ -220,7 +218,7 @@ class StoreReport(View):
                             elif sheet == 'tally_table':
                                 if pivot_df is not None:
                                     tally_df = spreadsheet_instance.create_tally_table(
-                                        products_list= pivot_df['Row Labels'].to_list()
+                                        report_df= report_df, pivot_df = pivot_df
                                     )
                     # updation of selected columns 
                     report_profile = ReportProfile.objects.filter(

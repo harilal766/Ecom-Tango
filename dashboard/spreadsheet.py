@@ -6,8 +6,9 @@ import re
 
 
 class Spreadsheet:
-    def __init__(self, store, df):
+    def __init__(self, store, df, report_type):
         self.df = df
+        self.report_type = report_type
         self.store = store
         
     def df_styling(self):
@@ -43,22 +44,32 @@ class Spreadsheet:
                 )
             return pivot_df
         except Exception as e:
-            pass
+            print(e)
     
-    def create_tally_table(self, products_list: list, pivot_df):
-        tally_df = None
-        filler = [None] * len(products_list)
-        print(f'Fillers : {filler}')
+    def create_tally_table(self, report_df ,pivot_df):
+        tally_df = None; filler = None
+        pre_df = []; input_dict = {}
         try:
-            tally_df = pd.DataFrame({
-                'Product Name' : pivot_df['Row Labels'].to_list(),
-                'Orders' : filler,
-                '1' : filler,'2' : filler,'3' : filler,
-                'Mixed' : filler,
-                'Total Qty' : filler,
-                'Rate' : filler,
-                'Amount' : filler
-            })
+            if self.report_type in ("Order Report", "Return Report"):
+                products_list = pivot_df['Row Labels'].to_list()
+                filler = [None] * len(products_list)
+                if self.report_type == "Order Report":
+                    # Find quantities
+                    quantity_dict = {}
+                    for qty in sorted(report_df['quantity'].to_list()):
+                        if qty > 0 and not qty in quantity_dict.keys():
+                            quantity_dict[str(qty)] = filler
+                    # form the tally df template,
+                    input_dict = {"Product Name" : products_list, "Orders" : filler }
+                    input_dict.update(quantity_dict)
+                    input_dict.update({
+                        'Mixed' : filler, 'Total Qty' : filler,
+                        'Rate' : filler,'Amount' : filler
+                    })
+                    # and fill it with datas.
+            else:
+                input_dict = {}
+            tally_df = pd.DataFrame(input_dict)
             return tally_df
         except Exception as e:
-            pass
+            return pd.DataFrame({"Error" : e})
