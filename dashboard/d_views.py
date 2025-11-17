@@ -15,7 +15,8 @@ from datetime import datetime
 from utils import iso_8601_converter
 from sp_api.api import Orders
 from datetime import datetime, timedelta
-
+import os
+from django.core.files.storage import FileSystemStorage
 
 from pprint import pprint
 
@@ -216,12 +217,19 @@ class StoreReport(View):
                                 )
                             elif sheet == 'tally_table':
                                 if pivot_df is not None:
-                                    label = request.FILES.get("label_filepath", None)
+                                    uploaded_label = request.FILES.get("label_filepath", None)
+                                    fs = FileSystemStorage()
                                     
+                                    filename = fs.save(uploaded_label.name, uploaded_label)
+                                    uploaded_filepath = fs.path(filename)
+                                    
+                                    print(uploaded_filepath)
+
                                     tally_df = spreadsheet_instance.create_tally_table(
                                         report_df= report_df, pivot_df = pivot_df,
-                                        label_path=label
+                                        label_path=uploaded_filepath
                                     )
+                                    
                                     
                     # updation of selected columns 
                     report_profile = ReportProfile.objects.filter(

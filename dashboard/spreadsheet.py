@@ -78,8 +78,11 @@ class Spreadsheet:
                         'Rate' : filler,'Amount' : filler
                     })
                     # and fill it with datas.
+                    
+                    
                     sorted_instance = LabelSorter(pdf_path=label_path)
-                    print(sorted_instance)
+                    print(sorted_instance.create_sorted_summary())
+                    
             else:
                 input_dict = {}
             tally_df = pd.DataFrame(input_dict)
