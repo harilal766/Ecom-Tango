@@ -63,8 +63,29 @@ class Spreadsheet:
                         if qty > 0 and not qty in quantity_dict.keys():
                             quantity_dict[str(qty)] = filler
                             
+                            
+                    sorted_instance = LabelSorter(pdf_path=label_path)
+                    label_summary = sorted_instance.create_sorted_summary()
+                    
+                    products_list = list(label_summary.keys())
+                    filler = [None] * len(products_list)
+                    
+                    orders_list = []
+                    for product, orders in label_summary.items():
+                        if type(orders) == dict:
+                            orders_list.append(
+                                '+'.join(
+                                    sorted(orders.keys())
+                                )
+                            )
+                        else:
+                            orders_list.append(None)
+
+                    print(len(products_list), len(orders_list), sep="\n")
+                    
                     # form primary columns
-                    input_dict = {"Product Name" : products_list, "Orders" : filler }
+                    input_dict = {"Product Name" : products_list, "Orders" : orders_list }
+                    """
                     # update the quantiy list
                     input_dict.update(quantity_dict)
                     # update mixed orders condition
@@ -78,10 +99,7 @@ class Spreadsheet:
                         'Rate' : filler,'Amount' : filler
                     })
                     # and fill it with datas.
-                    
-                    
-                    sorted_instance = LabelSorter(pdf_path=label_path)
-                    print(sorted_instance.create_sorted_summary())
+                    """
                     
             else:
                 input_dict = {}
