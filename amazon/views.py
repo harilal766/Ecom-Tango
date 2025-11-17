@@ -73,7 +73,6 @@ class SpapiOrderClient(SpapiBase):
             orders = orders.payload.get("Orders")
             for order in orders:
                 date = order["LatestShipDate"]
-                print(date)
                 if not date in date_list:
                     date_list.append(date)
         except Exception as e:

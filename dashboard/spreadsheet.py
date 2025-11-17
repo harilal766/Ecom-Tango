@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 import pandas as pd, os, json
 from openpyxl import load_workbook
 from styleframe import StyleFrame, Styler
-import re
+from label_sorter import LabelSorter
 
 
 class Spreadsheet:
@@ -49,7 +49,7 @@ class Spreadsheet:
         except Exception as e:
             print(e)
     
-    def create_tally_table(self, report_df ,pivot_df):
+    def create_tally_table(self, report_df ,pivot_df, label_path):
         tally_df = None; filler = None
         pre_df = []; input_dict = {}
         try:
@@ -78,6 +78,8 @@ class Spreadsheet:
                         'Rate' : filler,'Amount' : filler
                     })
                     # and fill it with datas.
+                    sorted_instance = LabelSorter(pdf_path=label_path)
+                    print(sorted_instance)
             else:
                 input_dict = {}
             tally_df = pd.DataFrame(input_dict)

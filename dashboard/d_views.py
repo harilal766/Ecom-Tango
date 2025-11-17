@@ -207,7 +207,6 @@ class StoreReport(View):
                             df = report_df, report_type= selected_report_type
                         )
                         for sheet in additional_sheets:
-                            print(f'Sheets : {sheet}')
                             if sheet == "pivot_table":
                                 pivot_index = request.POST.get("pivot_index","product-name")
                                 other_pivot_columns = request.POST.getlist("pivot_table",None)
@@ -217,9 +216,13 @@ class StoreReport(View):
                                 )
                             elif sheet == 'tally_table':
                                 if pivot_df is not None:
+                                    label = request.FILES.get("label_filepath", None)
+                                    
                                     tally_df = spreadsheet_instance.create_tally_table(
-                                        report_df= report_df, pivot_df = pivot_df
+                                        report_df= report_df, pivot_df = pivot_df,
+                                        label_path=label
                                     )
+                                    
                     # updation of selected columns 
                     report_profile = ReportProfile.objects.filter(
                         user = request.user, store = selected_store,
@@ -227,13 +230,7 @@ class StoreReport(View):
                     ).first()
                     
                     # compartmentalization 
-                    """ 
-                    arguments : store, selected_columns
-                    """
-                    print(f"Selected : {report_profile}\n{selected_columns}")
-                    
                     if report_profile:
-                        print(f"Joint : {other_pivot_columns}")
                         report_profile.selected_columns = ','.join(selected_columns)
                         report_profile.updated_time = datetime.now()
                         report_profile.pivot_columns = ','.join([pivot_index] + other_pivot_columns)
