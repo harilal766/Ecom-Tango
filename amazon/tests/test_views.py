@@ -5,15 +5,12 @@ from utils import iso_8601_timestamp, iso_8601_converter
 
 from sp_api.base.reportTypes import ReportType
 import pandas as pd
-
 from unittest import skip
-
 from dashboard.d_models import ReportProfile
 
 
 class Test_SpapiBase(TestSpapiCredential):
     def setUp(self):
-        
         super(Test_SpapiBase,self).setUp()
         self.test_credentials = self.spapi_inst.get_credentials()
         
@@ -27,9 +24,9 @@ class Test_SpapiOrderClient(Test_SpapiBase):
         
     def test_get_order_ids(self):
         ids = self.test_api_model.get_order_ids(
-            CreatedAfter = iso_8601_converter("2025-09-01"),
-            CreatedBefore = iso_8601_converter("2025-09-07"),
-            LatestShipDate = '2025-09-08T18:29:59Z',
+            CreatedAfter = iso_8601_timestamp(6),
+            CreatedBefore = iso_8601_timestamp(0),
+            LatestShipDate = iso_8601_timestamp(0),
             PaymentMethod = "Standard" #Standard CashOnDelivery
         )
         self.assertIsNotNone(ids)
@@ -37,7 +34,7 @@ class Test_SpapiOrderClient(Test_SpapiBase):
     def test_get_shipping_dates(self):
         dates = self.test_api_model.get_shipping_dates()
         todays_shipping_timestamp = iso_8601_timestamp(0)
-        self.assertGreater(len(dates),0)
+        self.assertAlmostEqual(len(dates),1)
         
     def test_get_order_df(self):
         order_df = self.test_api_model.get_order_df(
