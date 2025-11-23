@@ -36,7 +36,6 @@ class Dashboard:
 # Create your views here.
 def home(request):
     try:
-        print(request.user.is_superuser)
         if request.user.is_authenticated:
             first_store = StoreProfile.objects.filter(user = request.user).first()
             if first_store:
@@ -179,6 +178,9 @@ class StoreReport(View):
                         dataStartTime = iso_8601_converter(from_date),
                         dataEndTime = iso_8601_converter(to_date)
                     )
+                    
+                    print(f'Time stamps : {iso_8601_converter(to_date)} - {iso_8601_timestamp(0)}')
+                    
                     report_df = report_client.create_report_df(
                         reportId=report_id
                     )
@@ -195,6 +197,8 @@ class StoreReport(View):
                         report_df = report_df[
                             report_df["amazon-order-id"].isin(order_ids)
                         ]
+                        
+                        print(f'Generated Report : \n {report_df}')
                 elif selected_store.platform == "Shopify":
                     pass
 

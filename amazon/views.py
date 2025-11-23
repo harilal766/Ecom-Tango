@@ -73,7 +73,6 @@ class SpapiOrderClient(SpapiBase):
             for order in orders:
                 earliest_date = order['EarliestShipDate']
                 latest_date = order["LatestShipDate"]
-                print(latest_date)
                 if latest_date not in date_list:
                     date_list.append(latest_date)
             print(date_list)
@@ -104,13 +103,13 @@ class SpapiReportClient(SpapiBase):
             marketplace=Marketplaces.IN
         )
     
-    def create_report_id(self,reportType,dataStartTime,dataEndTime):
+    def create_report_id(self,reportType,dataStartTime,dataEndTime = None):
         id = None
         try:
             report_details = self.api_model.create_report(
                 reportType = reportType,
                 dataStartTime = dataStartTime,
-                dataEndTime = dataEndTime 
+                dataEndTime = dataEndTime
             )
             id = report_details.payload.get("reportId")
                 
