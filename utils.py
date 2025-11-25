@@ -11,7 +11,9 @@ def iso_8601_converter(date_string:str):
         print(e)
         
 def iso_8601_timestamp(day:int):
-    return (datetime.now()- timedelta(days=day)).isoformat()
+    return (
+        datetime.today()- timedelta(days=day)
+    ).isoformat()
     
     
 class ExcelUtilities:

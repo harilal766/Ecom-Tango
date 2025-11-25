@@ -31,6 +31,18 @@ class Spreadsheet:
             print(e)
         else:
             return StyleFrame(self.df, styler_obj=borders)
+        
+    def create_index(self, columns_list):
+        index_list = []
+        starting_ascii = 65
+        try:
+            for number in range(0,len(columns_list)):
+                index_list.append(
+                    chr(starting_ascii + number)
+                )
+            return index_list
+        except Exception as e:
+            print(e)
             
     def create_pivot_table(self,index,other_columns):
         pivot_df = None
@@ -51,59 +63,44 @@ class Spreadsheet:
     
     def create_tally_table(self, report_df ,pivot_df, label_path):
         tally_df = None; filler = None
-        pre_df = []; input_dict = {}
+        tally_dictionaries = []; tally_dictionary = {}
         try:
             if self.report_type in ("Order Report", "Return Report"):
-                products_list = pivot_df['Row Labels'].to_list()
-                filler = [None] * len(products_list)
+                sorter_instance = LabelSorter(pdf_path=label_path)
+                label_summary = sorter_instance.create_sorted_summary()
+                products_list = list(label_summary.keys())
+                
                 if self.report_type == "Order Report":
-                    # Find quantities
-                    quantity_dict = {}
-                    for qty in sorted(report_df['quantity'].to_list()):
-                        if qty > 0 and not qty in quantity_dict.keys():
-                            quantity_dict[str(qty)] = filler
-                            
-                            
-                    sorted_instance = LabelSorter(pdf_path=label_path)
-                    label_summary = sorted_instance.create_sorted_summary()
-                    
-                    products_list = list(label_summary.keys())
-                    filler = [None] * len(products_list)
-                    
-                    orders_list = []
-                    for product, orders in label_summary.items():
-                        if type(orders) == dict:
-                            orders_list.append(
-                                '+'.join(
-                                    sorted(orders.keys())
+                    for product, qty_dict in label_summary.items():
+                        quantity_list = []
+                        if product != 'Mixed':
+                            print(product) 
+                            tally_dictionary['Product'] = product
+                            if type(qty_dict) == dict:
+                                tally_dictionary['Orders'] = '+'.join(
+                                    sorted(
+                                        list(qty_dict.keys())
+                                    )
                                 )
-                            )
+                                for qty, pages in sorted(list(qty_dict.items())):
+                                    tally_dictionary[qty] = len(pages)/2
+                                    
+                                if 'Mixed' in label_summary.keys():
+                                    tally_dictionary['Mixed'] = None
+                                    
+                                tally_dictionary['Total'] = f'=sum('
+                                tally_dictionary['Rate'] = None
+                                tally_dictionary['Amount'] = None
+                                
                         else:
-                            orders_list.append(None)
-
-                    print(len(products_list), len(orders_list), sep="\n")
-                    
-                    # form primary columns
-                    input_dict = {"Product Name" : products_list, "Orders" : orders_list }
-                    """
-                    # update the quantiy list
-                    input_dict.update(quantity_dict)
-                    # update mixed orders condition
-                    order_ids = report_df['amazon-order-id'].to_list()
-                    product_names = report_df['product-name'].to_list()
-                    if len(order_ids) < len(product_names):
-                        input_dict.update({"Mixed" : filler})
-                    # add the rest
-                    input_dict.update({
-                        'Total Qty' : filler,
-                        'Rate' : filler,'Amount' : filler
-                    })
-                    # and fill it with datas.
-                    """
-                    
-            else:
-                input_dict = {}
-            tally_df = pd.DataFrame(input_dict)
+                            continue
+                            
+                        tally_dictionaries.append(tally_dictionary)
+                        tally_dictionary = {}
+            #tally_table_index = self.create_index(columns_list=list(tally_dictionary.keys()))   
+            tally_df = pd.DataFrame(
+                tally_dictionaries
+            )
             return tally_df
         except Exception as e:
             return pd.DataFrame({"Error" : e})
