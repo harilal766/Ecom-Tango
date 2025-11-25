@@ -72,7 +72,7 @@ class Spreadsheet:
                 
                 if self.report_type == "Order Report":
                     for product, qty_dict in label_summary.items():
-                        quantity_list = []
+                        orders_list = []
                         if product != 'Mixed':
                             print(product) 
                             tally_dictionary['Product'] = product
@@ -83,12 +83,12 @@ class Spreadsheet:
                                     )
                                 )
                                 for qty, pages in sorted(list(qty_dict.items())):
-                                    tally_dictionary[qty] = len(pages)/2
+                                    tally_dictionary[qty] = int(qty) * len(pages)/2 if self.store.platform == "Amazon" else int(qty) * len(pages)
                                     
                                 if 'Mixed' in label_summary.keys():
                                     tally_dictionary['Mixed'] = None
                                     
-                                tally_dictionary['Total'] = f'=sum('
+                                tally_dictionary['Total'] = f'=sum(C2:E2)'
                                 tally_dictionary['Rate'] = None
                                 tally_dictionary['Amount'] = None
                                 

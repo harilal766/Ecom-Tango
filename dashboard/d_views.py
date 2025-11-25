@@ -188,15 +188,21 @@ class StoreReport(View):
                     if selected_report_type == "Order Report":
                         shipping_date = request.POST.get("shipping_date")
                         method = request.POST.get("payment_method")
+                        
                         order_ids  = order_client.get_order_ids(
-                            CreatedAfter = from_date, CreatedBefore = to_date,
+                            CreatedAfter = iso_8601_converter(from_date),
+                            CreatedBefore = iso_8601_converter(to_date),
                             LatestShipDate = shipping_date,
                             PaymentMethod = method
                         )
                         
+                        print(f'{iso_8601_timestamp(day=0)} - {iso_8601_converter(to_date)}')
+                        
+                        """
                         report_df = report_df[
                             report_df["amazon-order-id"].isin(order_ids)
                         ]
+                        """
                         
                         print(f'Generated Report : \n {report_df}')
                 elif selected_store.platform == "Shopify":
@@ -204,6 +210,7 @@ class StoreReport(View):
 
                 # Additional Sheets 
                 if report_df is not None:
+                    print(f'Total COlumns \n {report_df.columns}')
                     selected_columns = request.POST.getlist("report_column")
                     additional_sheets = request.POST.getlist("additional_sheet")
                     if additional_sheets:
@@ -243,7 +250,8 @@ class StoreReport(View):
                     
                     # compartmentalization 
                     if report_profile:
-                        report_profile.selected_columns = ','.join(selected_columns)
+                        report_profile.selected_columns = ', '.join(selected_columns)
+                        report_profile.columns = ', '.join(report_df.columns)
                         report_profile.updated_time = datetime.now()
                         report_profile.pivot_columns = ','.join([pivot_index] + other_pivot_columns)
                         report_profile.save()
