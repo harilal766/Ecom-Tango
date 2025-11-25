@@ -63,7 +63,7 @@ class Spreadsheet:
     
     def create_tally_table(self, report_df ,pivot_df, label_path):
         tally_df = None; filler = None
-        tally_dictionaries = []; tally_dictionary = {}
+        tally_dictionaries = []; 
         try:
             if self.report_type in ("Order Report", "Return Report"):
                 sorter_instance = LabelSorter(pdf_path=label_path)
@@ -72,18 +72,16 @@ class Spreadsheet:
                 
                 if self.report_type == "Order Report":
                     for product, qty_dict in label_summary.items():
-                        orders_list = []
+                        orders_list = []; tally_dictionary = {}
                         if product != 'Mixed':
-                            print(product) 
                             tally_dictionary['Product'] = product
                             if type(qty_dict) == dict:
-                                tally_dictionary['Orders'] = '+'.join(
-                                    sorted(
-                                        list(qty_dict.keys())
-                                    )
-                                )
                                 for qty, pages in sorted(list(qty_dict.items())):
-                                    tally_dictionary[qty] = int(qty) * len(pages)/2 if self.store.platform == "Amazon" else int(qty) * len(pages)
+                                    order_count = len(pages)/2 if self.store.platform == "Amazon" else len(pages)
+                                    orders_list.append(order_count)
+                                    tally_dictionary[qty] = int(qty) * order_count
+                                    
+                                tally_dictionary['Orders'] = '+'.join(orders_list)
                                     
                                 if 'Mixed' in label_summary.keys():
                                     tally_dictionary['Mixed'] = None
@@ -96,8 +94,7 @@ class Spreadsheet:
                             continue
                             
                         tally_dictionaries.append(tally_dictionary)
-                        tally_dictionary = {}
-            #tally_table_index = self.create_index(columns_list=list(tally_dictionary.keys()))   
+            tally_table_index = self.create_index(columns_list=list(tally_dictionary.keys()))   
             tally_df = pd.DataFrame(
                 tally_dictionaries
             )

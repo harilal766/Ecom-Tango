@@ -49,7 +49,9 @@ class SpapiOrderClient(SpapiBase):
     def get_order_ids(self,LatestShipDate,PaymentMethod,**kwargs,):
         ids = []
         try:
-            orders = self.api_model.get_orders(**kwargs)
+            orders = self.api_model.get_orders(
+                **kwargs
+            )
             orders = orders.payload.get("Orders")
             for order in orders:
                 id = order["AmazonOrderId"]
