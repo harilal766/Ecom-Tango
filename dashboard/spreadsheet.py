@@ -75,13 +75,15 @@ class Spreadsheet:
                         orders_list = []; tally_dictionary = {}
                         if product != 'Mixed':
                             tally_dictionary['Product'] = product
+                            tally_dictionary['Orders'] = None
                             if type(qty_dict) == dict:
                                 for qty, pages in sorted(list(qty_dict.items())):
-                                    order_count = len(pages)/2 if self.store.platform == "Amazon" else len(pages)
-                                    orders_list.append(order_count)
-                                    tally_dictionary[qty] = int(qty) * order_count
+                                    qty_based_order_count = len(pages)/2 if self.store.platform == "Amazon" else len(pages)
+                                    orders_list.append(str(int(qty_based_order_count)))
+                                    tally_dictionary[qty] = int(qty) * qty_based_order_count
                                     
-                                tally_dictionary['Orders'] = '+'.join(orders_list)
+                                print(f'Orders : {orders_list}')
+                                #tally_dictionary['Orders'] = '+'.join(orders_list)
                                     
                                 if 'Mixed' in label_summary.keys():
                                     tally_dictionary['Mixed'] = None
