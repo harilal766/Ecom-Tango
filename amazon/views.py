@@ -45,13 +45,32 @@ class SpapiOrderClient(SpapiBase):
             credentials=self.credentials,
             marketplace=Marketplaces.IN
         )
+    
+    def get_full_orders(self,**kwargs):
+        orders_list = []
+        try:
+            # scenario till next token is located
+            while True:
+                order_response = self.api_model.get_orders(**kwargs)
+                order_payload = order_response.payload
+                next_token = order_payload.get('NextToken',None)
+                orders =  order_payload.get('Orders',None)
+                orders_list += orders
+                if next_token == None:
+                    break
+            
+        except Exception as e:
+            print(e)
+        else:
+            return orders_list
         
-    def get_order_ids(self,LatestShipDate,PaymentMethod,**kwargs,):
+    def get_order_ids(self,LatestShipDate, **kwargs):
         ids = []
         try:
             orders = self.api_model.get_orders(
                 **kwargs
             )
+            print(orders.payload.keys())
             orders = orders.payload.get("Orders")
             
             for order in orders:
@@ -60,18 +79,15 @@ class SpapiOrderClient(SpapiBase):
                 ship_date = order["LatestShipDate"]
                 method = order.get('PaymentMethodDetails',None)
                 
+                #print(f'{id} - {ship_date}')
                 if not id in ids:
+                    #ids.append(id)
                     ids.append(id)
-                    
-                """
-                if ship_date.split('T')[0] == LatestShipDate.split('T')[0] and method == [PaymentMethod]:
-                    if not id in ids:
-                        ids.append(id)
-                """
+                
         except Exception as e:
             print(e)
         else:
-            print(ids)
+            #print(ids)
             return ids
         
     def get_shipping_dates(self):

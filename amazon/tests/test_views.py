@@ -24,11 +24,20 @@ class Test_SpapiOrderClient(Test_SpapiBase):
         super(Test_SpapiOrderClient,self).setUp()
         self.test_api_model = SpapiOrderClient(credentials=self.test_credentials)
         
+    def test_get_full_orders(self):
+        orders = self.test_api_model.get_full_orders(
+            CreatedAfter = iso_8601_converter('2025-11-12'),
+            CreatedBefore = iso_8601_converter('2025-11-22'),
+            LatestShipDate = '2025-11-17T18:29:59Z',
+            PaymentMethod = "Standard"
+        )
+        self.assertGreaterEqual(len(orders), 1)
+        
     def test_get_order_ids(self):
         ids = self.test_api_model.get_order_ids(
-            CreatedAfter = iso_8601_converter('2025-11-23'),
-            CreatedBefore = iso_8601_converter('2025-11-26'),
-            LatestShipDate = '2025-11-26T18:29:59Z',
+            CreatedAfter = iso_8601_converter('2025-11-12'),
+            CreatedBefore = iso_8601_converter('2025-11-22'),
+            LatestShipDate = '2025-11-17T18:29:59Z',
             PaymentMethod = "Standard" #Standard CashOnDelivery
         )
         self.assertGreater(len(ids), 0)
