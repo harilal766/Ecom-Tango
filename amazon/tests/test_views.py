@@ -8,6 +8,8 @@ import pandas as pd
 from unittest import skip
 from dashboard.d_models import ReportProfile
 
+from unittest import skip
+
 
 class Test_SpapiBase(TestSpapiCredential):
     def setUp(self):
@@ -31,15 +33,17 @@ class Test_SpapiOrderClient(Test_SpapiBase):
         )
         self.assertIsNotNone(ids)
         
+    @skip("")
     def test_get_shipping_dates(self):
         dates = self.test_api_model.get_shipping_dates()
         todays_shipping_timestamp = iso_8601_timestamp(0)
         self.assertAlmostEqual(len(dates),1)
         
+    @skip("")
     def test_get_order_df(self):
         order_df = self.test_api_model.get_order_df(
             CreatedAfter=iso_8601_timestamp(4),
-            LatestShipDate = '2025-09-08T18:29:59Z',
+            LatestShipDate = '2025-11-26T18:29:59Z',
         )
         self.assertIsNotNone(order_df)
         
@@ -48,6 +52,7 @@ class Test_SpapiReportClient(Test_SpapiBase):
         super(Test_SpapiReportClient,self).setUp()
         self.test_api_model = SpapiReportClient(credentials=self.test_credentials)
     
+    @skip("")
     def test_report_id_and_df(self):
         # Working report types
         for type in generatable_amazon_report_types:

@@ -103,7 +103,7 @@ class Store(Dashboard, View):
                     storeprofile = StoreProfile.objects.create(
                         user = request.user, storename = storename,
                         platform = platform,
-                        created_date = datetime.now()
+                        created_date = iso_8601_timestamp(0)
                     )
                     storeprofile.save()
                     
@@ -246,7 +246,7 @@ class StoreReport(View):
                     if report_profile:
                         report_profile.selected_columns = ','.join(selected_columns)
                         report_profile.columns = ','.join(report_df.columns)
-                        report_profile.updated_time = datetime.now()
+                        report_profile.updated_time = iso_8601_timestamp(0)
                         report_profile.pivot_columns = ','.join([pivot_index] + other_pivot_columns)
                         report_profile.save()
                     
