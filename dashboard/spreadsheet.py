@@ -83,7 +83,7 @@ class Spreadsheet:
                                     tally_dictionary[qty] = int(qty) * qty_based_order_count
                                     
                                 print(f'Orders : {orders_list}')
-                                #tally_dictionary['Orders'] = '+'.join(orders_list)
+                                tally_dictionary['Orders'] = '+'.join(orders_list)
                                     
                                 if 'Mixed' in label_summary.keys():
                                     tally_dictionary['Mixed'] = None
