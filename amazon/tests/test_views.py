@@ -26,20 +26,20 @@ class Test_SpapiOrderClient(Test_SpapiBase):
         
     def test_get_order_ids(self):
         ids = self.test_api_model.get_order_ids(
-            CreatedAfter = iso_8601_timestamp(6),
-            CreatedBefore = iso_8601_timestamp(0),
-            LatestShipDate = iso_8601_timestamp(0),
+            CreatedAfter = iso_8601_converter('2025-11-23'),
+            CreatedBefore = iso_8601_converter('2025-11-26'),
+            LatestShipDate = '2025-11-26T18:29:59Z',
             PaymentMethod = "Standard" #Standard CashOnDelivery
         )
         self.assertIsNotNone(ids)
         
-    @skip("")
+    #@skip("")
     def test_get_shipping_dates(self):
         dates = self.test_api_model.get_shipping_dates()
         todays_shipping_timestamp = iso_8601_timestamp(0)
-        self.assertAlmostEqual(len(dates),1)
+        self.assertGreater(len(dates),1)
         
-    @skip("")
+    #@skip("")
     def test_get_order_df(self):
         order_df = self.test_api_model.get_order_df(
             CreatedAfter=iso_8601_timestamp(4),
