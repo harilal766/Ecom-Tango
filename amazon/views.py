@@ -53,17 +53,25 @@ class SpapiOrderClient(SpapiBase):
                 **kwargs
             )
             orders = orders.payload.get("Orders")
-            print(orders)
+            
             for order in orders:
+                #print(order)
                 id = order["AmazonOrderId"]
                 ship_date = order["LatestShipDate"]
                 method = order.get('PaymentMethodDetails',None)
-                if ship_date == LatestShipDate and method == [PaymentMethod]:
+                
+                if not id in ids:
+                    ids.append(id)
+                    
+                """
+                if ship_date.split('T')[0] == LatestShipDate.split('T')[0] and method == [PaymentMethod]:
                     if not id in ids:
                         ids.append(id)
+                """
         except Exception as e:
             print(e)
         else:
+            print(ids)
             return ids
         
     def get_shipping_dates(self):
