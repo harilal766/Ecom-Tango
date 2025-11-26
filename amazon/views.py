@@ -53,6 +53,7 @@ class SpapiOrderClient(SpapiBase):
                 **kwargs
             )
             orders = orders.payload.get("Orders")
+            print(orders)
             for order in orders:
                 id = order["AmazonOrderId"]
                 ship_date = order["LatestShipDate"]

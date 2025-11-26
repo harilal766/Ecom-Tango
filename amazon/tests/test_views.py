@@ -31,7 +31,7 @@ class Test_SpapiOrderClient(Test_SpapiBase):
             LatestShipDate = '2025-11-26T18:29:59Z',
             PaymentMethod = "Standard" #Standard CashOnDelivery
         )
-        self.assertIsNotNone(ids)
+        self.assertGreater(len(ids), 0)
         
     #@skip("")
     def test_get_shipping_dates(self):

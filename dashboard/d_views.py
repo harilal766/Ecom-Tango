@@ -179,8 +179,6 @@ class StoreReport(View):
                         dataEndTime = iso_8601_converter(to_date)
                     )
                     
-                    print(f'Time stamps : {iso_8601_converter(to_date)} - {iso_8601_timestamp(0)}')
-                    
                     report_df = report_client.create_report_df(
                         reportId=report_id
                     )
@@ -195,6 +193,8 @@ class StoreReport(View):
                             LatestShipDate = shipping_date,
                             PaymentMethod = method
                         )
+                        
+                        print(order_ids)
                         """
                         report_df = report_df[
                             report_df["amazon-order-id"].isin(order_ids)
