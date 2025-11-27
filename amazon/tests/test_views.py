@@ -18,6 +18,11 @@ class Test_SpapiBase(TestSpapiCredential):
         super(Test_SpapiBase,self).setUp()
         self.test_credentials = self.spapi_inst.get_credentials()
         
+        self.few_days_ago = iso_8601_timestamp(-5)
+        self.today = iso_8601_timestamp(0)
+        print(self.today)
+        self.tomorrow = iso_8601_timestamp(1)
+        
     def test_credentials(self):
         self.assertEqual(type(self.test_credentials), dict)
         
@@ -25,25 +30,23 @@ class Test_SpapiOrderClient(Test_SpapiBase):
     def setUp(self):
         super(Test_SpapiOrderClient,self).setUp()
         self.test_api_model = SpapiOrderClient(credentials=self.test_credentials)
-        
-        self.from_date = iso_8601_converter('2025-11-22')
-        self.to_date = iso_8601_converter('2025-11-22')
         self.ship_date = '2025-11-27T18:29:59Z'
         self.payment_method = 'Standard'
         
     def test_get_full_orders(self):
         orders = self.test_api_model.get_full_orders(
-            CreatedAfter = self.from_date,
+            CreatedAfter = self.few_days_ago,
+            CreatedBefore = self.tomorrow,
             PaymentMethod = self.payment_method,
             LatestShipDate = self.ship_date
         )
-        logging.info(orders, 999)
+        logging.info(orders, self.few_days_ago)
         self.assertIsNotNone(orders)
         
     #@skip("")
     def test_get_order_ids(self):
         ids = self.test_api_model.get_order_ids(
-            CreatedAfter = self.from_date,
+            CreatedAfter = self.few_days_ago,
             LatestShipDate = self.ship_date,
             PaymentMethod = self.payment_method 
         )

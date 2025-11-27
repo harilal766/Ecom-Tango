@@ -1,5 +1,6 @@
 import json
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
+from django.utils import timezone
 
 def iso_8601_converter(date_string:str):
     try:
@@ -10,21 +11,8 @@ def iso_8601_converter(date_string:str):
     except Exception as e:
         print(e)
         
-def iso_8601_timestamp(day:int):
-    return (
-        datetime.today()- timedelta(days=day)
-    ).isoformat()
+def iso_8601_timestamp(days:int):
+    timestamp = datetime.today() + timedelta(days=days)
+    #timestamp = timezone.now() + timedelta(days=days)
     
-    
-class ExcelUtilities:
-    def pivot_table(self,allowed_columns:list):
-        try:
-            pass
-        except Exception as e:
-            print(e)
-            
-    def tally_table(self):
-        try:
-            pass
-        except Exception as e:
-            print(e)
+    return timestamp.isoformat().replace("+00:00", "Z")
