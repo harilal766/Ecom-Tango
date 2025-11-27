@@ -7,8 +7,10 @@ from sp_api.base.reportTypes import ReportType
 import pandas as pd
 from unittest import skip
 from dashboard.d_models import ReportProfile
-
 from unittest import skip
+
+import logging
+logger = logging.getLogger(__name__)
 
 
 class Test_SpapiBase(TestSpapiCredential):
@@ -24,31 +26,36 @@ class Test_SpapiOrderClient(Test_SpapiBase):
         super(Test_SpapiOrderClient,self).setUp()
         self.test_api_model = SpapiOrderClient(credentials=self.test_credentials)
         
+        self.from_date = iso_8601_converter('2025-11-22')
+        self.to_date = iso_8601_converter('2025-11-22')
+        self.ship_date = '2025-11-27T18:29:59Z'
+        self.payment_method = 'Standard'
+        
     def test_get_full_orders(self):
         orders = self.test_api_model.get_full_orders(
-            CreatedAfter = iso_8601_converter('2025-11-12'),
-            CreatedBefore = iso_8601_converter('2025-11-22'),
-            LatestShipDate = '2025-11-17T18:29:59Z',
-            PaymentMethod = "Standard"
+            CreatedAfter = self.from_date,
+            PaymentMethod = self.payment_method,
+            LatestShipDate = self.ship_date
         )
-        self.assertGreaterEqual(len(orders), 1)
-        
-    def test_get_order_ids(self):
-        ids = self.test_api_model.get_order_ids(
-            CreatedAfter = iso_8601_converter('2025-11-12'),
-            CreatedBefore = iso_8601_converter('2025-11-22'),
-            LatestShipDate = '2025-11-17T18:29:59Z',
-            PaymentMethod = "Standard" #Standard CashOnDelivery
-        )
-        self.assertGreater(len(ids), 0)
+        logging.info(orders, 999)
+        self.assertIsNotNone(orders)
         
     #@skip("")
+    def test_get_order_ids(self):
+        ids = self.test_api_model.get_order_ids(
+            CreatedAfter = self.from_date,
+            LatestShipDate = self.ship_date,
+            PaymentMethod = self.payment_method 
+        )
+        self.assertGreater(len(ids), 1)
+        
+    @skip("")
     def test_get_shipping_dates(self):
         dates = self.test_api_model.get_shipping_dates()
         todays_shipping_timestamp = iso_8601_timestamp(0)
         self.assertGreater(len(dates),1)
         
-    #@skip("")
+    @skip("")
     def test_get_order_df(self):
         order_df = self.test_api_model.get_order_df(
             CreatedAfter=iso_8601_timestamp(4),

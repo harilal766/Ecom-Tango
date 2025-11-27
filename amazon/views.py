@@ -6,6 +6,7 @@ from .models import SpapiCredential
 from sp_api.api import Orders, ReportsV2
 from sp_api.base.reportTypes import ReportType
 from sp_api.base.marketplaces import Marketplaces
+from sp_api.util import load_all_pages
 
 from utils import iso_8601_converter, iso_8601_timestamp
 import pandas as pd 
@@ -46,19 +47,15 @@ class SpapiOrderClient(SpapiBase):
             marketplace=Marketplaces.IN
         )
     
+    @load_all_pages()
     def get_full_orders(self,**kwargs):
-        orders_list = []
+        orders = None; orders_list = []
         try:
-            # scenario till next token is located
-            while True:
-                order_response = self.api_model.get_orders(**kwargs)
-                order_payload = order_response.payload
-                next_token = order_payload.get('NextToken',None)
-                orders =  order_payload.get('Orders',None)
-                orders_list += orders
-                if next_token == None:
-                    break
-            
+            orders = self.api_model.get_orders(**kwargs)
+            orders = orders.payload.get('Orders')
+            print(type(orders))
+            for order in orders:
+                orders_list.append(order)
         except Exception as e:
             print(e)
         else:
@@ -67,27 +64,20 @@ class SpapiOrderClient(SpapiBase):
     def get_order_ids(self,LatestShipDate, **kwargs):
         ids = []
         try:
-            orders = self.api_model.get_orders(
+            orders = self.get_full_orders(
                 **kwargs
             )
-            print(orders.payload.keys())
-            orders = orders.payload.get("Orders")
-            
             for order in orders:
-                #print(order)
+                print(order)
                 id = order["AmazonOrderId"]
                 ship_date = order["LatestShipDate"]
                 method = order.get('PaymentMethodDetails',None)
-                
-                #print(f'{id} - {ship_date}')
-                if not id in ids:
-                    #ids.append(id)
-                    ids.append(id)
+                print(id)
+                #ids.append(id)
                 
         except Exception as e:
             print(e)
         else:
-            #print(ids)
             return ids
         
     def get_shipping_dates(self):
