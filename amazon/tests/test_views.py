@@ -36,7 +36,7 @@ class Test_SpapiOrderClient(Test_SpapiBase):
     def setUp(self):
         super(Test_SpapiOrderClient,self).setUp()
         self.test_api_model = SpapiOrderClient(credentials=self.test_credentials)
-        self.ship_date = '2025-11-27T18:29:59Z'
+        self.ship_date = '2025-11-29T18:29:59Z'
         self.payment_method = 'Standard'
         print(self.few_days_ago)
         
@@ -49,7 +49,7 @@ class Test_SpapiOrderClient(Test_SpapiBase):
             LatestShipDate = self.ship_date
         )
         #logging.info(orders, self.few_days_ago)
-        self.assertIsNotNone(orders)
+        self.assertEqual(type(orders),list)
         self.assertGreater(len(orders), 1)
         
     #@skip("")
@@ -64,11 +64,8 @@ class Test_SpapiOrderClient(Test_SpapiBase):
     @skip("")
     def test_get_shipping_dates(self):
         dates = self.test_api_model.get_shipping_dates()
-        todays_shipping_timestamp = iso_8601_timestamp(0)
-        print(todays_shipping_timestamp)
         self.assertGreater(len(dates),1)
-        # verify todays shipping date
-        self.assertEqual(True, todays_shipping_timestamp in dates)
+        self.assertEqual(True, self.ship_date in dates)
         
     @skip("")
     def test_get_order_df(self):

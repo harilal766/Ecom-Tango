@@ -58,27 +58,30 @@ class SpapiOrderClient(SpapiBase):
     def get_all_orders(self,**kwargs):
         orders_list = []
         try:
-            for page in self.load_all_orders(**kwargs):
-                orders_list.extend(
-                    page.payload.get('Orders',[])
-                )
-            return orders_list
+            orders_response = self.load_all_orders(**kwargs)
+            if orders_response:
+                for page in orders_response:
+                    orders_list.extend(
+                        page.payload.get('Orders',[])
+                    )
         except Exception as e:
             print(e)
+        else:
+            return orders_list
         
     def get_order_ids(self, **kwargs):
         ids = []
         try:
-            orders = self.load_all_orders(
+            orders = self.get_all_orders(
                 **kwargs
             )
             for order in orders:
                 if type(order) == dict:
                     id = order["AmazonOrderId"]
-                    ship_date = order["LatestShipDate"]
-                    method = order.get('PaymentMethodDetails',None)
-                    if ship_date == kwargs["LatestShipDate"]:
-                        print(f'{ship_date} - {kwargs['LatestShipDate']}')
+                    order_shipdate = order["LatestShipDate"]
+                    order_payment_method = order.get('PaymentMethodDetails',None)
+                    if order_payment_method == [kwargs['PaymentMethodDetails']]:
+                        print(f'{order_shipdate} - {kwargs['LatestShipDate']}')
                         ids.append(id)
                 else:
                     print(f"Order : {order} is not a dict.")
@@ -91,17 +94,16 @@ class SpapiOrderClient(SpapiBase):
     def get_shipping_dates(self):
         date_list = []
         try:
-            orders = self.api_model.get_orders(
-                CreatedAfter = iso_8601_timestamp(-3)
-            )
+            orders = self.api_model.get_orders(CreatedAfter = iso_8601_timestamp(-3))
             orders = orders.payload.get("Orders")
-            for order in orders:
-                earliest_date = order['EarliestShipDate']
-                latest_date = order["LatestShipDate"]
-                if latest_date not in date_list:
-                    date_list.append(latest_date)
-            print(date_list)
-            print(f'DDD {iso_8601_timestamp(5)}')
+            #orders = self.get_all_orders(CreatedAfter = iso_8601_timestamp(-3))
+            if orders:
+                for order in orders:
+                    earliest_date = order['EarliestShipDate']
+                    latest_date = order["LatestShipDate"]
+                    if latest_date not in date_list:
+                        date_list.append(latest_date)
+                print(f'Dates : {date_list}')
         except Exception as e:
             print(e)
         else:
