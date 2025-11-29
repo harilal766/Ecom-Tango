@@ -195,11 +195,11 @@ class StoreReport(View):
                         )
                         
                         print(order_ids)
-                        """
+                        
                         report_df = report_df[
                             report_df["amazon-order-id"].isin(order_ids)
                         ]
-                        """
+                        
                 elif selected_store.platform == "Shopify":
                     pass
 

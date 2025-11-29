@@ -5,7 +5,6 @@ from django.utils import timezone
 def iso_8601_converter(date_string:str):
     time_string = None
     try:
-        
         timestamp = datetime.strptime(
             date_string,"%Y-%m-%d"
         )

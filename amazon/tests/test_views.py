@@ -32,7 +32,6 @@ class Test_SpapiBase(TestSpapiCredential):
             self.assertIn('T', stamp)
         
 class Test_SpapiOrderClient(Test_SpapiBase):
-    
     #@skip("")
     def setUp(self):
         super(Test_SpapiOrderClient,self).setUp()
@@ -41,18 +40,19 @@ class Test_SpapiOrderClient(Test_SpapiBase):
         self.payment_method = 'Standard'
         print(self.few_days_ago)
         
-    @skip("")
-    def test_get_full_orders(self):
-        orders = self.test_api_model.api_model.get_orders(
+    #@skip("")
+    def test_get_all_orders(self):
+        orders = self.test_api_model.get_all_orders(
             CreatedAfter = self.few_days_ago,
             CreatedBefore = self.today,
             PaymentMethod = self.payment_method,
             LatestShipDate = self.ship_date
         )
-        logging.info(orders, self.few_days_ago)
+        #logging.info(orders, self.few_days_ago)
         self.assertIsNotNone(orders)
+        self.assertGreater(len(orders), 1)
         
-    @skip("")
+    #@skip("")
     def test_get_order_ids(self):
         ids = self.test_api_model.get_order_ids(
             CreatedAfter = self.few_days_ago,

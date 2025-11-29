@@ -6,7 +6,7 @@ from .models import SpapiCredential
 from sp_api.api import Orders, ReportsV2
 from sp_api.base.reportTypes import ReportType
 from sp_api.base.marketplaces import Marketplaces
-from sp_api.util import load_all_pages
+from sp_api.util import load_all_pages, throttle_retry
 
 from utils import iso_8601_converter, iso_8601_timestamp
 import pandas as pd 
@@ -47,38 +47,39 @@ class SpapiOrderClient(SpapiBase):
             marketplace=Marketplaces.IN
         )
     
-    #@load_all_pages()
-    def get_full_orders(self,**kwargs):
-        orders = None; orders_list = []
+    @throttle_retry()
+    @load_all_pages()
+    def load_all_orders(self,**kwargs):
         try:
-            counter = 0
-            while True:
-                orders_response = self.api_model.get_orders(**kwargs)
-                orders = orders_response.payload.get('Orders')
-                next_token = orders_response.payload.get('NextToken', None)
-                counter += 1
-                print(f'Next Token : {1}')
-                if next_token == None:
-                    break
+            return self.api_model.get_orders(**kwargs)
         except Exception as e:
             print(e)
-        else:
-            print(f'{orders_list}\nPPP')
+            
+    def get_all_orders(self,**kwargs):
+        orders_list = []
+        try:
+            for page in self.load_all_orders(**kwargs):
+                orders_list.extend(
+                    page.payload.get('Orders',[])
+                )
             return orders_list
+        except Exception as e:
+            print(e)
         
-    def get_order_ids(self,LatestShipDate, **kwargs):
+    def get_order_ids(self, **kwargs):
         ids = []
         try:
-            orders = self.get_full_orders(
+            orders = self.load_all_orders(
                 **kwargs
             )
             for order in orders:
                 if type(order) == dict:
-                    print(order)
                     id = order["AmazonOrderId"]
                     ship_date = order["LatestShipDate"]
                     method = order.get('PaymentMethodDetails',None)
-                    ids.append(id)
+                    if ship_date == kwargs["LatestShipDate"]:
+                        print(f'{ship_date} - {kwargs['LatestShipDate']}')
+                        ids.append(id)
                 else:
                     print(f"Order : {order} is not a dict.")
                 
