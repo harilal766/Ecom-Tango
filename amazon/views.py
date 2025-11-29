@@ -47,18 +47,23 @@ class SpapiOrderClient(SpapiBase):
             marketplace=Marketplaces.IN
         )
     
-    @load_all_pages()
+    #@load_all_pages()
     def get_full_orders(self,**kwargs):
         orders = None; orders_list = []
         try:
-            orders = self.api_model.get_orders(**kwargs)
-            orders = orders.payload.get('Orders')
-            print(type(orders))
-            for order in orders:
-                orders_list.append(order)
+            counter = 0
+            while True:
+                orders_response = self.api_model.get_orders(**kwargs)
+                orders = orders_response.payload.get('Orders')
+                next_token = orders_response.payload.get('NextToken', None)
+                counter += 1
+                print(f'Next Token : {1}')
+                if next_token == None:
+                    break
         except Exception as e:
             print(e)
         else:
+            print(f'{orders_list}\nPPP')
             return orders_list
         
     def get_order_ids(self,LatestShipDate, **kwargs):
@@ -68,12 +73,14 @@ class SpapiOrderClient(SpapiBase):
                 **kwargs
             )
             for order in orders:
-                print(order)
-                id = order["AmazonOrderId"]
-                ship_date = order["LatestShipDate"]
-                method = order.get('PaymentMethodDetails',None)
-                print(id)
-                #ids.append(id)
+                if type(order) == dict:
+                    print(order)
+                    id = order["AmazonOrderId"]
+                    ship_date = order["LatestShipDate"]
+                    method = order.get('PaymentMethodDetails',None)
+                    ids.append(id)
+                else:
+                    print(f"Order : {order} is not a dict.")
                 
         except Exception as e:
             print(e)

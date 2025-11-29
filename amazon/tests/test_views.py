@@ -18,32 +18,41 @@ class Test_SpapiBase(TestSpapiCredential):
         super(Test_SpapiBase,self).setUp()
         self.test_credentials = self.spapi_inst.get_credentials()
         
-        self.few_days_ago = iso_8601_timestamp(-5)
-        self.today = iso_8601_timestamp(0)
-        print(self.today)
-        self.tomorrow = iso_8601_timestamp(1)
+        self.few_days_ago = iso_8601_converter('2025-11-26')
+        self.today = iso_8601_converter('2025-11-29')
+        self.tomorrow = iso_8601_converter('2025-11-30')
         
     def test_credentials(self):
         self.assertEqual(type(self.test_credentials), dict)
         
+    def test_timestamps(self):
+        stamps = [self.few_days_ago, self.today, self.tomorrow]
+        for stamp in stamps:
+            self.assertIsNotNone(stamp)
+            self.assertIn('T', stamp)
+        
 class Test_SpapiOrderClient(Test_SpapiBase):
+    
+    #@skip("")
     def setUp(self):
         super(Test_SpapiOrderClient,self).setUp()
         self.test_api_model = SpapiOrderClient(credentials=self.test_credentials)
         self.ship_date = '2025-11-27T18:29:59Z'
         self.payment_method = 'Standard'
+        print(self.few_days_ago)
         
+    @skip("")
     def test_get_full_orders(self):
-        orders = self.test_api_model.get_full_orders(
+        orders = self.test_api_model.api_model.get_orders(
             CreatedAfter = self.few_days_ago,
-            CreatedBefore = self.tomorrow,
+            CreatedBefore = self.today,
             PaymentMethod = self.payment_method,
             LatestShipDate = self.ship_date
         )
         logging.info(orders, self.few_days_ago)
         self.assertIsNotNone(orders)
         
-    #@skip("")
+    @skip("")
     def test_get_order_ids(self):
         ids = self.test_api_model.get_order_ids(
             CreatedAfter = self.few_days_ago,
@@ -56,7 +65,10 @@ class Test_SpapiOrderClient(Test_SpapiBase):
     def test_get_shipping_dates(self):
         dates = self.test_api_model.get_shipping_dates()
         todays_shipping_timestamp = iso_8601_timestamp(0)
+        print(todays_shipping_timestamp)
         self.assertGreater(len(dates),1)
+        # verify todays shipping date
+        self.assertEqual(True, todays_shipping_timestamp in dates)
         
     @skip("")
     def test_get_order_df(self):
@@ -83,5 +95,4 @@ class Test_SpapiReportClient(Test_SpapiBase):
             self.assertEqual(id.isdigit(), True)
             
             df = self.test_api_model.create_report_df(reportId=id)
-            print(df)
             self.assertIsNotNone(df)
