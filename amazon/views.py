@@ -75,19 +75,22 @@ class SpapiOrderClient(SpapiBase):
             orders = self.get_all_orders(
                 **kwargs
             )
-            for order in orders:
-                if type(order) == dict:
-                    id = order["AmazonOrderId"]
-                    order_shipdate = order["LatestShipDate"]
-                    order_payment_method = order.get('PaymentMethodDetails',None)
-                    if order_payment_method == [kwargs['PaymentMethodDetails']]: #and order_shipdate == kwargs['LatestShipDate']:
-                        print(f'{order_shipdate} - {kwargs['LatestShipDate']}')
-                        ids.append(id)
-                else:
-                    print(f"Order : {order} is not a dict.")
-                
+            print(orders)
+            if orders:
+                for order in orders:
+                    if type(order) == dict:
+                        id = order["AmazonOrderId"]
+                        order_shipdate = order["LatestShipDate"]
+                        order_payment_method = order.get('PaymentMethodDetails',None)
+                        if order_payment_method == [kwargs['PaymentMethodDetails']]: #and order_shipdate == kwargs['LatestShipDate']:
+                            print(f'{order_shipdate} - {kwargs['LatestShipDate']}')
+                            ids.append(id)
+                    else:
+                        print(f"Order : {order} is not a dict.")
+            else:
+                print(f"Orders returned None.")
         except Exception as e:
-            print(e)
+            print(f'Id Error : ', e)
         else:
             return ids
         

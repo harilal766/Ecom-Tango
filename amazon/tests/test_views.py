@@ -37,7 +37,8 @@ class Test_SpapiOrderClient(Test_SpapiBase):
         super(Test_SpapiOrderClient,self).setUp()
         self.test_api_model = SpapiOrderClient(credentials=self.test_credentials)
         self.ship_date = '2025-11-29T18:29:59Z'
-        self.payment_method = ['COD']
+        self.payment_method = ['COD'],
+        self.order_status = ['Unshipped']
         
     #@skip("")
     def test_get_all_orders(self):
@@ -55,7 +56,8 @@ class Test_SpapiOrderClient(Test_SpapiBase):
         ids = self.test_api_model.get_order_ids(
             CreatedAfter = self.few_days_ago,
             LatestShipDate = self.ship_date,
-            PaymentMethods = self.payment_method 
+            PaymentMethodDetails = self.payment_method,
+            OrderStatuses = self.order_status
         )
         self.assertGreater(len(ids), 1)
         
