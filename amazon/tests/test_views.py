@@ -44,7 +44,7 @@ class Test_SpapiOrderClient(Test_SpapiBase):
     def test_get_all_orders(self):
         orders = self.test_api_model.get_all_orders(
             CreatedAfter = self.few_days_ago,
-            PaymentMethod = self.payment_method,
+            PaymentMethods = self.payment_method,
             LatestShipDate = self.ship_date
         )
         #logging.info(orders, self.few_days_ago)
@@ -56,7 +56,7 @@ class Test_SpapiOrderClient(Test_SpapiBase):
         ids = self.test_api_model.get_order_ids(
             CreatedAfter = self.few_days_ago,
             LatestShipDate = self.ship_date,
-            PaymentMethodDetails = self.payment_method,
+            PaymentMethods = self.payment_method,
             OrderStatuses = self.order_status
         )
         self.assertGreater(len(ids), 1)

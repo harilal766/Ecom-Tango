@@ -59,9 +59,10 @@ class SpapiOrderClient(SpapiBase):
         orders_list = []
         try:
             orders_response = self.load_all_orders(**kwargs)
+            print(orders_response.pagination)
             if orders_response:
                 for page in orders_response:
-                    orders_list.extend(
+                    orders_list += (
                         page.payload.get('Orders',[])
                     )
         except Exception as e:
