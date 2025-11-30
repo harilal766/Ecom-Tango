@@ -85,17 +85,16 @@ class Spreadsheet:
                                 print(f'Orders : {orders_list}')
                                 tally_dictionary['Orders'] = '+'.join(orders_list)
                                     
-                                if 'Mixed' in label_summary.keys():
-                                    tally_dictionary['Mixed'] = None
-                                    
-                                tally_dictionary['Total'] = f'=sum(C2:E2)'
-                                tally_dictionary['Rate'] = None
-                                tally_dictionary['Amount'] = None
                                 
-                        else:
-                            continue
+                    if 'Mixed' in label_summary.keys():
+                        tally_dictionary['Mixed'] = None
+                                    
+                    tally_dictionary['Total'] = f'=sum(C2:E2)'
+                    tally_dictionary['Rate'] = None
+                    tally_dictionary['Amount'] = None
+                                
                             
-                        tally_dictionaries.append(tally_dictionary)
+            tally_dictionaries.append(tally_dictionary)
             tally_table_index = self.create_index(columns_list=list(tally_dictionary.keys()))   
             tally_df = pd.DataFrame(
                 tally_dictionaries

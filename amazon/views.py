@@ -80,17 +80,14 @@ class SpapiOrderClient(SpapiBase):
                 for order in orders:
                     if type(order) == dict:
                         id = order.get("AmazonOrderId", None)
-                        print(id)
                         if id:
                             order_shipdate = order.get("LatestShipDate", None)
                             order_payment_method = order.get('PaymentMethods',None)
                             
+                            print(f'id : {id} - shipdate : {order_shipdate}')
                             kwarg_shipdate = kwargs.get('LatestShipDate', None)
                             if order_shipdate == kwarg_shipdate: #and order_shipdate == kwargs['LatestShipDate']:
-                                print(f'{order_shipdate} - {kwargs['LatestShipDate']}')
                                 ids.append(id)
-                    else:
-                        print(f"Order : {order} is not a dict.")
             else:
                 print(f"Orders returned None.")
         except Exception as e:

@@ -18,7 +18,7 @@ class Test_SpapiBase(TestSpapiCredential):
         super(Test_SpapiBase,self).setUp()
         self.test_credentials = self.spapi_inst.get_credentials()
         
-        self.few_days_ago = iso_8601_timestamp(-3)
+        self.few_days_ago = iso_8601_timestamp(-5)
         self.today = iso_8601_timestamp(0)
         self.tomorrow = iso_8601_timestamp(1)
         
@@ -36,7 +36,7 @@ class Test_SpapiOrderClient(Test_SpapiBase):
     def setUp(self):
         super(Test_SpapiOrderClient,self).setUp()
         self.test_api_model = SpapiOrderClient(credentials=self.test_credentials)
-        self.ship_date = '2025-11-29T18:29:59Z'
+        self.ship_date = '2025-12-01T18:29:59Z'
         self.payment_method = ['COD'],
         self.order_status = ['Unshipped']
         
