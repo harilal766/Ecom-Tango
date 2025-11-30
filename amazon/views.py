@@ -80,7 +80,7 @@ class SpapiOrderClient(SpapiBase):
                     id = order["AmazonOrderId"]
                     order_shipdate = order["LatestShipDate"]
                     order_payment_method = order.get('PaymentMethodDetails',None)
-                    if order_payment_method == [kwargs['PaymentMethodDetails']]:
+                    if order_payment_method == [kwargs['PaymentMethodDetails']]: #and order_shipdate == kwargs['LatestShipDate']:
                         print(f'{order_shipdate} - {kwargs['LatestShipDate']}')
                         ids.append(id)
                 else:

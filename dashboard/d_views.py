@@ -189,9 +189,9 @@ class StoreReport(View):
                         
                         order_ids  = order_client.get_order_ids(
                             CreatedAfter = iso_8601_converter(from_date),
-                            CreatedBefore = iso_8601_converter(to_date),
                             LatestShipDate = shipping_date,
-                            PaymentMethod = method
+                            PaymentMethods = [method], 
+                            OrderStatuses = "Unshipped"
                         )
                         
                         print(order_ids)
