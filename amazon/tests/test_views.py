@@ -42,14 +42,14 @@ class Test_SpapiOrderClient(Test_SpapiBase):
         
     #@skip("")
     def test_get_all_orders(self):
-        orders = self.test_api_model.get_all_orders(
+        orders_list = self.test_api_model.get_all_orders(
             CreatedAfter = self.few_days_ago,
             PaymentMethods = self.payment_method,
             LatestShipDate = self.ship_date
-        )
+        ) 
         #logging.info(orders, self.few_days_ago)
-        self.assertEqual(type(orders),list)
-        self.assertGreater(len(orders), 1)
+        self.assertEqual(type(orders_list),list)
+        self.assertGreater(len(orders_list), 1)
         
     #@skip("")
     def test_get_order_ids(self):
@@ -59,6 +59,7 @@ class Test_SpapiOrderClient(Test_SpapiBase):
             PaymentMethods = self.payment_method,
             OrderStatuses = self.order_status
         )
+        self.assertEqual(type(ids),list)
         self.assertGreater(len(ids), 1)
         
     @skip("")

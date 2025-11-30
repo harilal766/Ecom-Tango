@@ -59,8 +59,8 @@ class SpapiOrderClient(SpapiBase):
         orders_list = []
         try:
             orders_response = self.load_all_orders(**kwargs)
-            print(orders_response.pagination)
             if orders_response:
+                print(orders_response)
                 for page in orders_response:
                     orders_list += (
                         page.payload.get('Orders',[])
@@ -76,16 +76,19 @@ class SpapiOrderClient(SpapiBase):
             orders = self.get_all_orders(
                 **kwargs
             )
-            print(orders)
             if orders:
                 for order in orders:
                     if type(order) == dict:
-                        id = order["AmazonOrderId"]
-                        order_shipdate = order["LatestShipDate"]
-                        order_payment_method = order.get('PaymentMethodDetails',None)
-                        if order_payment_method == [kwargs['PaymentMethodDetails']]: #and order_shipdate == kwargs['LatestShipDate']:
-                            print(f'{order_shipdate} - {kwargs['LatestShipDate']}')
-                            ids.append(id)
+                        id = order.get("AmazonOrderId", None)
+                        print(id)
+                        if id:
+                            order_shipdate = order.get("LatestShipDate", None)
+                            order_payment_method = order.get('PaymentMethods',None)
+                            
+                            kwarg_shipdate = kwargs.get('LatestShipDate', None)
+                            if order_shipdate == kwarg_shipdate: #and order_shipdate == kwargs['LatestShipDate']:
+                                print(f'{order_shipdate} - {kwargs['LatestShipDate']}')
+                                ids.append(id)
                     else:
                         print(f"Order : {order} is not a dict.")
             else:
