@@ -230,7 +230,7 @@ class StoreReport(View):
                                     print(uploaded_filepath)
 
                                     tally_df = spreadsheet_instance.create_tally_table(
-                                        report_df= report_df, pivot_df = pivot_df,
+                                        pivot_df = pivot_df,
                                         label_path=uploaded_filepath
                                     )
                                     

@@ -61,19 +61,27 @@ class Spreadsheet:
         except Exception as e:
             print(e)
     
-    def create_tally_table(self, label_path):
+    def create_tally_table(self, pivot_df, label_path):
         tally_df = None
-        tally_dictionaries = []; 
+        tally_dictionaries = []; rate_dict = {}
         try:
             if self.report_type == "Order Report":
+                if not pivot_df is None:
+                    print(pivot_df)
+                    for index, row in pivot_df.iterrows():
+                        rate_dict[row['Row Labels']] = int(
+                            row['item-price']/row['quantity']
+                        )
+                    print(rate_dict)
+                
                 sorter_instance = LabelSorter(pdf_path=label_path)
                 label_summary = sorter_instance.create_sorted_summary()
                 if self.report_type == "Order Report":
-                    for product, qty_dict in label_summary.items():
+                    for product_name, qty_dict in label_summary.items():
                         orders_list = []; tally_dictionary = {}
-                        if product != 'Mixed':
-                            print(product)
-                            tally_dictionary['Product Name'] = product
+                        if product_name != 'Mixed':
+                            print(product_name)
+                            tally_dictionary['Product Name'] = product_name
                             tally_dictionary['Orders'] = None
                             
                             if type(qty_dict) == dict:
@@ -82,21 +90,18 @@ class Spreadsheet:
                                     orders_list.append(str(int(qty_based_order_count)))
                                     tally_dictionary[qty] = int(qty) * qty_based_order_count
                                     
-                                print(f'Orders : {orders_list}')
                                 tally_dictionary['Orders'] = '+'.join(orders_list)
                             
-                            tally_dictionaries.append(tally_dictionary)
-                    """
                             
-                                    
-                                
-                    if 'Mixed' in label_summary.keys():
-                        tally_dictionary['Mixed'] = None
-                                    
-                    tally_dictionary['Total'] = f'=sum(C2:E2)'
-                    tally_dictionary['Rate'] = None
-                    tally_dictionary['Amount'] = None
-                    """  
+                            if 'Mixed' in label_summary.keys():
+                                tally_dictionary['Mixed'] = None
+                                            
+                            tally_dictionary['Total'] = f'=sum('
+                            tally_dictionary['Rate'] = None
+                            print(f'Rate of {product_name}: {rate_dict.get(product_name, None)}')
+                            tally_dictionary['Amount'] = None 
+                            
+                            tally_dictionaries.append(tally_dictionary)
             else:
                 print('Unsupported Report Type')              
                             
