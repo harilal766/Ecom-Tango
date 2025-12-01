@@ -71,7 +71,7 @@ class SpapiOrderClient(SpapiBase):
             return orders_list
         
     def get_order_ids(self, **kwargs):
-        ids = []
+        order_ids = []
         try:
             orders = self.get_all_orders(
                 **kwargs
@@ -87,13 +87,13 @@ class SpapiOrderClient(SpapiBase):
                             print(f'id : {id} - shipdate : {order_shipdate}')
                             kwarg_shipdate = kwargs.get('LatestShipDate', None)
                             if order_shipdate == kwarg_shipdate: #and order_shipdate == kwargs['LatestShipDate']:
-                                ids.append(id)
+                                order_ids.append(id)
             else:
                 print(f"Orders returned None.")
         except Exception as e:
             print(f'Id Error : ', e)
         else:
-            return ids
+            return order_ids
         
     def get_shipping_dates(self):
         date_list = []
@@ -142,7 +142,8 @@ class SpapiReportClient(SpapiBase):
                 dataStartTime = dataStartTime,
                 dataEndTime = dataEndTime
             )
-            id = report_details.payload.get("reportId")
+            if report_details:
+                id = report_details.payload.get("reportId")
                 
         except Exception as e:
             print(e)

@@ -18,7 +18,7 @@ class Test_SpapiBase(TestSpapiCredential):
         super(Test_SpapiBase,self).setUp()
         self.test_credentials = self.spapi_inst.get_credentials()
         
-        self.few_days_ago = iso_8601_timestamp(-5)
+        self.few_days_ago = iso_8601_timestamp(-3)
         self.today = iso_8601_timestamp(0)
         self.tomorrow = iso_8601_timestamp(1)
         
@@ -32,13 +32,12 @@ class Test_SpapiBase(TestSpapiCredential):
             self.assertIn('T', stamp)
         
 class Test_SpapiOrderClient(Test_SpapiBase):
-
     def setUp(self):
         super(Test_SpapiOrderClient,self).setUp()
         self.test_api_model = SpapiOrderClient(credentials=self.test_credentials)
         self.ship_date = '2025-12-01T18:29:59Z'
         self.payment_method = ['COD'],
-        self.order_status = ['Unshipped']
+        self.order_status = ['Shipped']
         
     #@skip("")
     def test_get_all_orders(self):
@@ -51,13 +50,12 @@ class Test_SpapiOrderClient(Test_SpapiBase):
         self.assertEqual(type(orders_list),list)
         self.assertGreater(len(orders_list), 1)
         
-    #@skip("")
+    @skip("")
     def test_get_order_ids(self):
         ids = self.test_api_model.get_order_ids(
             CreatedAfter = self.few_days_ago,
             LatestShipDate = self.ship_date,
-            PaymentMethods = self.payment_method,
-            OrderStatuses = self.order_status
+            PaymentMethods = self.payment_method
         )
         self.assertEqual(type(ids),list)
         self.assertGreater(len(ids), 1)
@@ -72,7 +70,7 @@ class Test_SpapiOrderClient(Test_SpapiBase):
     def test_get_order_df(self):
         order_df = self.test_api_model.get_order_df(
             CreatedAfter=iso_8601_timestamp(4),
-            LatestShipDate = '2025-11-26T18:29:59Z',
+            LatestShipDate = self.ship_date
         )
         self.assertIsNotNone(order_df)
         

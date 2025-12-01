@@ -176,7 +176,6 @@ class StoreReport(View):
                     report_id = report_client.create_report_id(
                         reportType = generatable_amazon_report_types[selected_report_type],
                         dataStartTime = iso_8601_converter(from_date),
-                        dataEndTime = iso_8601_converter(to_date)
                     )
                     
                     report_df = report_client.create_report_df(
@@ -190,8 +189,8 @@ class StoreReport(View):
                         order_ids  = order_client.get_order_ids(
                             CreatedAfter = iso_8601_converter(from_date),
                             LatestShipDate = shipping_date,
-                            PaymentMethods = [method], 
-                            OrderStatuses = "Unshipped"
+                            PaymentMethods = [method],
+                            OrderStatuses = "Shipped"
                         )
                         
                         print(order_ids)
@@ -210,7 +209,7 @@ class StoreReport(View):
                     if additional_sheets:
                         spreadsheet_instance = Spreadsheet(
                             store = selected_store,
-                            df = report_df, report_type= selected_report_type
+                            report_df = report_df, report_type= selected_report_type
                         )
                         for sheet in additional_sheets:
                             if sheet == "pivot_table":
