@@ -69,10 +69,10 @@ class Spreadsheet:
                 if not pivot_df is None:
                     print(pivot_df)
                     for index, row in pivot_df.iterrows():
-                        rate_dict[row['Row Labels']] = int(
+                        pivot_product = row['Row Labels']                        
+                        rate_dict[f'{pivot_product} '] = int(
                             row['item-price']/row['quantity']
                         )
-                    print(rate_dict)
                 
                 sorter_instance = LabelSorter(pdf_path=label_path)
                 label_summary = sorter_instance.create_sorted_summary()
@@ -97,8 +97,7 @@ class Spreadsheet:
                                 tally_dictionary['Mixed'] = None
                                             
                             tally_dictionary['Total'] = f'=sum('
-                            tally_dictionary['Rate'] = None
-                            print(f'Rate of {product_name}: {rate_dict.get(product_name, None)}')
+                            tally_dictionary['Rate'] = rate_dict.get(product_name)
                             tally_dictionary['Amount'] = None 
                             
                             tally_dictionaries.append(tally_dictionary)
