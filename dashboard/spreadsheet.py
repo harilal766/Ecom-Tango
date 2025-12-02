@@ -76,27 +76,32 @@ class Spreadsheet:
                 
                 sorter_instance = LabelSorter(pdf_path=label_path)
                 label_summary = sorter_instance.create_sorted_summary()
+                row_count = 1; column_count = 0; column_range = []
                 if self.report_type == "Order Report":
                     for product_name, qty_dict in label_summary.items():
                         orders_list = []; tally_dictionary = {}
                         if product_name != 'Mixed':
-                            print(product_name)
                             tally_dictionary['Product Name'] = product_name
                             tally_dictionary['Orders'] = None
                             
                             if type(qty_dict) == dict:
+                                column_count = len(tally_dictionary.keys())
+                                quantities = sorted(tuple(qty_dict.keys()))
                                 for qty, pages in sorted(list(qty_dict.items())):
+                                    column_count += 1
+                                    print(f'Quantities : {quantities}')
+                                    if (qty == quantities[0] or qty == quantities[-1]) and not qty in column_range:
+                                        column_range.append(str(column_count))
+                                        
                                     qty_based_order_count = len(pages)/2 if self.store.platform == "Amazon" else len(pages)
                                     orders_list.append(str(int(qty_based_order_count)))
                                     tally_dictionary[qty] = int(qty) * qty_based_order_count
-                                    
                                 tally_dictionary['Orders'] = '+'.join(orders_list)
-                            
                             
                             if 'Mixed' in label_summary.keys():
                                 tally_dictionary['Mixed'] = None
                                             
-                            tally_dictionary['Total'] = f'=sum('
+                            tally_dictionary['Total'] = f'=sum({column_range})'
                             tally_dictionary['Rate'] = rate_dict.get(product_name)
                             tally_dictionary['Amount'] = None 
                             

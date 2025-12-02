@@ -30,7 +30,7 @@
 
             {% if selected_store.platform == 'Shopify' %}
             <div>
-                <h1>f</h1>
+                <h1>Shopify</h1>
             </div>
             {% endif %}
         </div>
@@ -72,6 +72,9 @@
                         <option>COD</option>
                         <option>Other</option>
                     </select>
+
+                    <div id='additionalReportSpace'>
+                    </div>
 
                     {% if shipping_dates %}
                     <select name = "shipping_date" class="form-select" aria-label="Default select example">

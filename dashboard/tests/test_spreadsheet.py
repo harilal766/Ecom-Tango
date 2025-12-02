@@ -17,7 +17,7 @@ class TestSpreadsheet(TestStoreProfile):
     
     def test_create_tally_table(self):
         tally_table = self.test_class.create_tally_table(
-            label_path = self.label_path
+            label_path = self.label_path, pivot_df=None
         )
         print(tally_table)
         self.assertIsNotNone(tally_table)

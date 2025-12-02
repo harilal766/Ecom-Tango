@@ -98,7 +98,9 @@ class SpapiOrderClient(SpapiBase):
     def get_shipping_dates(self):
         date_list = []
         try:
-            orders = self.api_model.get_orders(CreatedAfter = iso_8601_timestamp(-3))
+            orders = self.api_model.get_orders(
+                CreatedAfter = iso_8601_timestamp(-3)
+            )
             orders = orders.payload.get("Orders")
             #orders = self.get_all_orders(CreatedAfter = iso_8601_timestamp(-3))
             if orders:

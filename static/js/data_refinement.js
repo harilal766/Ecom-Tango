@@ -138,11 +138,13 @@ async function injectReportColumns(){
     let injector = new injectHtml(
         parentDiv=columnDiv, title = "Select Report Columns", reset = true
     );
+    let report_endpoint = null;
     try{
+        report_endpoint = "reports";
         const reportType = document.getElementById("reportType");
         let reportProfile = await getSelectedReportColumns(
-            endpoint="reports",
-            filtering_field="main_section",filtering_value=reportType.value
+            endpoint = report_endpoint,
+            filtering_field = "main_section",filtering_value=reportType.value
         );
         injector.injectCheckBoxes(
             checkNames = reportProfile["columns"].split(","),
