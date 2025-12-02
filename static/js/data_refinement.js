@@ -118,7 +118,7 @@ async function getRecentSelectedDataFromAPI(endpoint,filtering_field,filtering_v
     }
 }
 
-const baseUrl = '/api/router/';
+const baseUrl = '/api/router/reports/';
 async function apiAccess(apiUrl){
     try{
         const response = await fetch(apiUrl);
