@@ -102,7 +102,7 @@ class injectHtml{
     }
 }
 
-async function getRecentSelectedDataFromAPI(endpoint,filtering_field,filtering_value){
+async function getSelectedReportColumns(endpoint,filtering_field,filtering_value){
     let preselected;
     try{
         let reportProfiles = await apiAccess(apiUrl = baseUrl + endpoint);
@@ -118,7 +118,7 @@ async function getRecentSelectedDataFromAPI(endpoint,filtering_field,filtering_v
     }
 }
 
-const baseUrl = '/api/router/reports/';
+const baseUrl = '/api/router/';
 async function apiAccess(apiUrl){
     try{
         const response = await fetch(apiUrl);
@@ -133,21 +133,21 @@ async function apiAccess(apiUrl){
     }
 }
 
-async function configureReportFiltration(){
+async function injectReportColumns(){
     let columnDiv = document.getElementById("reportColumns");
     let injector = new injectHtml(
         parentDiv=columnDiv, title = "Select Report Columns", reset = true
     );
     try{
         const reportType = document.getElementById("reportType");
-        let preselectedReportColumns = await getRecentSelectedDataFromAPI(
+        let reportProfile = await getSelectedReportColumns(
             endpoint="reports",
             filtering_field="main_section",filtering_value=reportType.value
         );
         injector.injectCheckBoxes(
-            checkNames = preselectedReportColumns["columns"].split(","),
+            checkNames = reportProfile["columns"].split(","),
             commonName="report_column",
-            preSelected = preselectedReportColumns["selected_columns"]
+            preSelected = reportProfile["selected_columns"]
         );
         
     }catch(error){
@@ -175,7 +175,7 @@ async function configureAdditionalReportSheet(){
     let reportColumns = document.getElementsByName("report_column");
 
     let reportType = document.getElementById("reportType");
-    let preselection = await getRecentSelectedDataFromAPI(
+    let preselection = await getSelectedReportColumns(
         endpoint="reports",
         filtering_field = "main_section", filtering_value = reportType.value
     );
@@ -228,7 +228,7 @@ configureAdditionalReportSheet()
 
 
 document.addEventListener("DOMContentLoaded",async ()=>{
-    configureReportFiltration();
+    injectReportColumns();
 
     let checkboxes = document.getElementsByName("additional_sheet");
     checkboxes.forEach(box => {
@@ -237,5 +237,5 @@ document.addEventListener("DOMContentLoaded",async ()=>{
 });
 
 reportType.addEventListener("change",async ()=>{
-    configureReportFiltration();
+    injectReportColumns();
 });
