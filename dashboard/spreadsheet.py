@@ -77,8 +77,20 @@ class Spreadsheet:
                 sorter_instance = LabelSorter(pdf_path=label_path)
                 label_summary = sorter_instance.create_sorted_summary()
                 row_count = 1; column_count = 0; column_range = []
+                
+                quantities = []
+                for qty_summary in label_summary:
+                    if type(label_summary[qty_summary]) == dict:
+                        qty_dict = label_summary[qty_summary]
+                        for qty, pages in qty_dict.items():
+                            if qty not in quantities:
+                                quantities.append(qty)
+                        
+                print(f'Quantities : {sorted(quantities)}')
+                
                 if self.report_type == "Order Report":
-                    for product_name, qty_dict in label_summary.items():
+                    summary_items = label_summary.items()
+                    for product_name, qty_dict in summary_items:
                         orders_list = []; tally_dictionary = {}
                         if product_name != 'Mixed':
                             tally_dictionary['Product Name'] = product_name
@@ -86,10 +98,8 @@ class Spreadsheet:
                             
                             if type(qty_dict) == dict:
                                 column_count = len(tally_dictionary.keys())
-                                quantities = sorted(tuple(qty_dict.keys()))
                                 for qty, pages in sorted(list(qty_dict.items())):
                                     column_count += 1
-                                    print(f'Quantities : {quantities}')
                                     if (qty == quantities[0] or qty == quantities[-1]) and not qty in column_range:
                                         column_range.append(str(column_count))
                                         
