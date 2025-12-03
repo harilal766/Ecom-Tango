@@ -12,11 +12,5 @@ class UserViewSet(viewsets.ModelViewSet):
 class ReportProfileViewSet(viewsets.ModelViewSet):
     queryset = ReportProfile.objects.all() 
     serializer_class = ReportProfileSerializer
-    #permission_classes = [permissions.AllowAny]
+    permission_classes = [permissions.AllowAny]
     
-    def get_queryset(self):
-        user = self.request.user 
-        store = StoreProfile.objects.get(user = user)
-        return ReportProfile.objects.filter(
-            user = user, store = store
-        )

@@ -16,7 +16,7 @@
         <!-- Request for order type -->
         {% if order_types %}
         <div class="dashboard-module">
-            <h2>Orders</h2>  
+            <h2 class="form-title">Orders</h2>  
             <form method="POST" class="form" enctype="multipart/form-data" action="{% url 'dashboard:orders' store_slug=selected_store.slug %}">
                 {% csrf_token %}
                 <select name="order-type" class="form-select" aria-label="Default select example">
@@ -27,13 +27,19 @@
                 {% include 'date_range.html' %}
                 <button type='submit' class="btn btn-secondary">Get orders</button>
             </form> 
+
+            {% if selected_store.platform == 'Shopify' %}
+            <div>
+                <h1>Shopify</h1>
+            </div>
+            {% endif %}
         </div>
         {% endif %}
 
         <!-- Settlement -->
         {% if settlements %}
         <div class="dashboard-module">
-            <h2 id="formTitle">Settlements</h2>
+            <h2 id="formTitle" class="form-title">Settlements</h2>
             <div class="settlements">
                 {% for settlement in settlements %}
                 <form method="POST" id="settlementForm" class="form" enctype='multipart/form-data'>
@@ -52,7 +58,7 @@
 
         {% if report_types %}
         <div class="dashboard-module">
-            <h2 id="formTitle">Reports</h2>
+            <h2 id="formTitle" class="form-title">Reports</h2>
             <form method="POST" id="reportForm" class="form" enctype='multipart/form-data' action="{% url 'dashboard:create_report' store_slug=selected_store.slug %}">
                 {% csrf_token %}
                 <div class="selection-group">
@@ -63,9 +69,12 @@
                     </select>
 
                     <select name = "payment_method" class="form-select" aria-label="Default select example">
-                        <option>CashOnDelivery</option>
-                        <option>Standard</option>
+                        <option>COD</option>
+                        <option>Other</option>
                     </select>
+
+                    <div id='additionalReportSpace'>
+                    </div>
 
                     {% if shipping_dates %}
                     <select name = "shipping_date" class="form-select" aria-label="Default select example">
@@ -73,6 +82,8 @@
                         <option>{{date}}</option>
                         {% endfor %}
                     </select>
+                    {% else %}
+                    <h2>no shipping dates</h2>
                     {% endif %}
                 </div>
 
@@ -90,6 +101,10 @@
                         <div class="check">
                             <label class="form-check-label" for="tally_table">Tally Table</label><br>
                             <input class="form-check-input" type="checkbox" id="tally_table" name="additional_sheet" value="tally_table">
+                        </div>
+
+                        <div>
+                            <input type="file" id="label" name = "label_filepath" value = "label_filepath">
                         </div>
                     </div>
 

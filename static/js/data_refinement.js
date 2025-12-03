@@ -102,7 +102,7 @@ class injectHtml{
     }
 }
 
-async function getPreSelectedData(endpoint,filtering_field,filtering_value){
+async function getSelectedReportColumns(endpoint,filtering_field,filtering_value){
     let preselected;
     try{
         let reportProfiles = await apiAccess(apiUrl = baseUrl + endpoint);
@@ -133,21 +133,23 @@ async function apiAccess(apiUrl){
     }
 }
 
-async function configureReportFiltration(){
+async function injectReportColumns(){
     let columnDiv = document.getElementById("reportColumns");
     let injector = new injectHtml(
         parentDiv=columnDiv, title = "Select Report Columns", reset = true
     );
+    let report_endpoint = null;
     try{
+        report_endpoint = "reports";
         const reportType = document.getElementById("reportType");
-        let preselectedReportColumns = await getPreSelectedData(
-            endpoint="reports",
-            filtering_field="main_section",filtering_value=reportType.value
+        let reportProfile = await getSelectedReportColumns(
+            endpoint = report_endpoint,
+            filtering_field = "main_section",filtering_value=reportType.value
         );
         injector.injectCheckBoxes(
-            checkNames = preselectedReportColumns["columns"].split(","),
+            checkNames = reportProfile["columns"].split(","),
             commonName="report_column",
-            preSelected = preselectedReportColumns["selected_columns"]
+            preSelected = reportProfile["selected_columns"]
         );
         
     }catch(error){
@@ -175,7 +177,7 @@ async function configureAdditionalReportSheet(){
     let reportColumns = document.getElementsByName("report_column");
 
     let reportType = document.getElementById("reportType");
-    let preselection = await getPreSelectedData(
+    let preselection = await getSelectedReportColumns(
         endpoint="reports",
         filtering_field = "main_section", filtering_value = reportType.value
     );
@@ -190,7 +192,7 @@ async function configureAdditionalReportSheet(){
                     reset = true
                 );
                 if (box.checked){
-                    title = "Select Pivot Index"
+                    title = "Index"
                     if (box.value == "pivot_table"){
                         injector.injectSelectTag(
                             id=box.id, selectName = "pivot_index",
@@ -228,7 +230,7 @@ configureAdditionalReportSheet()
 
 
 document.addEventListener("DOMContentLoaded",async ()=>{
-    configureReportFiltration();
+    injectReportColumns();
 
     let checkboxes = document.getElementsByName("additional_sheet");
     checkboxes.forEach(box => {
@@ -237,8 +239,5 @@ document.addEventListener("DOMContentLoaded",async ()=>{
 });
 
 reportType.addEventListener("change",async ()=>{
-    configureReportFiltration();
+    injectReportColumns();
 });
-
-
-

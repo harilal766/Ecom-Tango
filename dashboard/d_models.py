@@ -76,3 +76,5 @@ class ReportProfile(BaseCredential):
                 self.save()
         except Exception as e:
             print(e)
+            
+            

@@ -6,6 +6,7 @@ from .models import SpapiCredential
 from sp_api.api import Orders, ReportsV2
 from sp_api.base.reportTypes import ReportType
 from sp_api.base.marketplaces import Marketplaces
+from sp_api.util import load_all_pages, throttle_retry
 
 from utils import iso_8601_converter, iso_8601_timestamp
 import pandas as pd 
@@ -45,35 +46,70 @@ class SpapiOrderClient(SpapiBase):
             credentials=self.credentials,
             marketplace=Marketplaces.IN
         )
-        
-    def get_order_ids(self,LatestShipDate,PaymentMethod,**kwargs,):
-        ids = []
+    
+    @throttle_retry()
+    @load_all_pages()
+    def load_all_orders(self,**kwargs):
         try:
-            orders = self.api_model.get_orders(**kwargs)
-            orders = orders.payload.get("Orders")
-            for order in orders:
-                id = order["AmazonOrderId"]
-                ship_date = order["LatestShipDate"]
-                method = order.get('PaymentMethodDetails',None)
-                if ship_date == LatestShipDate and method == [PaymentMethod]:
-                    if not id in ids:
-                        ids.append(id)
+            return self.api_model.get_orders(**kwargs)
+        except Exception as e:
+            print(e)
+            
+    def get_all_orders(self,**kwargs):
+        orders_list = []
+        try:
+            orders_response = self.load_all_orders(**kwargs)
+            if orders_response:
+                print(orders_response)
+                for page in orders_response:
+                    orders_list += (
+                        page.payload.get('Orders',[])
+                    )
         except Exception as e:
             print(e)
         else:
-            return ids
+            return orders_list
+        
+    def get_order_ids(self, **kwargs):
+        order_ids = []
+        try:
+            orders = self.get_all_orders(
+                **kwargs
+            )
+            if orders:
+                for order in orders:
+                    if type(order) == dict:
+                        id = order.get("AmazonOrderId", None)
+                        if id:
+                            order_shipdate = order.get("LatestShipDate", None)
+                            order_payment_method = order.get('PaymentMethods',None)
+                            
+                            print(f'id : {id} - shipdate : {order_shipdate}')
+                            kwarg_shipdate = kwargs.get('LatestShipDate', None)
+                            if order_shipdate == kwarg_shipdate: #and order_shipdate == kwargs['LatestShipDate']:
+                                order_ids.append(id)
+            else:
+                print(f"Orders returned None.")
+        except Exception as e:
+            print(f'Id Error : ', e)
+        else:
+            return order_ids
         
     def get_shipping_dates(self):
         date_list = []
         try:
             orders = self.api_model.get_orders(
-                CreatedAfter = iso_8601_timestamp(7)
+                CreatedAfter = iso_8601_timestamp(-3)
             )
             orders = orders.payload.get("Orders")
-            for order in orders:
-                date = order["LatestShipDate"]
-                if not date in date_list:
-                    date_list.append(date)
+            #orders = self.get_all_orders(CreatedAfter = iso_8601_timestamp(-3))
+            if orders:
+                for order in orders:
+                    earliest_date = order['EarliestShipDate']
+                    latest_date = order["LatestShipDate"]
+                    if latest_date not in date_list:
+                        date_list.append(latest_date)
+                print(f'Dates : {date_list}')
         except Exception as e:
             print(e)
         else:
@@ -100,15 +136,16 @@ class SpapiReportClient(SpapiBase):
             marketplace=Marketplaces.IN
         )
     
-    def create_report_id(self,reportType,dataStartTime,dataEndTime):
+    def create_report_id(self,reportType,dataStartTime,dataEndTime = None):
         id = None
         try:
             report_details = self.api_model.create_report(
                 reportType = reportType,
                 dataStartTime = dataStartTime,
-                dataEndTime = dataEndTime 
+                dataEndTime = dataEndTime
             )
-            id = report_details.payload.get("reportId")
+            if report_details:
+                id = report_details.payload.get("reportId")
                 
         except Exception as e:
             print(e)

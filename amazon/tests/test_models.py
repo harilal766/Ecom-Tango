@@ -12,6 +12,7 @@ from utils import iso_8601_timestamp
 # Create your tests here.
 class TestSpapiCredential(TestStoreProfile):
     def setUp(self):
+        #selected_amzn_creds = list(json_testdata['amazon'].keys())[0]
         super(TestSpapiCredential,self).setUp()
         self.spapi_inst = SpapiCredential.objects.create(
             **{

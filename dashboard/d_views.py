@@ -8,15 +8,15 @@ from amazon.views import SpapiReportClient
 # Shopify
 from shopify.sh_models import *
 # Dashboard
+from dashboard.spreadsheet import Spreadsheet
 from dashboard.d_models import StoreProfile,ReportProfile
 from datetime import datetime
 
 from utils import iso_8601_converter
 from sp_api.api import Orders
 from datetime import datetime, timedelta
-import pandas as pd
-import openpyxl
-from io import StringIO, BytesIO
+import os
+from django.core.files.storage import FileSystemStorage
 
 from pprint import pprint
 
@@ -30,13 +30,12 @@ class Dashboard:
             },
             "Shopify" : {
                 "order_types" : ("unfulfilled","fulfilled"),
-                "report_types" : ("Order","Return")
+                "report_types" : ("Order Report","Return Report")
             }
         }
 # Create your views here.
 def home(request):
     try:
-        print(request.user.is_superuser)
         if request.user.is_authenticated:
             first_store = StoreProfile.objects.filter(user = request.user).first()
             if first_store:
@@ -57,7 +56,8 @@ class Store(Dashboard, View):
             "selected_store" : None,
             "order_types" : None, "report_types" : None,
             "settlements" : None,
-            "shipping_dates" : None
+            "shipping_dates" : None,
+            'incomplete_orders' : None
         }
         report_client = None; order_client = None
         try:
@@ -70,9 +70,10 @@ class Store(Dashboard, View):
                 context["settlements"] = report_client.api_model.get_reports(
                     reportTypes = ReportType.GET_V2_SETTLEMENT_REPORT_DATA_FLAT_FILE_V2
                 ).payload.get("reports")
-                
                 # store report columns to use later
                 context["shipping_dates"] = order_client.get_shipping_dates()
+            elif selected_store.platform == 'Shopify':
+                pass
                 
             # Common configurations
             if report_client is not None:
@@ -102,7 +103,7 @@ class Store(Dashboard, View):
                     storeprofile = StoreProfile.objects.create(
                         user = request.user, storename = storename,
                         platform = platform,
-                        created_date = datetime.now()
+                        created_date = iso_8601_timestamp(0)
                     )
                     storeprofile.save()
                     
@@ -175,8 +176,8 @@ class StoreReport(View):
                     report_id = report_client.create_report_id(
                         reportType = generatable_amazon_report_types[selected_report_type],
                         dataStartTime = iso_8601_converter(from_date),
-                        dataEndTime = iso_8601_converter(to_date)
                     )
+                    
                     report_df = report_client.create_report_df(
                         reportId=report_id
                     )
@@ -184,55 +185,73 @@ class StoreReport(View):
                     if selected_report_type == "Order Report":
                         shipping_date = request.POST.get("shipping_date")
                         method = request.POST.get("payment_method")
+                        
                         order_ids  = order_client.get_order_ids(
-                            CreatedAfter = from_date,
-                            CreatedBefore = to_date,
+                            CreatedAfter = iso_8601_converter(from_date),
                             LatestShipDate = shipping_date,
-                            PaymentMethod = method
+                            PaymentMethods = [method],
+                            OrderStatuses = "Shipped"
                         )
+                        
+                        print(order_ids)
                         
                         report_df = report_df[
                             report_df["amazon-order-id"].isin(order_ids)
                         ]
                         
-                        
-                    
                 elif selected_store.platform == "Shopify":
                     pass
-                
+
+                # Additional Sheets 
                 if report_df is not None:
                     selected_columns = request.POST.getlist("report_column")
                     additional_sheets = request.POST.getlist("additional_sheet")
                     if additional_sheets:
+                        spreadsheet_instance = Spreadsheet(
+                            store = selected_store,
+                            report_df = report_df, report_type= selected_report_type
+                        )
                         for sheet in additional_sheets:
                             if sheet == "pivot_table":
                                 pivot_index = request.POST.get("pivot_index")
-                                other_pivot_columns = request.POST.getlist("pivot_table")
-                                print(pivot_index, other_pivot_columns, sep = "\n")
+                                other_pivot_columns = request.POST.getlist("pivot_table",None)
                                 
-                                if pivot_index and other_pivot_columns:
-                                    pivot_df = report_df.pivot_table(
-                                        values= other_pivot_columns,
-                                        index=pivot_index,
-                                        aggfunc='sum',margins= True, margins_name='Grand Total'
+                                pivot_df = spreadsheet_instance.create_pivot_table(
+                                    index = pivot_index, other_columns = other_pivot_columns 
+                                )
+                            elif sheet == 'tally_table':
+                                if pivot_df is not None:
+                                    uploaded_label = request.FILES.get("label_filepath", None)
+                                    fs = FileSystemStorage()
+                                    
+                                    filename = fs.save(uploaded_label.name, uploaded_label)
+                                    uploaded_filepath = fs.path(filename)
+                                    
+                                    print(uploaded_filepath)
+
+                                    tally_df = spreadsheet_instance.create_tally_table(
+                                        pivot_df = pivot_df,
+                                        label_path=uploaded_filepath
                                     )
-                                    pivot_df = pivot_df.reset_index().rename(columns={pivot_index: 'Row Labels'})
-                                    print(f"pivot : {pivot_df}")
+                                    
+                                    
                     # updation of selected columns 
                     report_profile = ReportProfile.objects.filter(
-                        user = request.user, store = selected_store, 
+                        user = request.user, store = selected_store,
                         main_section = selected_report_type,
                     ).first()
+                    
+                    # compartmentalization 
                     if report_profile:
-                        print(f"Joint : {other_pivot_columns}")
                         report_profile.selected_columns = ','.join(selected_columns)
-                        report_profile.updated_time = datetime.now()
+                        report_profile.columns = ','.join(report_df.columns)
+                        report_profile.updated_time = iso_8601_timestamp(0)
                         report_profile.pivot_columns = ','.join([pivot_index] + other_pivot_columns)
                         report_profile.save()
                     
                     if len(selected_columns) > 0:
                         report_df = report_df[selected_columns]
-                    
+                
                     sheets = (
                         {"Name" : "Report", "Content" : report_df},
                         {"Name" : "Pivot Table", "Content" : pivot_df},
@@ -242,8 +261,6 @@ class StoreReport(View):
                         content_type = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
                     )
                     response['Content-Disposition'] = f'attachment; filename = {selected_report_type} : {from_date} - {to_date}.xlsx'
-                    
-                    pprint(f"Request datas : {request.POST}")
                     
                     with pd.ExcelWriter(response, engine='openpyxl') as writer:
                         report_df.to_excel(writer,index=False,sheet_name="Report")
