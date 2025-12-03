@@ -91,7 +91,15 @@ class Spreadsheet:
                 if self.report_type == "Order Report":
                     summary_items = label_summary.items()
                     for product_name, qty_dict in summary_items:
-                        orders_list = []; tally_dictionary = {}
+                        orders_list = []; 
+                        
+                        tally_dictionary = {}
+                        # Dictionaries breakups to use in more optimised future updation 
+                        product_dict = {
+                            "Product Name" : product_name,
+                            "Orders" : None
+                        } 
+                        price_dict = {} 
                         if product_name != 'Mixed':
                             tally_dictionary['Product Name'] = product_name
                             tally_dictionary['Orders'] = None
