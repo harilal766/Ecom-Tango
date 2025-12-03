@@ -98,6 +98,18 @@ class Spreadsheet:
                             
                             if type(qty_dict) == dict:
                                 column_count = len(tally_dictionary.keys())
+                                
+                                for qty in sorted(quantities):
+                                    page_numbers = qty_dict.get(qty,None)
+                                    if page_numbers:
+                                        order_count = int(len(page_numbers)/2 if self.store.platform == "Amazon" else len(page_numbers))
+                                        piece_count = int(int(qty) * order_count)
+                                        orders_list.append(str(order_count))
+                                    else:
+                                        piece_count = None
+                                    tally_dictionary[qty] = piece_count
+                                
+                                """
                                 for qty, pages in sorted(list(qty_dict.items())):
                                     column_count += 1
                                     if (qty == quantities[0] or qty == quantities[-1]) and not qty in column_range:
@@ -106,6 +118,7 @@ class Spreadsheet:
                                     qty_based_order_count = len(pages)/2 if self.store.platform == "Amazon" else len(pages)
                                     orders_list.append(str(int(qty_based_order_count)))
                                     tally_dictionary[qty] = int(qty) * qty_based_order_count
+                                """
                                 tally_dictionary['Orders'] = '+'.join(orders_list)
                             
                             if 'Mixed' in label_summary.keys():
