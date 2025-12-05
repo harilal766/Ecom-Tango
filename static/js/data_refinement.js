@@ -103,7 +103,7 @@ class injectHtml{
 }
 
 async function getSelectedReportColumns(endpoint,filtering_field,filtering_value){
-    let preselected; let current_user;
+    let preselected; let current_user; let selected_store;
     try{
         /* Get current user */
         let users = await apiAccess(apiUrl = baseUrl + 'users/');
@@ -113,11 +113,13 @@ async function getSelectedReportColumns(endpoint,filtering_field,filtering_value
                 break; 
             }
         }
-        console.log(current_user.id);
+        /* Get selected store */ 
+        selected_store = document.getElementById('selectedStore');
+        console.log(selected_store.innerText);
         /* Get current report profile */
         let reportProfiles = await apiAccess(apiUrl = baseUrl + endpoint);
         for (const profile of reportProfiles){
-            if (profile[filtering_field] == filtering_value && profile['user'] === current_user.id){
+            if (profile[filtering_field] === filtering_value && profile['user'] === current_user.id && profile['store'] === Number(selected_store.innerText)){
                 preselected = profile;
                 break;
             }

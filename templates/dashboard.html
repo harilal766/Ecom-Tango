@@ -11,7 +11,7 @@
     </div>
 
     <!-- Code for detail view of first store on first dashboard loading-->
-    <h5>Selected : {{selected_store.slug}}</h5>
+    <h5 id="selectedStore">{{selected_store.id}}</h5>
     <div class="store-detail">
         <!-- Request for order type -->
         {% if order_types %}
