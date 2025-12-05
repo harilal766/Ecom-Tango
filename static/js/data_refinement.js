@@ -103,11 +103,21 @@ class injectHtml{
 }
 
 async function getSelectedReportColumns(endpoint,filtering_field,filtering_value){
-    let preselected;
+    let preselected; let current_user;
     try{
+        /* Get current user */
+        let users = await apiAccess(apiUrl = baseUrl + 'users/');
+        for (const user of users){
+            if (user['username'] === user['current_user']){
+                current_user = user;
+                break; 
+            }
+        }
+        console.log(current_user.id);
+        /* Get current report profile */
         let reportProfiles = await apiAccess(apiUrl = baseUrl + endpoint);
         for (const profile of reportProfiles){
-            if (profile[filtering_field] == filtering_value){
+            if (profile[filtering_field] == filtering_value && profile['user'] === current_user.id){
                 preselected = profile;
                 break;
             }
@@ -177,6 +187,7 @@ async function configureAdditionalReportSheet(){
     let reportColumns = document.getElementsByName("report_column");
 
     let reportType = document.getElementById("reportType");
+
     let preselection = await getSelectedReportColumns(
         endpoint="reports",
         filtering_field = "main_section", filtering_value = reportType.value
