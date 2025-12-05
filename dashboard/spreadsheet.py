@@ -76,32 +76,61 @@ class Spreadsheet:
                 
                 sorter_instance = LabelSorter(pdf_path=label_path)
                 label_summary = sorter_instance.create_sorted_summary()
-                row_count = 1; column_count = 0; column_range = []
+                row_count = 1; column_count = 0
+                
+                quantities = []
+                for qty_summary in label_summary:
+                    if type(label_summary[qty_summary]) == dict:
+                        qty_dict = label_summary[qty_summary]
+                        for qty, pages in qty_dict.items():
+                            if qty not in quantities:
+                                quantities.append(qty)
+                        
+                print(f'Quantities : {sorted(quantities)}')
+                
                 if self.report_type == "Order Report":
-                    for product_name, qty_dict in label_summary.items():
-                        orders_list = []; tally_dictionary = {}
+                    summary_items = label_summary.items()
+                    for product_name, qty_dict in summary_items:
+                        orders_list = [];  cell_range = []
+                        
+                        tally_dictionary = {}
+                        # Dictionaries breakups to use in more optimised future updation 
+                        product_dict = {
+                            "Product Name" : product_name,
+                            "Orders" : None
+                        } 
+                        price_dict = {} 
                         if product_name != 'Mixed':
+                            row_count += 1
                             tally_dictionary['Product Name'] = product_name
                             tally_dictionary['Orders'] = None
                             
                             if type(qty_dict) == dict:
                                 column_count = len(tally_dictionary.keys())
-                                quantities = sorted(tuple(qty_dict.keys()))
-                                for qty, pages in sorted(list(qty_dict.items())):
-                                    column_count += 1
-                                    print(f'Quantities : {quantities}')
-                                    if (qty == quantities[0] or qty == quantities[-1]) and not qty in column_range:
-                                        column_range.append(str(column_count))
-                                        
-                                    qty_based_order_count = len(pages)/2 if self.store.platform == "Amazon" else len(pages)
-                                    orders_list.append(str(int(qty_based_order_count)))
-                                    tally_dictionary[qty] = int(qty) * qty_based_order_count
+                                
+                                quantities = sorted(quantities)
+                                for qty in quantities:
+                                    if qty == quantities[0] or qty == quantities[-1]:
+                                        if qty not in cell_range:
+                                            cell_range.append(
+                                                f'{chr(64 + column_count + int(qty))}{row_count}'
+                                            )
+                                    
+                                    page_numbers = qty_dict.get(qty,None)
+                                    if page_numbers:
+                                        order_count = int(len(page_numbers)/2 if self.store.platform == "Amazon" else len(page_numbers))
+                                        piece_count = int(int(qty) * order_count)
+                                        orders_list.append(str(order_count))
+                                    else:
+                                        piece_count = None
+                                    tally_dictionary[qty] = piece_count
+                                
                                 tally_dictionary['Orders'] = '+'.join(orders_list)
                             
                             if 'Mixed' in label_summary.keys():
                                 tally_dictionary['Mixed'] = None
                                             
-                            tally_dictionary['Total'] = f'=sum({column_range})'
+                            tally_dictionary['Total'] = f'=sum({':'.join(cell_range)})'
                             tally_dictionary['Rate'] = rate_dict.get(product_name)
                             tally_dictionary['Amount'] = None 
                             
