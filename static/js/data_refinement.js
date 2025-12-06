@@ -119,7 +119,11 @@ async function getSelectedReportColumns(endpoint,filtering_field,filtering_value
         /* Get current report profile */
         let reportProfiles = await apiAccess(apiUrl = baseUrl + endpoint);
         for (const profile of reportProfiles){
-            if (profile[filtering_field] === filtering_value && profile['user'] === current_user.id && profile['store'] === Number(selected_store.innerText)){
+            if (
+                profile[filtering_field] === filtering_value && 
+                profile['user'] === current_user.id && 
+                profile['store'] === Number(selected_store.innerText)
+            ){
                 preselected = profile;
                 break;
             }

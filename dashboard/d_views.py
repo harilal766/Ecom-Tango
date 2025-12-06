@@ -59,7 +59,10 @@ class Store(Dashboard, View):
             "shipping_dates" : None,
             'incomplete_orders' : None
         }
-        report_client = None; order_client = None
+        # Order Stuff
+        order_client = None
+        # Report Stuff
+        report_client = None; report_types = None
         try:
             selected_store = StoreProfile.objects.get(user=request.user,slug=store_slug)
             if selected_store.platform == "Amazon":
@@ -72,12 +75,18 @@ class Store(Dashboard, View):
                 ).payload.get("reports")
                 # store report columns to use later
                 context["shipping_dates"] = order_client.get_shipping_dates()
+                
+                report_types = generatable_amazon_report_types
             elif selected_store.platform == 'Shopify':
                 pass
-                
             # Common configurations
-            if report_client is not None:
-                pass
+            if report_types and report_client is not None:
+                for key,value in report_types.items():
+                    report_profile = ReportProfile.objects.filter(
+                        user=request.user, store = selected_store,
+                        main_section = key
+                    )
+                    print(report_profile)
                 
             context["selected_store"] = selected_store
             context["order_types"] = self.platform_specific_datas[selected_store.platform]["order_types"]
@@ -245,9 +254,17 @@ class StoreReport(View):
                     if report_profile:
                         report_profile.selected_columns = ','.join(selected_columns)
                         report_profile.columns = ','.join(report_df.columns)
-                        report_profile.updated_time = iso_8601_timestamp(0)
+                        #report_profile.updated_time = iso_8601_timestamp(0)
                         report_profile.pivot_columns = ','.join([pivot_index] + other_pivot_columns)
                         report_profile.save()
+                    else:
+                        ReportProfile.create_report_profile(
+                            self, user = request.user,
+                            store = selected_store,
+                            main_section = selected_report_type,
+                            sub_section = "",
+                            columns = ','.join(report_df.columns)
+                        )
                     
                     if len(selected_columns) > 0:
                         report_df = report_df[selected_columns]

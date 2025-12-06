@@ -69,11 +69,24 @@ class ReportProfile(BaseCredential):
         except Exception as e:
             print(e)
             
-    def cache_report_columns(self,selected_columns : str = None):
+    def cache_report_profiles(self,selected_columns : str = None):
         try:
             if selected_columns:
                 self.selected_columns = ','.join(selected_columns)
                 self.save()
+        except Exception as e:
+            print(e)
+            
+    def create_report_profile(self,**kwargs):
+        try:
+            new_profile = ReportProfile.objects.create(
+                user = kwargs["user"],
+                store = kwargs["store"],
+                main_section = kwargs["main_section"],
+                sub_section = kwargs["sub_section"],
+                columns = kwargs["columns"],
+            )
+            new_profile.save()
         except Exception as e:
             print(e)
             
