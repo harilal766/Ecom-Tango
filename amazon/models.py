@@ -13,7 +13,6 @@ class SpapiCredential(BaseCredential):
     access_token = models.CharField(max_length=500, blank=True, null=True)
     access_token_refreshing_time = models.DateTimeField(auto_now_add=True)
     """
-    
     def get_credentials(self):
         try:
             creds = {

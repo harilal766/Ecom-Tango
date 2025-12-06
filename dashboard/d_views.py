@@ -79,14 +79,29 @@ class Store(Dashboard, View):
                 report_types = generatable_amazon_report_types
             elif selected_store.platform == 'Shopify':
                 pass
+            
             # Common configurations
-            if report_types and report_client is not None:
-                for key,value in report_types.items():
-                    report_profile = ReportProfile.objects.filter(
-                        user=request.user, store = selected_store,
-                        main_section = key
-                    )
-                    print(report_profile)
+            report_types = generatable_amazon_report_types
+            for key,value in report_types.items():
+                profile = ReportProfile.objects.filter(
+                    user = request.user, store = selected_store,
+                    main_section = key
+                )
+                if len(profile)==0:
+                    if selected_store.platform == "Amazon": 
+                        id = report_client.create_report_id(
+                            reportType=value,dataStartTime=iso_8601_timestamp(0)
+                        )
+                        print(id)
+                        df = report_client.create_report_df(reportId=id)
+                        profile = ReportProfile.objects.create(
+                            user = request.user, store = selected_store,
+                            main_section = key, sub_section = value,
+                            columns = ','.join(df.columns) 
+                        )
+                        profile.save()
+                    
+            
                 
             context["selected_store"] = selected_store
             context["order_types"] = self.platform_specific_datas[selected_store.platform]["order_types"]
@@ -186,7 +201,6 @@ class StoreReport(View):
                         reportType = generatable_amazon_report_types[selected_report_type],
                         dataStartTime = iso_8601_converter(from_date),
                     )
-                    
                     report_df = report_client.create_report_df(
                         reportId=report_id
                     )

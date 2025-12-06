@@ -117,7 +117,7 @@ class SpapiOrderClient(SpapiBase):
             
     
     def get_order_df(self,**kwargs):
-        df = None
+        df = None, 
         try:
             orders = self.api_model.get_orders(**kwargs)
             orders = orders.payload.get("Orders")
@@ -155,7 +155,7 @@ class SpapiReportClient(SpapiBase):
     def create_report_df(self,reportId = None,reportDocumentId = None,LatestShipDate= None,PaymentMethod=None):
         df = None
         try:
-            if reportId  and reportDocumentId == None:
+            if reportId and reportDocumentId == None:
                 while True:
                     report_details = self.api_model.get_report(reportId=reportId)
                     report_status = report_details.payload.get("processingStatus")

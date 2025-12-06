@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.utils.text import slugify
 
 from datetime import datetime
+from utils import iso_8601_timestamp
 
 # Create your models here.
 class StoreProfile(models.Model):
@@ -69,11 +70,30 @@ class ReportProfile(BaseCredential):
         except Exception as e:
             print(e)
             
-    def cache_report_profiles(self,selected_columns : str = None):
+    def cache_report_profiles(self, user, store):
+        from amazon.views import generatable_amazon_report_types, SpapiReportClient
+        from amazon.models import SpapiCredential
+        report_types = {
+            "Amazon" : generatable_amazon_report_types
+        }
+        credentials_instance = None; report_instance = None
+        profile = None
         try:
-            if selected_columns:
-                self.selected_columns = ','.join(selected_columns)
-                self.save()
+            if user and store:
+                for key,value in report_types[store.platform].items():
+                    profile = ReportProfile.objects.filter(
+                        user = user, store = store,
+                        sub_section = value
+                    )
+                    if len(profile) == 0:
+                        if store.platform == "Amazon":
+                            credentials_instance = SpapiCredential(user=user, store=store)
+                            report_instance = SpapiReportClient(credentials=credentials_instance.get_credentials()) 
+                            id = report_instance.create_report_id(
+                                reportType=value,dataStartTime=iso_8601_timestamp(0)
+                            )
+                            print(id)
+                    
         except Exception as e:
             print(e)
             
