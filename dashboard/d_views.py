@@ -90,7 +90,7 @@ class Store(Dashboard, View):
                 if len(profile)==0:
                     if selected_store.platform == "Amazon": 
                         id = report_client.create_report_id(
-                            reportType=value,dataStartTime=iso_8601_timestamp(0)
+                            reportType=value,dataStartTime=iso_8601_timestamp(-1)
                         )
                         print(id)
                         df = report_client.create_report_df(reportId=id)
