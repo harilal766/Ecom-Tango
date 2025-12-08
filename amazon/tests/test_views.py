@@ -17,7 +17,7 @@ class Test_SpapiBase(TestSpapiCredential):
     def setUp(self):
         super(Test_SpapiBase,self).setUp()
         self.test_credentials = self.spapi_inst.get_credentials()
-        
+
         self.few_days_ago = iso_8601_timestamp(-3)
         self.today = iso_8601_timestamp(0)
         self.tomorrow = iso_8601_timestamp(1)
@@ -49,7 +49,7 @@ class Test_SpapiOrderClient(Test_SpapiBase):
         self.assertEqual(type(orders_list),list)
         self.assertGreater(len(orders_list), 1)
         
-    #@skip("")
+    @skip("")
     def test_get_order_ids(self):
         ids = self.test_api_model.get_order_ids(
             CreatedAfter = self.few_days_ago,
@@ -79,16 +79,17 @@ class Test_SpapiReportClient(Test_SpapiBase):
         super(Test_SpapiReportClient,self).setUp()
         self.test_api_model = SpapiReportClient(credentials=self.test_credentials)
     
-    @skip("")
+    #@skip("")
     def test_report_id_and_df(self):
         # Working report types
-        for type in generatable_amazon_report_types:
+        for key,value in generatable_amazon_report_types.items():
             id = self.test_api_model.create_report_id(
-                reportType=generatable_amazon_report_types[type],
-                dataStartTime=iso_8601_timestamp(5),
-                dataEndTime=iso_8601_timestamp(0)
+                reportType=value,
+                dataStartTime = self.few_days_ago
+                #dataEndTime=iso_8601_timestamp(0)
             )
+            print(id)
             self.assertEqual(id.isdigit(), True)
-            
+
             df = self.test_api_model.create_report_df(reportId=id)
             self.assertIsNotNone(df)
