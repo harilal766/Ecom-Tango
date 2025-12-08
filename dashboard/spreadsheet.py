@@ -71,7 +71,7 @@ class Spreadsheet:
                     for index, row in pivot_df.iterrows():
                         pivot_product = row['Row Labels']                        
                         rate_dict[f'{pivot_product} '] = int(
-                            row['item-price']/row['quantity']
+                            int(row['item-price'])/int(row['quantity'])
                         )
                 
                 sorter_instance = LabelSorter(pdf_path=label_path)

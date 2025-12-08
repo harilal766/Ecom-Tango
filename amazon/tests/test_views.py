@@ -35,28 +35,28 @@ class Test_SpapiOrderClient(Test_SpapiBase):
     def setUp(self):
         super(Test_SpapiOrderClient,self).setUp()
         self.test_api_model = SpapiOrderClient(credentials=self.test_credentials)
-        self.ship_date = '2025-12-01T18:29:59Z'
-        self.payment_method = ['COD'],
+        self.ship_date = '2025-12-06T18:29:59Z'
+        self.payment_method = ['COD']
         self.order_status = ['Shipped']
         
     #@skip("")
     def test_get_all_orders(self):
         orders_list = self.test_api_model.get_all_orders(
             CreatedAfter = self.few_days_ago,
-            PaymentMethods = self.payment_method,
             LatestShipDate = self.ship_date
         ) 
         #logging.info(orders, self.few_days_ago)
         self.assertEqual(type(orders_list),list)
         self.assertGreater(len(orders_list), 1)
         
-    @skip("")
+    #@skip("")
     def test_get_order_ids(self):
         ids = self.test_api_model.get_order_ids(
             CreatedAfter = self.few_days_ago,
             LatestShipDate = self.ship_date,
             PaymentMethods = self.payment_method
         )
+        print(ids)
         self.assertEqual(type(ids),list)
         self.assertGreater(len(ids), 1)
         
