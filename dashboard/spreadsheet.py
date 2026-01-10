@@ -79,6 +79,18 @@ class Spreadsheet:
                 row_count = 1; column_count = 0
                 
                 quantities = []
+                mixed_summary = label_summary["Mixed"]["summary"]
+                # remove items to main summary that does not exist in the mixed one
+                for prod, qty_summary in mixed_summary.items():
+                    mixed_total = sum(qty_summary.values())
+                    if not prod in label_summary.keys():
+                        label_summary[prod] = {"Mixed": mixed_total}
+                    else:
+                        label_summary[prod]["Mixed"] = mixed_total
+                
+                label_summary.pop("Mixed",None)
+                print(label_summary)
+                """
                 for qty_summary in label_summary:
                     if type(label_summary[qty_summary]) == dict:
                         qty_dict = label_summary[qty_summary]
@@ -138,11 +150,11 @@ class Spreadsheet:
             else:
                 print('Unsupported Report Type')              
                             
-            
-            tally_df = pd.DataFrame(
-                tally_dictionaries
-            )
+            """
         except Exception as e:
             return pd.DataFrame({"Error" : e})
         else:
+            tally_df = pd.DataFrame(
+                tally_dictionaries
+            )
             return tally_df
