@@ -132,7 +132,8 @@ class Spreadsheet:
                                 tally_dictionary['Orders'] = '+'.join(orders_list)
                             
                             tally_dictionary['Total'] = f'=sum({':'.join(cell_range)})' if len(cell_range)>0 else f'=sum('
-                            print(f'{rate_dict} - {product_name}')
+                            rate_cell = pivot_df.columns.to_list()
+                            print(rate_cell)
                             tally_dictionary['Rate'] = rate_dict.get(product_name,None)
                             tally_dictionary['Amount'] = None 
                             tally_dictionaries.append(tally_dictionary)
