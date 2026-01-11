@@ -90,15 +90,14 @@ class Spreadsheet:
                 
                 label_summary.pop("Mixed",None)
                 print(label_summary)
-                """
+                
                 for qty_summary in label_summary:
                     if type(label_summary[qty_summary]) == dict:
                         qty_dict = label_summary[qty_summary]
                         for qty, pages in qty_dict.items():
                             if qty not in quantities:
                                 quantities.append(qty)
-                        
-                print(f'Quantities : {sorted(quantities)}')
+                #print(f'Quantities : {sorted(quantities)}')
                 
                 if self.report_type == "Order Report":
                     summary_items = label_summary.items()
@@ -107,11 +106,6 @@ class Spreadsheet:
                         
                         tally_dictionary = {}
                         # Dictionaries breakups to use in more optimised future updation 
-                        product_dict = {
-                            "Product Name" : product_name,
-                            "Orders" : None
-                        } 
-                        price_dict = {} 
                         if product_name != 'Mixed':
                             row_count += 1
                             tally_dictionary['Product Name'] = product_name
@@ -119,38 +113,34 @@ class Spreadsheet:
                             
                             if type(qty_dict) == dict:
                                 column_count = len(tally_dictionary.keys())
-                                
                                 quantities = sorted(quantities)
                                 for qty in quantities:
                                     if qty == quantities[0] or qty == quantities[-1]:
                                         if qty not in cell_range:
-                                            cell_range.append(
-                                                f'{chr(64 + column_count + int(qty))}{row_count}'
-                                            )
+                                            if qty.isdigit():
+                                                last_encountered_digit = int(qty)
+                                            cell_index = f'{chr(64 + column_count + last_encountered_digit if qty.isdigit() else last_encountered_digit+1)}{row_count}'
+                                            #cell_range.append(cell_index)
                                     
                                     page_numbers = qty_dict.get(qty,None)
-                                    if page_numbers:
+                                    if type(page_numbers) == list:
                                         order_count = int(len(page_numbers)/2 if self.store.platform == "Amazon" else len(page_numbers))
                                         piece_count = int(int(qty) * order_count)
                                         orders_list.append(str(order_count))
                                     else:
-                                        piece_count = None
+                                        piece_count = qty_dict.get(qty,None)
                                     tally_dictionary[qty] = piece_count
-                                
+                                    
                                 tally_dictionary['Orders'] = '+'.join(orders_list)
-                            
-                            if 'Mixed' in label_summary.keys():
-                                tally_dictionary['Mixed'] = None
-                                            
-                            tally_dictionary['Total'] = f'=sum({':'.join(cell_range)})'
+                            """
+                            tally_dictionary['Total'] = f'=sum({':'.join(cell_range)})' if len(cell_range)>0 else f'=sum('
                             tally_dictionary['Rate'] = rate_dict.get(product_name)
                             tally_dictionary['Amount'] = None 
-                            
+                            """
                             tally_dictionaries.append(tally_dictionary)
             else:
                 print('Unsupported Report Type')              
                             
-            """
         except Exception as e:
             return pd.DataFrame({"Error" : e})
         else:
