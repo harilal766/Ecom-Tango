@@ -3,7 +3,7 @@ import pandas as pd, os, json
 from openpyxl import load_workbook
 from styleframe import StyleFrame, Styler
 from label_sorter import LabelSorter
-
+from pprint import pprint
 
 class Spreadsheet:
     def __init__(self, store, report_df, report_type):
@@ -70,25 +70,27 @@ class Spreadsheet:
                     print(pivot_df)
                     for index, row in pivot_df.iterrows():
                         pivot_product = row['Row Labels']                        
-                        rate_dict[f'{pivot_product} '] = int(
+                        rate_dict[f'{pivot_product}'] = int(
                             int(row['item-price'])/int(row['quantity'])
                         )
+                        #print(rate_dict[pivot_product], pivot_product)
                 
                 sorter_instance = LabelSorter(pdf_path=label_path)
                 label_summary = sorter_instance.create_sorted_summary()
                 row_count = 1; starting_col_count = 0
                 
                 quantities = []
-                mixed_summary = label_summary["Mixed"]["summary"]
-                # remove items to main summary that does not exist in the mixed one
-                for prod, qty_summary in mixed_summary.items():
-                    mixed_total = sum(qty_summary.values())
-                    if not prod in label_summary.keys():
-                        label_summary[prod] = {"Mixed": mixed_total}
-                    else:
-                        label_summary[prod]["Mixed"] = mixed_total
-                
-                label_summary.pop("Mixed",None)
+                mixed_dict = label_summary.get("Mixed",None)
+                if mixed_dict:
+                    mixed_summary = mixed_dict.get("summary", None)
+                    # remove items to main summary that does not exist in the mixed one
+                    for prod, qty_summary in mixed_summary.items():
+                        mixed_total = sum(qty_summary.values())
+                        if not prod in label_summary.keys():
+                            label_summary[prod] = {"Mixed": mixed_total}
+                        else:
+                            label_summary[prod]["Mixed"] = mixed_total
+                    label_summary.pop("Mixed",None)
                 for qty_summary in label_summary:
                     if type(label_summary[qty_summary]) == dict:
                         qty_dict = label_summary[qty_summary]
@@ -132,11 +134,11 @@ class Spreadsheet:
                                 tally_dictionary['Orders'] = '+'.join(orders_list)
                             
                             tally_dictionary['Total'] = f'=sum({':'.join(cell_range)})' if len(cell_range)>0 else f'=sum('
-                            rate_cell = pivot_df.columns.to_list()
-                            print(rate_cell)
                             tally_dictionary['Rate'] = rate_dict.get(product_name,None)
                             tally_dictionary['Amount'] = None 
                             tally_dictionaries.append(tally_dictionary)
+                            print(product_name)
+                    pprint(rate_dict)
             else:
                 print('Unsupported Report Type')              
                             
