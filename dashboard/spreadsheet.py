@@ -76,7 +76,7 @@ class Spreadsheet:
                 
                 sorter_instance = LabelSorter(pdf_path=label_path)
                 label_summary = sorter_instance.create_sorted_summary()
-                row_count = 1; column_count = 0
+                row_count = 1; starting_col_count = 0
                 
                 quantities = []
                 mixed_summary = label_summary["Mixed"]["summary"]
@@ -89,16 +89,13 @@ class Spreadsheet:
                         label_summary[prod]["Mixed"] = mixed_total
                 
                 label_summary.pop("Mixed",None)
-                print(label_summary)
-                
                 for qty_summary in label_summary:
                     if type(label_summary[qty_summary]) == dict:
                         qty_dict = label_summary[qty_summary]
                         for qty, pages in qty_dict.items():
                             if qty not in quantities:
                                 quantities.append(qty)
-                #print(f'Quantities : {sorted(quantities)}')
-                
+
                 if self.report_type == "Order Report":
                     summary_items = label_summary.items()
                     for product_name, qty_dict in summary_items:
@@ -112,15 +109,16 @@ class Spreadsheet:
                             tally_dictionary['Orders'] = None
                             
                             if type(qty_dict) == dict:
-                                column_count = len(tally_dictionary.keys())
+                                starting_col_count = len(tally_dictionary.keys())
                                 quantities = sorted(quantities)
                                 for qty in quantities:
                                     if qty == quantities[0] or qty == quantities[-1]:
                                         if qty not in cell_range:
                                             if qty.isdigit():
                                                 last_encountered_digit = int(qty)
-                                            cell_index = f'{chr(64 + column_count + last_encountered_digit if qty.isdigit() else last_encountered_digit+1)}{row_count}'
-                                            #cell_range.append(cell_index)
+                                            additional_count = last_encountered_digit if qty.isdigit() else last_encountered_digit+2
+                                            cell_index = f'{chr(64 + starting_col_count + additional_count)}{row_count}'
+                                            cell_range.append(cell_index)
                                     
                                     page_numbers = qty_dict.get(qty,None)
                                     if type(page_numbers) == list:
@@ -132,11 +130,11 @@ class Spreadsheet:
                                     tally_dictionary[qty] = piece_count
                                     
                                 tally_dictionary['Orders'] = '+'.join(orders_list)
-                            """
+                            
                             tally_dictionary['Total'] = f'=sum({':'.join(cell_range)})' if len(cell_range)>0 else f'=sum('
-                            tally_dictionary['Rate'] = rate_dict.get(product_name)
+                            print(f'{rate_dict} - {product_name}')
+                            tally_dictionary['Rate'] = rate_dict.get(product_name,None)
                             tally_dictionary['Amount'] = None 
-                            """
                             tally_dictionaries.append(tally_dictionary)
             else:
                 print('Unsupported Report Type')              
