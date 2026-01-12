@@ -4,6 +4,7 @@ from openpyxl import load_workbook
 from styleframe import StyleFrame, Styler
 from label_sorter import LabelSorter
 from pprint import pprint
+import re
 
 class Spreadsheet:
     def __init__(self, store, report_df, report_type):
@@ -67,10 +68,10 @@ class Spreadsheet:
         try:
             if self.report_type == "Order Report":
                 if not pivot_df is None:
-                    print(pivot_df)
+                    #print(pivot_df)
                     for index, row in pivot_df.iterrows():
-                        pivot_product = row['Row Labels']                        
-                        rate_dict[f'{pivot_product}'] = int(
+                        pivot_product = re.sub(r"\s","",row['Row Labels'])                    
+                        rate_dict[pivot_product] = int(
                             int(row['item-price'])/int(row['quantity'])
                         )
                         #print(rate_dict[pivot_product], pivot_product)
@@ -134,6 +135,7 @@ class Spreadsheet:
                                 tally_dictionary['Orders'] = '+'.join(orders_list)
                             
                             tally_dictionary['Total'] = f'=sum({':'.join(cell_range)})' if len(cell_range)>0 else f'=sum('
+                            product_name = re.sub(r"\s","", product_name)
                             tally_dictionary['Rate'] = rate_dict.get(product_name,None)
                             tally_dictionary['Amount'] = None 
                             tally_dictionaries.append(tally_dictionary)
