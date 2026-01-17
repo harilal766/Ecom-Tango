@@ -17,3 +17,5 @@ According to the standards of indiapost, a proper address will have,
 2. House/flat number, building name, street/road name.
 3. Locality/area, landmark (optional but helpful), city/town, district.
 4. State and 6-digit PIN code (essential for sorting).
+
+The current plan is to display potential return on the store dashboard and the option to edit the correct address after getting proper information from the customer.
