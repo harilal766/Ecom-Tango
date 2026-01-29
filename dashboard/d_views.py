@@ -67,8 +67,8 @@ class Store(Dashboard, View):
             selected_store = StoreProfile.objects.get(user=request.user,slug=store_slug)
             if selected_store.platform == "Amazon":
                 spapi_inst = SpapiCredential.objects.get(user = request.user, store = selected_store)
-                report_client = SpapiReportClient(credentials=spapi_inst.get_credentials())
-                order_client = SpapiOrderClient(credentials=spapi_inst.get_credentials())
+                report_client = SpapiReportClient(credentials=spapi_inst.get_the_credentials())
+                order_client = SpapiOrderClient(credentials=spapi_inst.get_the_credentials())
                 
                 context["settlements"] = report_client.api_model.get_reports(
                     reportTypes = ReportType.GET_V2_SETTLEMENT_REPORT_DATA_FLAT_FILE_V2
@@ -164,7 +164,7 @@ class StoreReport(View):
             selected_store = StoreProfile.objects.get(user=request.user,slug=store_slug)
             if selected_store.platform == "Amazon" :
                 spapi_inst = SpapiCredential.objects.get(user = request.user, store = selected_store)
-                report_client = SpapiReportClient(credentials=spapi_inst.get_credentials())
+                report_client = SpapiReportClient(credentials=spapi_inst.get_the_credentials())
                 report_df = report_client.create_report_df(reportId=report_id)
         except Exception as e:
             print(e)
@@ -193,9 +193,9 @@ class StoreReport(View):
                 
                 if selected_store.platform == "Amazon":
                     spapi_inst = SpapiCredential.objects.get(user = request.user, store = selected_store)
-                    report_client = SpapiReportClient(credentials=spapi_inst.get_credentials())
+                    report_client = SpapiReportClient(credentials=spapi_inst.get_the_credentials())
                     
-                    order_client = SpapiOrderClient(credentials=spapi_inst.get_credentials())
+                    order_client = SpapiOrderClient(credentials=spapi_inst.get_the_credentials())
                     
                     report_id = report_client.create_report_id(
                         reportType = generatable_amazon_report_types[selected_report_type],

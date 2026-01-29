@@ -36,22 +36,21 @@ class BaseCredential(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     store = models.ForeignKey(StoreProfile,on_delete=models.CASCADE)
     
+    credential_fields = ()
     def __str__(self):
         return f"{self.store}"
     
-    @classmethod
-    def get_credentials(cls,user, store_slug):
+    def get_the_credentials(self):
         credentials = None
         try:
-            selected_store = StoreProfile.objects.get(
-                user = user, slug=store_slug
-            )
-            credentials = cls.objects.get(
-                user=user, store = selected_store
-            )
+            if len(self.credential_fields) > 0:
+                credentials = {}
+                for field in self.credential_fields:
+                    credentials[field] = None
         except Exception as e:
             print(e)
         finally:
+            print(credentials)
             return credentials
     
 from datetime import datetime
@@ -88,7 +87,7 @@ class ReportProfile(BaseCredential):
                     if len(profile) == 0:
                         if store.platform == "Amazon":
                             credentials_instance = SpapiCredential(user=user, store=store)
-                            report_instance = SpapiReportClient(credentials=credentials_instance.get_credentials()) 
+                            report_instance = SpapiReportClient(credentials=credentials_instance.get_the_credentials()) 
                             id = report_instance.create_report_id(
                                 reportType=value,dataStartTime=iso_8601_timestamp(0)
                             )

@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 class Test_SpapiBase(TestSpapiCredential):
     def setUp(self):
         super(Test_SpapiBase,self).setUp()
-        self.test_credentials = self.spapi_inst.get_credentials()
+        self.test_credentials = self.spapi_inst.get_the_credentials()
 
         self.few_days_ago = iso_8601_timestamp(-3)
         self.today = iso_8601_timestamp(0)

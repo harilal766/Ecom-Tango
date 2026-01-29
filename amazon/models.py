@@ -13,7 +13,7 @@ class SpapiCredential(BaseCredential):
     access_token = models.CharField(max_length=500, blank=True, null=True)
     access_token_refreshing_time = models.DateTimeField(auto_now_add=True)
     """
-    def get_credentials(self):
+    def get_the_credentials(self):
         try:
             creds = {
                 "refresh_token" : self.refresh_token,
@@ -30,7 +30,7 @@ class SpapiCredential(BaseCredential):
             "lwa_app_id" : r'^amzn1.application-oa2-client.',
             "lwa_client_secret" : r'^amzn1.oa2-cs.v1.'
         }
-        credentials = self.get_credentials()
+        credentials = self.get_the_credentials()
         correction_count = 0
         try:
             for credential in credentials:

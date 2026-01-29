@@ -5,3 +5,5 @@ from dashboard.d_models import BaseCredential
 class ShopifyApiCredential(BaseCredential):
     storename = models.CharField(max_length=10)
     access_token = models.CharField(max_length=200)
+    
+    credential_fields = ("storename", "access_token")

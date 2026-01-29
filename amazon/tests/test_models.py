@@ -21,7 +21,7 @@ class TestSpapiCredential(TestStoreProfile):
             }
         )
         self.assertIsNotNone(self.spapi_inst)
-        self.assertIsNotNone(self.spapi_inst.get_credentials())
+        self.assertIsNotNone(self.spapi_inst.get_the_credentials())
         
     def test_are_credentials_verified(self):
         self.assertEqual(
