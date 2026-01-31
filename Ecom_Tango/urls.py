@@ -18,9 +18,10 @@ from django.contrib import admin
 from django.urls import path, include
 
 
-
-urlpatterns = [
+urlpatterns = [    
     path('admin/', admin.site.urls),
+    # db schema viewer
+    path('schema-viewer/',include('schema_viewer.urls')),
     path('',include('dashboard.d_urls')),
     path('auth/',include('authorization.auth_urls')),
     #path('amazon/',include('amazon.a_urls')),

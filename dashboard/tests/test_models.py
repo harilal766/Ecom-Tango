@@ -5,15 +5,24 @@ from authorization.tests.test_user import TestUser, json_testdata
 class TestStoreProfile(TestUser):
     def setUp(self):
         super(TestStoreProfile, self).setUp()
-        self.test_store = StoreProfile.objects.create(
-            **{"user" : self.test_user,**json_testdata["store"]}
-        )
-        self.assertIsNotNone(self.test_store)
+        test_stores = json_testdata["stores"]
+        for store in test_stores:
+            self.test_store = StoreProfile.objects.create(
+                **{"user" : self.test_user,**store}
+            )
+            self.assertIsNotNone(self.test_store)
         
     def test_platform(self):
         self.assertIn(
             self.test_store.platform, ["Amazon","Shopify"]
         )
+        
+"""
+class TestBaseCredential(TestUser,TestStoreProfile):
+    def setUp(self):
+        super(TestBaseCredential,self).setup()
+        
+"""     
         
 class TestReportProfile(TestStoreProfile):
     def SetUp(self):

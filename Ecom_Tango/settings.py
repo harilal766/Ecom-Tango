@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     # Custom apps
     'authorization',
+    'schema_viewer',
     'dashboard', 'amazon', 'shopify',
     # drf
     'rest_framework','api'
