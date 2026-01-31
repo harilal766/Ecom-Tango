@@ -41,16 +41,14 @@ class BaseCredential(models.Model):
         return f"{self.store}"
     
     def get_the_credentials(self):
-        credentials = None
-        try:
-            if len(self.credential_fields) > 0:
-                credentials = {}
-                for field in self.credential_fields:
-                    credentials[field] = getattr(self,field)
-        except Exception as e:
-            print(e)
-        finally:
-            return credentials
+        credentials = {}
+        print(self.credential_fields)
+        for field in self.credential_fields:
+            try:
+                credentials[field] = getattr(self,field,None)
+            except AttributeError:
+                raise AttributeError(f"Missing credential : {field}")
+        return credentials
     
 from datetime import datetime
 class ReportProfile(BaseCredential):
