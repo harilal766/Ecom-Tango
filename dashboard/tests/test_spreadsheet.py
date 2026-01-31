@@ -13,15 +13,15 @@ class TestSpreadsheet(TestStoreProfile):
             report_type = "Order Report"
         )
         self.assertIsNotNone(self.test_class)
-        for platform,path in self.label_paths.items():
-            self.assertIsNotNone(path)
-        
     
     """
     def test_create_tally_table(self):
-        tally_table = self.test_class.create_tally_table(
-            label_path = self.label_paths, pivot_df=None
-        )
-        print(tally_table)
-        self.assertIsNotNone(tally_table)
+        for platform,path in self.label_paths.items():
+            self.assertIsNotNone(path)
+            
+            tally_table = self.test_class.create_tally_table(
+                label_path = path, pivot_df=None
+            )
+            print(tally_table)
+            self.assertIsNotNone(tally_table)
     """

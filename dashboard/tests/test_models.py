@@ -1,4 +1,4 @@
-from ..d_models import StoreProfile, ReportProfile
+from ..d_models import StoreProfile, ReportProfile, BaseCredential
 from authorization.tests.test_user import TestUser, json_testdata
 # Create your tests here.
 
@@ -17,13 +17,15 @@ class TestStoreProfile(TestUser):
             self.test_store.platform, ["Amazon","Shopify"]
         )
         
-"""
-class TestBaseCredential(TestUser,TestStoreProfile):
+
+class TestBaseCredential(TestStoreProfile):
     def setUp(self):
-        super(TestBaseCredential,self).setup()
-        
-"""     
-        
+        super(TestBaseCredential,self).setUp()
+        self.base_credential_instance = BaseCredential()
+    """
+    def test_get_credential(self):
+        self.assertIsNotNone(self.base_credential_instance.get_the_credentials())
+    """
 class TestReportProfile(TestStoreProfile):
     def SetUp(self):
         super(TestReportProfile, self).setUp()

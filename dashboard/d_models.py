@@ -46,11 +46,10 @@ class BaseCredential(models.Model):
             if len(self.credential_fields) > 0:
                 credentials = {}
                 for field in self.credential_fields:
-                    credentials[field] = None
+                    credentials[field] = getattr(self,field)
         except Exception as e:
             print(e)
         finally:
-            print(credentials)
             return credentials
     
 from datetime import datetime
