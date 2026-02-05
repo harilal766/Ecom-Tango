@@ -15,9 +15,8 @@ class TestShopifyCreds(TestBaseCredential):
                 **json_testdata["api_credentials"]["shopify"][0]
             }
         )
-        print(self.shopify_test_instance)
         self.shopify_test_credentials = self.shopify_test_instance.get_the_credentials()
         self.assertIsNotNone(self.shopify_test_instance)
         
     def test_shopify_credentials(self):
-        self.assertIsNone(self.shopify_test_credentials)
+        self.assertIsNotNone(self.shopify_test_credentials)

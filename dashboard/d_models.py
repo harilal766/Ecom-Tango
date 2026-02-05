@@ -1,7 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils.text import slugify
-
 from datetime import datetime
 from utils import iso_8601_timestamp
 
@@ -50,7 +49,7 @@ class BaseCredential(models.Model):
                 raise AttributeError(f"Missing credential : {field}")
         return credentials
     
-from datetime import datetime
+
 class ReportProfile(BaseCredential):
     main_section = models.CharField(max_length=20)
     sub_section = models.CharField(max_length=100)
