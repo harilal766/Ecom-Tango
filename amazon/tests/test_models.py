@@ -17,7 +17,7 @@ class TestSpapiCredential(TestStoreProfile):
         self.spapi_inst = SpapiCredential.objects.create(
             **{
                 "user" : self.test_user, "store" : self.test_store,
-               **json_testdata["amazon"]
+               **json_testdata["api_credentials"]["amazon"][0]
             }
         )
         self.assertIsNotNone(self.spapi_inst)
