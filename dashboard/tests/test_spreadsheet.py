@@ -14,7 +14,6 @@ class TestSpreadsheet(TestStoreProfile):
         )
         self.assertIsNotNone(self.test_class)
     
-    """
     def test_create_tally_table(self):
         for platform,path in self.label_paths.items():
             self.assertIsNotNone(path)
@@ -24,4 +23,3 @@ class TestSpreadsheet(TestStoreProfile):
             )
             print(tally_table)
             self.assertIsNotNone(tally_table)
-    """

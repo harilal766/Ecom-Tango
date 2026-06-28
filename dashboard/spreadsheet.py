@@ -45,7 +45,7 @@ class Spreadsheet:
         except Exception as e:
             print(e)
             
-    def create_pivot_table(self,index,other_columns):
+    def create_pivot_table(self,index : str,other_columns: list):
         pivot_df = None
         try:
             if index and other_columns:
@@ -136,9 +136,11 @@ class Spreadsheet:
                             
                             tally_dictionary['Total'] = f'=sum({':'.join(cell_range)})' if len(cell_range)> 0 else f'=sum('
                             product_name = re.sub(r"\s","", product_name)
+                            print(product_name)
                             tally_dictionary['Rate'] = rate_dict.get(product_name,None)
                             tally_dictionary['Amount'] = None 
                             tally_dictionaries.append(tally_dictionary)
+                    print(rate_dict)
             else:
                 print('Unsupported Report Type')              
                             
