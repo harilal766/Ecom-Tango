@@ -230,9 +230,16 @@ class StoreReport(View):
                     selected_columns = request.POST.getlist("report_column")
                     additional_sheets = request.POST.getlist("additional_sheet")
                     if additional_sheets:
+                        uploaded_label = request.FILES.get("label_filepath", None)
+                        fs = FileSystemStorage()
+                                    
+                        filename = fs.save(uploaded_label.name, uploaded_label)
+                        uploaded_filepath = fs.path(filename)
+                        
+                        
                         spreadsheet_instance = Spreadsheet(
                             store = selected_store,
-                            report_df = report_df, report_type= selected_report_type
+                            report_df = report_df, report_type= selected_report_type,label_path=None
                         )
                         for sheet in additional_sheets:
                             if sheet == "pivot_table":
@@ -244,18 +251,15 @@ class StoreReport(View):
                                 )
                             elif sheet == 'tally_table':
                                 if pivot_df is not None:
+                                    
                                     uploaded_label = request.FILES.get("label_filepath", None)
                                     fs = FileSystemStorage()
                                     
                                     filename = fs.save(uploaded_label.name, uploaded_label)
                                     uploaded_filepath = fs.path(filename)
-                                    
                                     print(uploaded_filepath)
 
-                                    tally_df = spreadsheet_instance.create_tally_table(
-                                        pivot_df = pivot_df,
-                                        label_path=uploaded_filepath
-                                    )
+                                    tally_df = spreadsheet_instance.create_tally_table(pivot_df = pivot_df)
                                     
                                     
                     # updation of selected columns 

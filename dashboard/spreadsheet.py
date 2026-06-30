@@ -12,8 +12,6 @@ class Spreadsheet:
         self.report_type = report_type
         self.store = store
         
-        self.name_sanitization_pattern = r"\s\|\s"
-        
         self.sorter_instance = LabelSorter(pdf_path = label_path)
         
     def alphabet_based_indexing(self):
@@ -155,7 +153,9 @@ class Spreadsheet:
                                 tally_dictionary['Orders'] = '+'.join(orders_list)
                             
                             tally_dictionary['Total'] = f'=sum({':'.join(cell_range)})' if len(cell_range)> 0 else f'=sum('
-                            tally_dictionary['Rate'] = rate_dict.get(product_name.replace(" ",""),None)
+                            if product_name != None:
+                                product_name.replace(" ","")
+                            tally_dictionary['Rate'] = rate_dict.get(product_name,None)
                             tally_dictionary['Amount'] = None
                             tally_dictionaries.append(tally_dictionary)
             else:
