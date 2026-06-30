@@ -21,7 +21,7 @@ class TestSpreadsheet(TestStoreProfile):
         self.assertIsNotNone(self.test_class)
         
     def test_create_pivot_table(self):
-        print(self.pivot_df)
+        #print(self.pivot_df)
         self.assertIsNotNone(self.pivot_df)
     
     def test_create_rate_dict(self):
