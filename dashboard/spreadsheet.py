@@ -153,9 +153,9 @@ class Spreadsheet:
                                 tally_dictionary['Orders'] = '+'.join(orders_list)
                             
                             tally_dictionary['Total'] = f'=sum({':'.join(cell_range)})' if len(cell_range)> 0 else f'=sum('
-                            if product_name != None:
-                                product_name.replace(" ","")
-                            tally_dictionary['Rate'] = rate_dict.get(product_name,None)
+                            #if product_name != None:
+                            
+                            tally_dictionary['Rate'] = rate_dict.get(product_name.replace(" ",""),None)
                             tally_dictionary['Amount'] = None
                             tally_dictionaries.append(tally_dictionary)
             else:

@@ -232,14 +232,13 @@ class StoreReport(View):
                     if additional_sheets:
                         uploaded_label = request.FILES.get("label_filepath", None)
                         fs = FileSystemStorage()
-                                    
                         filename = fs.save(uploaded_label.name, uploaded_label)
                         uploaded_filepath = fs.path(filename)
-                        
+                        print(uploaded_filepath)
                         
                         spreadsheet_instance = Spreadsheet(
                             store = selected_store,
-                            report_df = report_df, report_type= selected_report_type,label_path=None
+                            report_df = report_df, report_type= selected_report_type,label_path=uploaded_filepath
                         )
                         for sheet in additional_sheets:
                             if sheet == "pivot_table":
@@ -252,12 +251,7 @@ class StoreReport(View):
                             elif sheet == 'tally_table':
                                 if pivot_df is not None:
                                     
-                                    uploaded_label = request.FILES.get("label_filepath", None)
-                                    fs = FileSystemStorage()
-                                    
-                                    filename = fs.save(uploaded_label.name, uploaded_label)
-                                    uploaded_filepath = fs.path(filename)
-                                    print(uploaded_filepath)
+
 
                                     tally_df = spreadsheet_instance.create_tally_table(pivot_df = pivot_df)
                                     
