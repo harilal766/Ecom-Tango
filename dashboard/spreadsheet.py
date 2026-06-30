@@ -62,7 +62,7 @@ class Spreadsheet:
         except Exception as e:
             print(e)
     
-    def create_rate_dict(self):
+    def create_rate_dict(self,pivot_df):
         """For now, this function analyses the pivot table and 
         creates the dict of products and their rates
         Raises:
@@ -73,6 +73,13 @@ class Spreadsheet:
         """
         rate_dict = {}
         try:
+            if not pivot_df is None:
+                #print(pivot_df)
+                for index, row in pivot_df.iterrows():
+                    pivot_product = re.sub(r"\s","",row['Row Labels'])                    
+                    rate_dict[pivot_product] = int(
+                        int(row['item-price'])/int(row['quantity'])
+                    )
             return rate_dict
         except KeyError:
             raise KeyError("The key does not exist")
