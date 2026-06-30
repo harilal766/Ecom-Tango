@@ -62,6 +62,21 @@ class Spreadsheet:
         except Exception as e:
             print(e)
     
+    def create_rate_dict(self):
+        """For now, this function analyses the pivot table and 
+        creates the dict of products and their rates
+        Raises:
+            KeyError: _description_
+
+        Returns:
+            _type_: _description_
+        """
+        rate_dict = {}
+        try:
+            return rate_dict
+        except KeyError:
+            raise KeyError("The key does not exist")
+    
     def create_tally_table(self, pivot_df, label_path):
         tally_df = None
         tally_dictionaries = []; rate_dict = {}
