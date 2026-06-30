@@ -76,7 +76,7 @@ class Spreadsheet:
             if not pivot_df is None:
                 #print(pivot_df)
                 for index, row in pivot_df.iterrows():
-                    pivot_product = re.sub(r"\s","",row['Row Labels'])                    
+                    pivot_product = re.sub(r"\|","",row['Row Labels'])                    
                     rate_dict[pivot_product] = int(
                         int(row['item-price'])/int(row['quantity'])
                     )

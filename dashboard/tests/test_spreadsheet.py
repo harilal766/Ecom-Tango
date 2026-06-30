@@ -30,4 +30,9 @@ class TestSpreadsheet(TestStoreProfile):
         self.assertIsNotNone(rate_dict)
     
     def test_create_tally_table(self):
-        pass
+        tally = self.test_class.create_tally_table(
+            pivot_df=self.pivot_df, label_path=amazon_label
+        )
+        print(tally)
+        self.assertIsNotNone(tally)
+        
