@@ -13,7 +13,7 @@ class TestSpreadsheet(TestStoreProfile):
         self.test_class = Spreadsheet(
             store = self.test_store,
             report_df = pd.DataFrame(pd.read_excel(amazon_excel)),
-            report_type = "Order Report"
+            report_type = "Order Report",label_path=amazon_label
         )
         self.pivot_df = self.test_class.create_pivot_table(
             index = amazon_index,other_columns=amazon_columns
@@ -26,13 +26,14 @@ class TestSpreadsheet(TestStoreProfile):
     
     def test_create_rate_dict(self):
         rate_dict = self.test_class.create_rate_dict(pivot_df=self.pivot_df)
-        print(rate_dict)
+        print("Rate dict",list(rate_dict.keys()))
+        print("-"*10)
+        summary = self.test_class.sorter_instance.create_sorting_summary()
+        print("Summary dict",list(summary.keys()))
         self.assertIsNotNone(rate_dict)
     
     def test_create_tally_table(self):
-        tally = self.test_class.create_tally_table(
-            pivot_df=self.pivot_df, label_path=amazon_label
-        )
+        tally = self.test_class.create_tally_table(pivot_df=self.pivot_df)
         print(tally)
         self.assertIsNotNone(tally)
         

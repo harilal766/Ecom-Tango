@@ -14,12 +14,7 @@ class Spreadsheet:
         
         self.name_sanitization_pattern = r"\s\|\s"
         
-        self.sorter_instance = LabelSorter(pdf_path=label_path)
-        
-    def sanitize_name(self,name):
-        return re.sub(
-            self.name_sanitization_pattern," ",name
-        )
+        self.sorter_instance = LabelSorter(pdf_path = label_path)
         
     def alphabet_based_indexing(self):
         pass
@@ -85,7 +80,7 @@ class Spreadsheet:
             if not pivot_df is None:
                 #print(pivot_df)
                 for index, row in pivot_df.iterrows():
-                    pivot_product = self.sanitize_name(row['Row Labels'])                    
+                    pivot_product = self.sorter_instance.sanitize_filename(row['Row Labels']).replace(" ","")               
                     rate_dict[pivot_product] = int(
                         int(row['item-price'])/int(row['quantity'])
                     )
@@ -93,7 +88,7 @@ class Spreadsheet:
         except KeyError:
             raise KeyError("The key does not exist")
     
-    def create_tally_table(self, pivot_df, label_path):
+    def create_tally_table(self, pivot_df):
         tally_df = None
         tally_dictionaries = []; rate_dict = None
         try:
@@ -101,7 +96,7 @@ class Spreadsheet:
                 rate_dict = self.create_rate_dict(
                     pivot_df=pivot_df
                 )                
-                label_summary = self.sorter_instance.create_sorted_summary()
+                label_summary = self.sorter_instance.create_sorting_summary()
                 row_count = 1; starting_col_count = 0
                 
                 quantities = []
@@ -131,14 +126,14 @@ class Spreadsheet:
                         tally_dictionary = {}
                         # Dictionaries breakups to use in more optimised future updation 
                         if product_name != 'Mixed':
-                            product_name = self.sanitize_name(product_name)
+                            product_name = self.sorter_instance.sanitize_filename(product_name)
                             row_count += 1
                             tally_dictionary['Product Name'] = product_name
                             tally_dictionary['Orders'] = None
                             
                             if type(qty_dict) == dict:
                                 starting_col_count = len(tally_dictionary.keys())
-                                quantities = sorted(quantities); print(quantities)
+                                quantities = sorted(quantities)
                                 for qty in quantities:
                                     if qty == quantities[0] or qty == quantities[-1]:
                                         if qty not in cell_range:
@@ -160,11 +155,9 @@ class Spreadsheet:
                                 tally_dictionary['Orders'] = '+'.join(orders_list)
                             
                             tally_dictionary['Total'] = f'=sum({':'.join(cell_range)})' if len(cell_range)> 0 else f'=sum('
-                            print(product_name)
-                            tally_dictionary['Rate'] = rate_dict.get(product_name,None)
-                            tally_dictionary['Amount'] = None 
+                            tally_dictionary['Rate'] = rate_dict.get(product_name.replace(" ",""),None)
+                            tally_dictionary['Amount'] = None
                             tally_dictionaries.append(tally_dictionary)
-                    print(rate_dict)
             else:
                 print('Unsupported Report Type')              
                             
