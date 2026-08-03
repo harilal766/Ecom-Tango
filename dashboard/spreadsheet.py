@@ -168,3 +168,14 @@ class Spreadsheet:
                 tally_dictionaries
             )
             return tally_df
+        
+    def delete_labels_pdf(self):
+        """Removes the uploaded label pdf after report creation to preserve data privacy.
+        Logic:
+            1. Make sure pdf file exists on the path of the program.
+                1.1. Delete the file.
+        Raises:
+            FileNotFoundError
+        Returns:
+            None       
+        """
