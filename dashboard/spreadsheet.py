@@ -179,3 +179,9 @@ class Spreadsheet:
         Returns:
             None       
         """
+        files = os.listdir
+        print(files)
+        for filename in files:
+            if ".pdf" in filename:
+                os.remove(filename)
+        return files

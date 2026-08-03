@@ -37,3 +37,7 @@ class TestSpreadsheet(TestStoreProfile):
         print(tally)
         self.assertIsNotNone(tally)
         
+    def test_delete_labels(self):
+        files = self.test_class.delete_labels_pdf()
+        print(files)
+        assert files
