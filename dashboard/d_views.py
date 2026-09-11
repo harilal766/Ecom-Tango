@@ -70,9 +70,11 @@ class Store(Dashboard, View):
                 report_client = SpapiReportClient(credentials=spapi_inst.get_the_credentials())
                 order_client = SpapiOrderClient(credentials=spapi_inst.get_the_credentials())
                 
+                """
                 context["settlements"] = report_client.api_model.get_reports(
                     reportTypes = ReportType.GET_V2_SETTLEMENT_REPORT_DATA_FLAT_FILE_V2
                 ).payload.get("reports")
+                """
                 # store report columns to use later
                 context["shipping_dates"] = order_client.get_shipping_dates()
                 
@@ -250,10 +252,9 @@ class StoreReport(View):
                                 )
                             elif sheet == 'tally_table':
                                 if pivot_df is not None:
-                                    
-
-
                                     tally_df = spreadsheet_instance.create_tally_table(pivot_df = pivot_df)
+                                    
+                                    fs.delete(name = filename)
                                     
                                     
                     # updation of selected columns 
