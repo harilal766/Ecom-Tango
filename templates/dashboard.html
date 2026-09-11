@@ -61,13 +61,15 @@
             <h2 id="formTitle" class="form-title">Reports</h2>
             <form method="POST" id="reportForm" class="form" enctype='multipart/form-data' action="{% url 'dashboard:create_report' store_slug=selected_store.slug %}">
                 {% csrf_token %}
-                <div class="selection-group">
+                <div class="selection-group" id="selectionParent">
+                    <!-- Report type -->
                     <select name="report-type" id="reportType" class="form-select" aria-label="Default select example">
                         {% for type in report_types %}
                         <option>{{type}}</option>
                         {% endfor %}
                     </select>
 
+                    <!-- Cod / Prepaid -->
                     <select name = "payment_method" class="form-select" aria-label="Default select example">
                         <option>COD</option>
                         <option>Other</option>
@@ -76,6 +78,7 @@
                     <div id='additionalReportSpace'>
                     </div>
 
+                    <!--Shipping date for amazon, this should be injected only when order report is selected -->
                     {% if shipping_dates %}
                     <select name = "shipping_date" class="form-select" aria-label="Default select example">
                         {% for date in shipping_dates %}

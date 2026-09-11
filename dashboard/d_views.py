@@ -255,8 +255,6 @@ class StoreReport(View):
                                     tally_df = spreadsheet_instance.create_tally_table(pivot_df = pivot_df)
                                     
                                     fs.delete(name = filename)
-                                    
-                                    
                     # updation of selected columns 
                     report_profile = ReportProfile.objects.filter(
                         user = request.user, store = selected_store,
