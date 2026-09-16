@@ -156,7 +156,7 @@ class Spreadsheet:
                             #if product_name != None:
                             
                             tally_dictionary['Rate'] = rate_dict.get(product_name.replace(" ",""),None)
-                            tally_dictionary['Amount'] = None
+                            tally_dictionary['Amount'] = f'={tally_dictionary['Rate']}*{tally_dictionary['Total']}'
                             tally_dictionaries.append(tally_dictionary)
             else:
                 print('Unsupported Report Type')              
@@ -168,20 +168,3 @@ class Spreadsheet:
                 tally_dictionaries
             )
             return tally_df
-        
-    def delete_labels_pdf(self):
-        """Removes the uploaded label pdf after report creation to preserve data privacy.
-        Logic:
-            1. Make sure pdf file exists on the path of the program.
-                1.1. Delete the file.
-        Raises:
-            FileNotFoundError
-        Returns:
-            None       
-        """
-        files = os.listdir
-        print(files)
-        for filename in files:
-            if ".pdf" in filename:
-                os.remove(filename)
-        return files

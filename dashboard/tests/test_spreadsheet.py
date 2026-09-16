@@ -33,11 +33,7 @@ class TestSpreadsheet(TestStoreProfile):
         self.assertIsNotNone(rate_dict)
     
     def test_create_tally_table(self):
-        tally = self.test_class.create_tally_table(pivot_df=self.pivot_df)
-        print(tally)
-        self.assertIsNotNone(tally)
+        tally_df = self.test_class.create_tally_table(pivot_df=self.pivot_df)
+        print(tally_df)
+        self.assertIsNotNone(tally_df)
         
-    def test_delete_labels(self):
-        files = self.test_class.delete_labels_pdf()
-        print(files)
-        assert files
