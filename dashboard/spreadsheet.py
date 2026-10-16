@@ -156,7 +156,11 @@ class Spreadsheet:
                             #if product_name != None:
                             
                             tally_dictionary['Rate'] = rate_dict.get(product_name.replace(" ",""),None)
-                            tally_dictionary['Amount'] = f'={tally_dictionary['Rate']}*{tally_dictionary['Total']}'
+                            if row_count == 2:
+                                rate_col_count = len(tally_dictionary.keys())
+                                total_col_count = rate_col_count - 1
+                                amount_col_count = rate_col_count + 1
+                            tally_dictionary['Amount'] = f"={chr(64+rate_col_count)}{row_count}*{chr(64+total_col_count)}{row_count}"
                             tally_dictionaries.append(tally_dictionary)
             else:
                 print('Unsupported Report Type')              
